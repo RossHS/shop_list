@@ -50,6 +50,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
+  # Генерация кода запаковки и распаковки объектов в json
+  json_serializable: ^5.0.0
+  build_runner: ^2.0.6
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
