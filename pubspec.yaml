@@ -63,7 +63,8 @@ flutter:
   assets:
     - assets/
 
+  # Путь и именя ассета с кастомными иконками для анимации
   fonts:
-    - family: MyFlutterApp
+    - family: CustomIcons
       fonts:
         - asset: assets/custom_icons/icons.ttf
