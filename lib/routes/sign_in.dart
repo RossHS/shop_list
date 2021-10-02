@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
+import 'package:shop_list/utils/text_validators.dart' as validator;
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -21,15 +22,18 @@ class SignIn extends StatelessWidget {
                 children: <Widget>[
                   TextFormField(
                     controller: _authController.emailController,
+                    validator: validator.email,
                   ),
                   TextFormField(
                     controller: _authController.passwordController,
+                    validator: validator.password,
+                    obscureText: true,
                   ),
                   TextButton(
                     onPressed: () {
-                      // if(_formStateKey.currentState!.validate()){
-                      _authController.signInWithEmail(context);
-                      // }
+                      if (_formStateKey.currentState!.validate()) {
+                        _authController.signInWithEmail(context);
+                      }
                     },
                     child: const Text('SIGN IN'),
                   ),

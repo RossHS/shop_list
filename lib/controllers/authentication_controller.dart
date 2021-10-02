@@ -18,6 +18,7 @@ class AuthenticationController extends GetxController {
   TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // База данных firestore
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -67,7 +68,7 @@ class AuthenticationController extends GetxController {
   /// Вход в сервис firebase при помощи почты и пароля
   void signInWithEmail(BuildContext context) async {
     try {
-      var v = await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );

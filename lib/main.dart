@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/routes/get_routes.dart';
-import 'package:shop_list/routes/firebase_test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
