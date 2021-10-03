@@ -47,7 +47,7 @@ class AnimatedPainterCircle90s extends AnimatedPainter90s {
     Key? key,
   }) : super(
           child: child,
-          duration: duration ?? const Duration(milliseconds: 120),
+          duration: duration ?? const Duration(milliseconds: 80),
           config: config ?? const Paint90sConfig(backgroundColor: Colors.lightBlueAccent),
           key: key,
         );
@@ -57,18 +57,17 @@ class AnimatedPainterCircle90s extends AnimatedPainter90s {
 }
 
 class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPainterCircle90s> {
-  @override
-  void initState() {
-    super.initState();
-    notifier = ValueNotifier<CustomPainter>(_Painter(
-      config: widget.config,
-    ));
-  }
 
   @override
-  void updateValue() {
-    notifier.value = _Painter(
-      config: widget.config,
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _Painter(
+          config: widget.config,
+          notifier: notifier,
+        ),
+        child: widget.child,
+      ),
     );
   }
 }
@@ -77,7 +76,8 @@ class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPai
 class _Painter extends CustomPainter {
   const _Painter({
     required this.config,
-  });
+    required ValueNotifier<bool> notifier,
+  }) : super(repaint: notifier);
 
   final Paint90sConfig config;
 
@@ -107,8 +107,7 @@ class _Painter extends CustomPainter {
     final radius = center.width;
 
     var rotateAngle = 0.0;
-    path.moveTo(
-        center.width + random.nextInt(config.offset), size.height + random.nextInt(config.offset));
+    path.moveTo(center.width + random.nextInt(config.offset), size.height + random.nextInt(config.offset));
     do {
       rotateAngle += random.nextInt(config.offset) + config.offset;
       if (rotateAngle > 360) rotateAngle = 360;
@@ -143,6 +142,6 @@ class _Painter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return this != oldDelegate;
+    return true;
   }
 }

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class AnimatedIcon90s extends StatefulWidget {
   const AnimatedIcon90s({
     required List<IconData> iconsList,
-    Duration duration = const Duration(milliseconds: 100),
+    Duration duration = const Duration(milliseconds: 80),
     Key? key,
   })  : _iconsList = iconsList,
         _duration = duration,

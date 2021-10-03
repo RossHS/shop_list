@@ -26,25 +26,26 @@ class AnimatedPainterSquare90s extends AnimatedPainter90s {
 
 class _AnimatedPainterSquare90sState extends AnimatedPainter90sState<AnimatedPainterSquare90s> {
   @override
-  void initState() {
-    super.initState();
-    notifier = ValueNotifier<CustomPainter>(_Painter(
-      borderPaint: widget.borderPaint,
-      config: widget.config,
-    ));
-  }
-
-  @override
-  void updateValue() {
-    notifier.value = _Painter(
-      borderPaint: widget.borderPaint,
-      config: widget.config,
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _Painter(
+          config: widget.config,
+          borderPaint: widget.borderPaint,
+          notifier: notifier,
+        ),
+        child: widget.child,
+      ),
     );
   }
 }
 
 class _Painter extends CustomPainter {
-  _Painter({required this.borderPaint, required this.config});
+  _Painter({
+    required this.borderPaint,
+    required this.config,
+    required ValueNotifier<bool> notifier,
+  }) : super(repaint: notifier);
 
   final BorderPaint borderPaint;
   Paint90sConfig config;
@@ -127,7 +128,7 @@ class _Painter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return this != oldDelegate;
+    return true;
   }
 }
 

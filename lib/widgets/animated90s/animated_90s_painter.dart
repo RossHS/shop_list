@@ -15,9 +15,8 @@ abstract class AnimatedPainter90s extends StatefulWidget {
 
 abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends State<T>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  late final ValueNotifier<CustomPainter> notifier;
+  late final AnimationController _controller;
+  final notifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -39,25 +38,9 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
 
   void _repeater() {
     _controller.forward(from: 0).whenComplete(() {
-      updateValue();
+      notifier.value = !notifier.value;
       _repeater();
     });
-  }
-
-  void updateValue();
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: ValueListenableBuilder<CustomPainter>(
-        valueListenable: notifier,
-        builder: (_, value, child) => CustomPaint(
-          painter: value,
-          child: child,
-        ),
-        child: widget.child,
-      ),
-    );
   }
 }
 
