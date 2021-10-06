@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/routes/get_routes.dart';
+import 'package:shop_list/utils/application_themes.dart' as app_theme;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialRoute: '/',
       getPages: GetRoutes.routes,
+      theme: app_theme.lightTheme,
+      darkTheme: app_theme.darkTheme,
     );
   }
 }
