@@ -10,7 +10,7 @@ class GetRoutes {
   static final routes = [
     GetPage(name: '/', page: () => const Splash()),
     GetPage(name: '/home', page: () => Home()),
-    GetPage(name: '/signIn', page: () => SignIn()),
+    GetPage(name: '/signIn', page: () => const SignIn()),
     // GetPage(name: '/settings', page: page),
     // GetPage(name: '/list/:id/edit', page: page),
   ];
