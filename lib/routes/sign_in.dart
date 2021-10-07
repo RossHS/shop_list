@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/utils/text_validators.dart' as validator;
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
+import 'package:shop_list/widgets/custom_text_field.dart';
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -42,11 +43,11 @@ class _CustomForm extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  TextFormField(
+                  CustomTextField(
                     controller: _authController.emailController,
                     validator: validator.email,
                   ),
-                  TextFormField(
+                  CustomTextField(
                     controller: _authController.passwordController,
                     validator: validator.password,
                     obscureText: true,
