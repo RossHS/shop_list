@@ -40,4 +40,24 @@ class CustomIcons {
   static const IconData create_7 = IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData create_8 = IconData(0xe80f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const List<IconData> create = [create_1, create_2, create_3, create_4, create_5, create_6, create_7, create_8];
+
+  static const IconData user_1 = IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_2 = IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_3 = IconData(0xe817, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_4 = IconData(0xe810, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_5 = IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_6 = IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_7 = IconData(0xe813, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_8 = IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> user = [user_1, user_2, user_3, user_4, user_5, user_6, user_7, user_8];
+
+  static const IconData lock_1 = IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_2 = IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_3 = IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_4 = IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_5 = IconData(0xe818, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_6 = IconData(0xe819, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_7 = IconData(0xe81a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lock_8 = IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> lock = [lock_1, lock_2, lock_3, lock_4, lock_5, lock_6, lock_7, lock_8];
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
+import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 
@@ -13,13 +15,7 @@ class SignIn extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(50.0),
-          child: AnimatedPainterSquare90s(
-            child: SizedBox(
-              width: 500,
-              height: 190,
-              child: _CustomForm(),
-            ),
-          ),
+          child: _CustomForm(),
         ),
       ),
     );
@@ -33,30 +29,37 @@ class _CustomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: RepaintBoundary(
-        child: Form(
-          key: _formStateKey,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  CustomTextField(
-                    controller: _authController.emailController,
-                    hint: 'email',
+    return RepaintBoundary(
+      child: Form(
+        key: _formStateKey,
+        child: Center(
+          child: AnimatedPainterSquare90s(
+            child: SizedBox(
+              width: 400,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      CustomTextField(
+                        controller: _authController.emailController,
+                        hint: 'email',
+                        prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
+                      ),
+                      CustomTextField(
+                        controller: _authController.passwordController,
+                        hint: 'password',
+                        prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.lock),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 30),
+                      TextButton(
+                        onPressed: () => _authController.signInWithEmail(context),
+                        child: const Text('SIGN IN'),
+                      ),
+                    ],
                   ),
-                  CustomTextField(
-                    controller: _authController.passwordController,
-                    hint: 'password',
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 30),
-                  TextButton(
-                    onPressed: () => _authController.signInWithEmail(context),
-                    child: const Text('SIGN IN'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
