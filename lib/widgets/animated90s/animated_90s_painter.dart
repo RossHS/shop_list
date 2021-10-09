@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 abstract class AnimatedPainter90s extends StatefulWidget {
@@ -16,10 +18,12 @@ abstract class AnimatedPainter90s extends StatefulWidget {
 abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends State<T>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  final notifier = ValueNotifier(false);
+  final _random = Random();
+  late final ValueNotifier<int> notifier;
 
   @override
   void initState() {
+    notifier = ValueNotifier(_random.nextInt(1000000));
     super.initState();
     _controller = AnimationController(
       duration: widget.duration,
@@ -38,7 +42,7 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
 
   void _repeater() {
     _controller.forward(from: 0).whenComplete(() {
-      notifier.value = !notifier.value;
+      notifier.value = _random.nextInt(1000000);
       _repeater();
     });
   }

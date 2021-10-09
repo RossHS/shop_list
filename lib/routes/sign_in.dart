@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
-import 'package:shop_list/utils/text_validators.dart' as validator;
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 
@@ -17,7 +16,7 @@ class SignIn extends StatelessWidget {
           child: AnimatedPainterSquare90s(
             child: SizedBox(
               width: 500,
-              height: 250,
+              height: 190,
               child: _CustomForm(),
             ),
           ),
@@ -34,31 +33,27 @@ class _CustomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: Form(
-        key: _formStateKey,
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: RepaintBoundary(
+        child: Form(
+          key: _formStateKey,
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   CustomTextField(
                     controller: _authController.emailController,
-                    validator: validator.email,
+                    hint: 'email',
                   ),
                   CustomTextField(
                     controller: _authController.passwordController,
-                    validator: validator.password,
+                    hint: 'password',
                     obscureText: true,
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 30),
                   TextButton(
-                    onPressed: () {
-                      if (_formStateKey.currentState!.validate()) {
-                        _authController.signInWithEmail(context);
-                      }
-                    },
+                    onPressed: () => _authController.signInWithEmail(context),
                     child: const Text('SIGN IN'),
                   ),
                 ],

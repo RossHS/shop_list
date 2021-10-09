@@ -1,78 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
+
+import 'animated90s/animated_90s_painter_line.dart';
 
 /// https://stackoverflow.com/questions/61819226/how-to-create-custom-textfield-class
 class CustomTextField extends StatefulWidget {
+  const CustomTextField({
+    Key? key,
+    this.hint,
+    required this.controller,
+    this.onChanged,
+    this.inputType = TextInputType.text,
+    this.obscureText = false,
+  }) : super(key: key);
+
   final String? hint;
   final TextEditingController controller;
-  final Color baseColor;
-  final Color borderColor;
-  final Color errorColor;
   final TextInputType inputType;
   final bool obscureText;
-  final Function validator;
   final Function? onChanged;
-
-  const CustomTextField(
-      {Key? key,
-      this.hint,
-      required this.controller,
-      this.onChanged,
-      this.baseColor = Colors.green,
-      this.borderColor = Colors.blue,
-      this.errorColor = Colors.red,
-      this.inputType = TextInputType.text,
-      this.obscureText = false,
-      required this.validator})
-      : super(key: key);
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  late final Color currentColor;
-
-  @override
-  void initState() {
-    super.initState();
-    currentColor = widget.borderColor;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: currentColor, width: 2.0),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
+    return AnimatedPainterLine90s(
+      paintSide: PaintSide.bottom,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child: TextField(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: TextFormField(
           obscureText: widget.obscureText,
-          onChanged: (text) {
-            if (widget.onChanged != null) {
-              widget.onChanged!(text);
-            }
-            setState(() {
-              if (!widget.validator(text) || text.isEmpty) {
-                currentColor = widget.errorColor;
-              } else {
-                currentColor = widget.baseColor;
-              }
-            });
-          },
-          //keyboardType: widget.inputType,
           controller: widget.controller,
           decoration: InputDecoration(
-            hintStyle: TextStyle(
-              color: widget.baseColor,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.w300,
-            ),
+            prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.create),
+            labelText: widget.hint,
             border: InputBorder.none,
-            hintText: widget.hint,
           ),
         ),
       ),

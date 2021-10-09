@@ -1,22 +1,10 @@
 /// Валидация пароля пользователя
-String? password(String? value) {
-  if (_regexMatch(value!, r'^.{6,}$')) {
-    return 'Не корректный пароль';
-  } else {
-    return null;
-  }
-}
+bool password(String value) => _regexMatch(value, r'^.{6,}$');
 
 /// валидация корректности email адреса
-String? email(String? value) {
-  if (_regexMatch(value!, r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')) {
-    return 'Не правильно указан Email адрес';
-  } else {
-    return null;
-  }
-}
+bool email(String value) => _regexMatch(value, r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
 
 bool _regexMatch(String value, String pattern) {
   var regex = RegExp(pattern);
-  return !regex.hasMatch(value);
+  return regex.hasMatch(value);
 }

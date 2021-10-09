@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:shop_list/utils/text_validators.dart' as text_validation;
 
 /// Бизнес-логика управления состоянием аутентификации пользователя
 class AuthenticationController extends GetxController {
@@ -67,13 +68,16 @@ class AuthenticationController extends GetxController {
 
   /// Вход в сервис firebase при помощи почты и пароля
   void signInWithEmail(BuildContext context) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } catch (error) {
-      print(error);
+    if (text_validation.email(emailController.text.trim()) &&
+        text_validation.password(passwordController.text.trim())) {
+      try {
+        await _auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+      } catch (error) {
+        print(error);
+      }
     }
   }
 

@@ -44,16 +44,20 @@ class _Painter extends CustomPainter {
   _Painter({
     required this.borderPaint,
     required this.config,
-    required ValueNotifier<bool> notifier,
+    required this.notifier,
   }) : super(repaint: notifier);
 
   final BorderPaint borderPaint;
   Paint90sConfig config;
+  ValueNotifier<int> notifier;
 
   @override
   void paint(Canvas canvas, Size size) {
     Path path = Path();
-    var random = Random();
+    // Для гарантии перерисовки только по событию от notifier,
+    // иначе создается новый Random() каждый раз, что приводит
+    // к кардинально новым рисункам
+    var random = Random(notifier.value);
 
     if (borderPaint.left) {
       // Задаю начальную точку не (0,0). А со случайным смещением,

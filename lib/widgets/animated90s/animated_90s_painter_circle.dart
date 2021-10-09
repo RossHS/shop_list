@@ -57,7 +57,6 @@ class AnimatedPainterCircle90s extends AnimatedPainter90s {
 }
 
 class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPainterCircle90s> {
-
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
@@ -76,10 +75,11 @@ class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPai
 class _Painter extends CustomPainter {
   const _Painter({
     required this.config,
-    required ValueNotifier<bool> notifier,
+    required this.notifier,
   }) : super(repaint: notifier);
 
   final Paint90sConfig config;
+  final ValueNotifier<int> notifier;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -101,7 +101,7 @@ class _Painter extends CustomPainter {
   /// Генерация круга с "помехами" по краям
   Path _generatePath(Size size) {
     final path = Path();
-    var random = math.Random();
+    var random = math.Random(notifier.value);
     final center = size / 2;
 
     final radius = center.width;
