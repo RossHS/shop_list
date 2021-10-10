@@ -56,7 +56,7 @@ class _Painter extends CustomPainter {
     final path = _generatePath(size);
 
     var outLine = Paint()
-      ..strokeWidth = 3
+      ..strokeWidth = config.strokeWidth
       ..color = config.outLineColor
       ..style = PaintingStyle.stroke;
 

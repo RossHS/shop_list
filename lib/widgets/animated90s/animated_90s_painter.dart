@@ -57,11 +57,16 @@ class Paint90sConfig {
   // приходится неоправдано раздувать вызывающий код, чтобы это гарантировать
   const Paint90sConfig({
     int? offset,
+    double? strokeWidth,
     Color? backgroundColor,
     Color? outLineColor,
-  })  : offset = offset ?? 10,
+  })  : strokeWidth = 3,
+        offset = offset ?? 10,
         backgroundColor = backgroundColor ?? Colors.white,
         outLineColor = outLineColor ?? Colors.black;
+
+  /// Толщина линии контура
+  final double strokeWidth;
 
   /// Отступы для генерации "помех" рисунка
   final int offset;
