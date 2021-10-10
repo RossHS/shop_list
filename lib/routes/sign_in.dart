@@ -4,6 +4,7 @@ import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
+import 'package:shop_list/utils/text_validators.dart' as validators;
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -33,7 +34,6 @@ class _CustomFormState extends State<_CustomForm> {
   final _formStateKey = GlobalKey<FormState>();
   final _authController = AuthenticationController.instance;
   var _passwordAndEmailValid = true;
-  Color? _errorColor;
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +52,13 @@ class _CustomFormState extends State<_CustomForm> {
                       CustomTextField(
                         controller: _authController.emailController,
                         hint: 'email',
-                        errorColor: _errorColor,
+                        inputValidator: validators.email,
                         prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
                       ),
                       CustomTextField(
                         controller: _authController.passwordController,
                         hint: 'password',
-                        errorColor: _errorColor,
+                        inputValidator: validators.password,
                         prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.lock),
                         obscureText: true,
                       ),
@@ -71,7 +71,6 @@ class _CustomFormState extends State<_CustomForm> {
                           } else {
                             setState(() {
                               _passwordAndEmailValid = false;
-                              _errorColor = Colors.red;
                             });
                           }
                         },
