@@ -53,6 +53,17 @@ class _Painter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final path = _generatePath(size);
+
+    var outLine = Paint()
+      ..strokeWidth = 3
+      ..color = config.outLineColor
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawPath(path, outLine);
+  }
+
+  Path _generatePath(Size size) {
     Path path = Path();
     // Для гарантии перерисовки только по событию от notifier,
     // иначе создается новый Random() каждый раз, что приводит
@@ -72,7 +83,6 @@ class _Painter extends CustomPainter {
         do {
           x -= random.nextInt(config.offset);
           y = -random.nextInt(config.offset).toDouble();
-          if (x < 0) x = 0;
           path.lineTo(x, y);
         } while (x > 0);
         break;
@@ -86,7 +96,6 @@ class _Painter extends CustomPainter {
         do {
           x += random.nextInt(config.offset);
           y = size.height + random.nextInt(config.offset);
-          if (x > size.width) x = size.width;
           path.lineTo(x, y);
         } while (x < size.width);
         break;
@@ -100,7 +109,6 @@ class _Painter extends CustomPainter {
         do {
           y += random.nextInt(config.offset);
           x = -random.nextInt(config.offset).toDouble();
-          if (y > size.height) y = size.height;
           path.lineTo(x, y);
         } while (y < size.height);
         break;
@@ -114,23 +122,12 @@ class _Painter extends CustomPainter {
         do {
           y -= random.nextInt(config.offset);
           x = size.width + random.nextInt(config.offset).toDouble();
-          if (y < 0) y = 0;
           path.lineTo(x, y);
         } while (y > 0);
         break;
     }
 
-    var outLine = Paint()
-      ..strokeWidth = 3
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke;
-
-    var background = Paint()
-      ..style = PaintingStyle.fill
-      ..color = config.backgroundColor;
-
-    canvas.drawPath(path, background);
-    canvas.drawPath(path, outLine);
+    return path;
   }
 
   @override

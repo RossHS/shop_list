@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 
 import 'animated90s/animated_90s_painter_line.dart';
 
@@ -12,6 +13,7 @@ class CustomTextField extends StatefulWidget {
     this.inputType = TextInputType.text,
     this.obscureText = false,
     this.prefixIcon,
+    this.errorColor,
   }) : super(key: key);
 
   final String? hint;
@@ -20,6 +22,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final Function? onChanged;
   final Widget? prefixIcon;
+  final Color? errorColor;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -30,6 +33,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return AnimatedPainterLine90s(
       paintSide: PaintSide.bottom,
+      config: Paint90sConfig(outLineColor: widget.errorColor),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: TextFormField(

@@ -53,6 +53,22 @@ class _Painter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final path = _generatePath(size);
+
+    final outLine = Paint()
+      ..strokeWidth = 3
+      ..color = config.outLineColor
+      ..style = PaintingStyle.stroke;
+
+    final background = Paint()
+      ..style = PaintingStyle.fill
+      ..color = config.backgroundColor;
+
+    canvas.drawPath(path, background);
+    canvas.drawPath(path, outLine);
+  }
+
+  Path _generatePath(Size size) {
     Path path = Path();
     // Для гарантии перерисовки только по событию от notifier,
     // иначе создается новый Random() каждый раз, что приводит
@@ -117,17 +133,7 @@ class _Painter extends CustomPainter {
 
     path.close();
 
-    var outLine = Paint()
-      ..strokeWidth = 3
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke;
-
-    var background = Paint()
-      ..style = PaintingStyle.fill
-      ..color = config.backgroundColor;
-
-    canvas.drawPath(path, background);
-    canvas.drawPath(path, outLine);
+    return path;
   }
 
   @override

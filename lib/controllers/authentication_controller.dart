@@ -68,8 +68,7 @@ class AuthenticationController extends GetxController {
 
   /// Вход в сервис firebase при помощи почты и пароля
   void signInWithEmail(BuildContext context) async {
-    if (text_validation.email(emailController.text.trim()) &&
-        text_validation.password(passwordController.text.trim())) {
+    if (validatePasswordAndEmail()) {
       try {
         await _auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
@@ -80,6 +79,10 @@ class AuthenticationController extends GetxController {
       }
     }
   }
+
+  /// Метод валидации пароля и почты через regEx
+  bool validatePasswordAndEmail() =>
+      text_validation.email(emailController.text.trim()) && text_validation.password(passwordController.text.trim());
 
   /// Создание пользователя в firestore коллекции пользователей users
   void _createUserFirestore(UserModel user, User _firebaseUser) {

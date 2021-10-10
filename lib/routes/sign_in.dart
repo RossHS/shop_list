@@ -11,10 +11,10 @@ class SignIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(50.0),
+          padding: EdgeInsets.all(50.0),
           child: _CustomForm(),
         ),
       ),
@@ -22,10 +22,18 @@ class SignIn extends StatelessWidget {
   }
 }
 
-class _CustomForm extends StatelessWidget {
-  _CustomForm({Key? key}) : super(key: key);
+class _CustomForm extends StatefulWidget {
+  const _CustomForm({Key? key}) : super(key: key);
+
+  @override
+  State<_CustomForm> createState() => _CustomFormState();
+}
+
+class _CustomFormState extends State<_CustomForm> {
   final _formStateKey = GlobalKey<FormState>();
   final _authController = AuthenticationController.instance;
+  var _passwordAndEmailValid = true;
+  Color? _errorColor;
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +52,29 @@ class _CustomForm extends StatelessWidget {
                       CustomTextField(
                         controller: _authController.emailController,
                         hint: 'email',
+                        errorColor: _errorColor,
                         prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
                       ),
                       CustomTextField(
                         controller: _authController.passwordController,
                         hint: 'password',
+                        errorColor: _errorColor,
                         prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.lock),
                         obscureText: true,
                       ),
                       const SizedBox(height: 30),
+                      if (!_passwordAndEmailValid) const Text('Non valid email/password'),
                       TextButton(
-                        onPressed: () => _authController.signInWithEmail(context),
+                        onPressed: () {
+                          if (_authController.validatePasswordAndEmail()) {
+                            _authController.signInWithEmail(context);
+                          } else {
+                            setState(() {
+                              _passwordAndEmailValid = false;
+                              _errorColor = Colors.red;
+                            });
+                          }
+                        },
                         child: const Text('SIGN IN'),
                       ),
                     ],

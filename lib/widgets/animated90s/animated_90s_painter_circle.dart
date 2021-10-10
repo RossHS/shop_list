@@ -85,12 +85,12 @@ class _Painter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = _generatePath(size);
 
-    var outLine = Paint()
+    final outLine = Paint()
       ..strokeWidth = 3
-      ..color = Colors.black
+      ..color = config.outLineColor
       ..style = PaintingStyle.stroke;
 
-    var background = Paint()
+    final background = Paint()
       ..style = PaintingStyle.fill
       ..color = config.backgroundColor;
 

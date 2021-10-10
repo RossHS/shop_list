@@ -50,14 +50,25 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
 
 /// Конфигурация для рисования.
 class Paint90sConfig {
+  // Сделал поля nullable, чтобы упростить вызов конструктора и придать большей гибкости,
+  // т.е. можно передавать null в качестве аргумента, и он спокойно преобразуется
+  // в осмысленное значение. Иначе, если писать напрямую через this.outLineColor = Colors.black
+  // в конструкторе, то при вызове конструктора нужно гарантировать non-null, и тогда
+  // приходится неоправдано раздувать вызывающий код, чтобы это гарантировать
   const Paint90sConfig({
-    this.offset = 10,
-    this.backgroundColor = Colors.white,
-  });
+    int? offset,
+    Color? backgroundColor,
+    Color? outLineColor,
+  })  : offset = offset ?? 10,
+        backgroundColor = backgroundColor ?? Colors.white,
+        outLineColor = outLineColor ?? Colors.black;
 
   /// Отступы для генерации "помех" рисунка
   final int offset;
 
   /// Цвет фона
   final Color backgroundColor;
+
+  /// Цвет линии
+  final Color outLineColor;
 }
