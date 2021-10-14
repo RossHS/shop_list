@@ -75,3 +75,7 @@ flutter:
     - family: CustomIcons
       fonts:
         - asset: assets/custom_icons/icons.ttf
+
+    - family: RossFont
+      fonts:
+        - asset: assets/fonts/ross/Rossfont-Regular.ttf

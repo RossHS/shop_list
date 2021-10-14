@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 
@@ -39,31 +41,39 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedPainterLine90s(
-      paintSide: PaintSide.bottom,
-      config: Paint90sConfig(outLineColor: _currentColor),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: TextFormField(
-          obscureText: widget.obscureText,
-          controller: widget.controller,
-          onChanged: (value) {
-            if (widget.inputValidator == null) return;
-            setState(() {
-              if (widget.inputValidator!(value)) {
-                _currentColor = widget.successColor;
-              } else {
-                _currentColor = widget.errorColor;
-              }
-            });
-          },
-          decoration: InputDecoration(
-            prefixIcon: widget.prefixIcon,
-            labelText: widget.hint,
-            border: InputBorder.none,
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          bottom: 10,
+          child: AnimatedPainterLine90s(
+            paintSide: PaintSide.bottom,
+            config: Paint90sConfig(outLineColor: _currentColor),
+            child: const SizedBox(),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: TextFormField(
+            obscureText: widget.obscureText,
+            controller: widget.controller,
+            onChanged: (value) {
+              if (widget.inputValidator == null) return;
+              setState(() {
+                if (widget.inputValidator!(value)) {
+                  _currentColor = widget.successColor;
+                } else {
+                  _currentColor = widget.errorColor;
+                }
+              });
+            },
+            decoration: InputDecoration(
+              prefixIcon: widget.prefixIcon,
+              labelText: widget.hint,
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
