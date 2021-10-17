@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/utils/text_validators.dart' as validators;
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
-import 'package:shop_list/utils/text_validators.dart' as validators;
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -62,7 +62,7 @@ class _CustomFormState extends State<_CustomForm> {
                         prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.lock),
                         obscureText: true,
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 15),
                       if (!_passwordAndEmailValid) const Text('Non valid email/password'),
                       TextButton(
                         onPressed: () {
