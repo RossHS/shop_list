@@ -15,8 +15,8 @@ abstract class AnimatedPainter90s extends StatefulWidget {
   final Paint90sConfig config;
 }
 
-abstract class AnimatedPainter90sState<T extends AnimatedPainter90s>
-    extends State<T> with SingleTickerProviderStateMixin {
+abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends State<T>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   final _random = Random();
   late final ValueNotifier<int> notifier;
@@ -60,10 +60,8 @@ class Paint90sConfig {
     double? strokeWidth,
     Color? backgroundColor,
     Color? outLineColor,
-  })  : assert(offset == null || (offset > 0 && offset <= 50),
-            'incorrect offset $offset'),
-        assert(strokeWidth == null || (strokeWidth > 0 && strokeWidth <= 25),
-            'incorrect strokeWidth $strokeWidth'),
+  })  : assert(offset == null || (offset > 0 && offset <= 50), 'incorrect offset $offset'),
+        assert(strokeWidth == null || (strokeWidth > 0 && strokeWidth <= 25), 'incorrect strokeWidth $strokeWidth'),
         offset = offset ?? 10,
         strokeWidth = 3,
         backgroundColor = backgroundColor ?? Colors.white,
@@ -80,4 +78,18 @@ class Paint90sConfig {
 
   /// Цвет линии
   final Color outLineColor;
+
+  Paint90sConfig copyWith({
+    double? strokeWidth,
+    int? offset,
+    Color? backgroundColor,
+    Color? outLineColor,
+  }) {
+    return Paint90sConfig(
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      offset: offset ?? this.offset,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      outLineColor: outLineColor ?? this.outLineColor,
+    );
+  }
 }

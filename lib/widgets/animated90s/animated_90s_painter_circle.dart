@@ -21,8 +21,19 @@ class AnimatedCircleButton90s extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final FloatingActionButtonThemeData floatingActionButtonTheme = theme.floatingActionButtonTheme;
+
+    Paint90sConfig paintConfig = Paint90sConfig(
+      backgroundColor:
+          config?.backgroundColor ?? floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
+      outLineColor: config?.outLineColor,
+      offset: config?.offset,
+      strokeWidth: config?.strokeWidth,
+    );
+
     return AnimatedPainterCircle90s(
-      config: config,
+      config: paintConfig,
       duration: duration,
       child: ConstrainedBox(
         constraints: const BoxConstraints.tightFor(height: 56.0, width: 56.0),
@@ -48,7 +59,7 @@ class AnimatedPainterCircle90s extends AnimatedPainter90s {
   }) : super(
           child: child,
           duration: duration ?? const Duration(milliseconds: 80),
-          config: config ?? const Paint90sConfig(backgroundColor: Colors.lightBlueAccent),
+          config: config ?? const Paint90sConfig(),
           key: key,
         );
 
