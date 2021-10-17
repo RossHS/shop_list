@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.14.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -54,7 +54,7 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 
   # Генерация кода запаковки и распаковки объектов в json
-  json_serializable: ^5.0.0
+  json_serializable: ^6.0.0
   build_runner: ^2.0.6
 
 # For information on the generic Dart part of this file, see the
