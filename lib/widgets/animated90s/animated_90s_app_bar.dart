@@ -50,9 +50,12 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
       config: config,
       borderPaint: const BorderPaint.bottom(),
       // Специальный виджет для 3 элементов в ряду
-      child: NavigationToolbar(
-        middle: title,
-        centerMiddle: true,
+      child: SafeArea(
+        bottom: false,
+        child: NavigationToolbar(
+          middle: title,
+          centerMiddle: true,
+        ),
       ),
     );
   }
