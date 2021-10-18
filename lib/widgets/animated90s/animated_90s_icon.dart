@@ -8,6 +8,7 @@ class AnimatedIcon90s extends StatefulWidget {
   const AnimatedIcon90s({
     required List<IconData> iconsList,
     Duration duration = const Duration(milliseconds: 80),
+    this.color,
     Key? key,
   })  : _iconsList = iconsList,
         _duration = duration,
@@ -18,6 +19,9 @@ class AnimatedIcon90s extends StatefulWidget {
 
   /// Задержка переключения анимации между элементами [iconList]
   final Duration _duration;
+
+  /// Цвет отображаемой иконки
+  final Color? color;
 
   @override
   _AnimatedIcon90sState createState() => _AnimatedIcon90sState();
@@ -78,7 +82,10 @@ class _AnimatedIcon90sState extends State<AnimatedIcon90s>
     return RepaintBoundary(
       child: ValueListenableBuilder<IconData>(
         valueListenable: _notifier,
-        builder: (_, value, __) => Icon(value),
+        builder: (_, value, __) => Icon(
+          value,
+          color: widget.color,
+        ),
       ),
     );
   }

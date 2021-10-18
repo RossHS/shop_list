@@ -23,6 +23,7 @@ class Home extends StatelessWidget {
       floatingActionButton: AnimatedCircleButton90s(
         onPressed: () {},
         child: const AnimatedIcon90s(
+          color: Colors.white,
           iconsList: CustomIcons.create,
         ),
       ),
