@@ -8,7 +8,6 @@ class AdvancedDrawer extends StatefulWidget {
     required this.drawer,
     this.controller,
     this.backdropColor,
-    this.openRatio = 0.75,
     this.animationDuration = const Duration(milliseconds: 250),
     this.animationCurve,
     this.childDecoration,
@@ -28,9 +27,6 @@ class AdvancedDrawer extends StatefulWidget {
 
   /// Backdrop color.
   final Color? backdropColor;
-
-  /// Opening ratio.
-  final double openRatio;
 
   /// Animation duration.
   final Duration animationDuration;
@@ -55,18 +51,19 @@ class AdvancedDrawer extends StatefulWidget {
   _AdvancedDrawerState createState() => _AdvancedDrawerState();
 }
 
-class _AdvancedDrawerState extends State<AdvancedDrawer>
-    with SingleTickerProviderStateMixin {
+class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProviderStateMixin {
   late final AdvancedDrawerController _controller;
   late final AnimationController _animationController;
+  late final Animation<double> _parentAnimation;
   late final Animation<double> _drawerScaleAnimation;
-  late final Animation<Offset> _childSlideAnimation;
   late final Animation<double> _childScaleAnimation;
   late final Animation<Decoration> _childDecorationAnimation;
   late double _offsetValue;
   late Offset _freshPosition;
   Offset? _startPosition;
   bool _captured = false;
+
+  Size? _drawerSize;
 
   @override
   void initState() {
@@ -81,7 +78,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
       value: _controller.value.visible ? 1 : 0,
     );
 
-    final parentAnimation = widget.animationCurve != null
+    _parentAnimation = widget.animationCurve != null
         ? CurvedAnimation(
             curve: widget.animationCurve!,
             parent: _animationController,
@@ -91,22 +88,17 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     _drawerScaleAnimation = Tween<double>(
       begin: 0.75,
       end: 1.0,
-    ).animate(parentAnimation);
-
-    _childSlideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(widget.openRatio, 0),
-    ).animate(parentAnimation);
+    ).animate(_parentAnimation);
 
     _childScaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.85,
-    ).animate(parentAnimation);
+    ).animate(_parentAnimation);
 
     _childDecorationAnimation = DecorationTween(
       begin: const BoxDecoration(),
       end: widget.childDecoration,
-    ).animate(parentAnimation);
+    ).animate(_parentAnimation);
   }
 
   @override
@@ -114,38 +106,36 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
     return Material(
       color: widget.backdropColor,
       child: GestureDetector(
-        onHorizontalDragStart:
-            widget.disabledGestures ? null : _handleDragStart,
-        onHorizontalDragUpdate:
-            widget.disabledGestures ? null : _handleDragUpdate,
+        onHorizontalDragStart: widget.disabledGestures ? null : _handleDragStart,
+        onHorizontalDragUpdate: widget.disabledGestures ? null : _handleDragUpdate,
         onHorizontalDragEnd: widget.disabledGestures ? null : _handleDragEnd,
-        onHorizontalDragCancel:
-            widget.disabledGestures ? null : _handleDragCancel,
+        onHorizontalDragCancel: widget.disabledGestures ? null : _handleDragCancel,
         child: Container(
           color: Colors.transparent,
           child: Stack(
             children: <Widget>[
               // -------- DRAWER
               Align(
-                alignment: widget.rtlOpening
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: widget.openRatio,
-                  child: ScaleTransition(
-                    scale: _drawerScaleAnimation,
-                    alignment: widget.rtlOpening
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
+                alignment: widget.rtlOpening ? Alignment.centerRight : Alignment.centerLeft,
+                child: ScaleTransition(
+                  scale: _drawerScaleAnimation,
+                  alignment: widget.rtlOpening ? Alignment.centerLeft : Alignment.centerRight,
+                  child: WidgetSize(
+                    onSizeChange: (Size? size) {
+                      setState(() {
+                        _drawerSize = size;
+                      });
+                    },
                     child: widget.drawer,
                   ),
                 ),
               ),
               // -------- CHILD
-              SlideTransition(
-                position: _childSlideAnimation,
-                textDirection:
-                    widget.rtlOpening ? TextDirection.rtl : TextDirection.ltr,
+              PositionedTransition(
+                rect: RelativeRectTween(
+                  begin: const RelativeRect.fromLTRB(0, 0, 0, 0),
+                  end: RelativeRect.fromLTRB(_drawerSize?.width ?? 0, 0, -(_drawerSize?.width ?? 0), 0),
+                ).animate(_parentAnimation),
                 child: ScaleTransition(
                   scale: _childScaleAnimation,
                   child: Builder(
@@ -173,8 +163,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                         ],
                       );
 
-                      if (widget.animateChildDecoration &&
-                          widget.childDecoration != null) {
+                      if (widget.animateChildDecoration && widget.childDecoration != null) {
                         return AnimatedBuilder(
                           animation: _childDecorationAnimation,
                           builder: (_, child) {
@@ -189,9 +178,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
                       }
 
                       return Container(
-                        clipBehavior: widget.childDecoration != null
-                            ? Clip.antiAlias
-                            : Clip.none,
+                        clipBehavior: widget.childDecoration != null ? Clip.antiAlias : Clip.none,
                         decoration: widget.childDecoration,
                         child: childStack,
                       );
@@ -207,9 +194,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
   }
 
   void handleControllerChanged() {
-    _controller.value.visible
-        ? _animationController.forward()
-        : _animationController.reverse();
+    _controller.value.visible ? _animationController.forward() : _animationController.reverse();
   }
 
   void _handleDragStart(DragStartDetails details) {
@@ -227,9 +212,8 @@ class _AdvancedDrawerState extends State<AdvancedDrawer>
 
     final diff = (_freshPosition - _startPosition!).dx;
 
-    _animationController.value = _offsetValue +
-        (diff / (screenSize.width * widget.openRatio)) *
-            (widget.rtlOpening ? -1 : 1);
+    // 0.5 коэффициент от ширины экрана до которой нужно провести, чтобы раскрыть Drawer
+    _animationController.value = _offsetValue + (diff / (screenSize.width * 0.5)) * (widget.rtlOpening ? -1 : 1);
   }
 
   void _handleDragEnd(DragEndDetails details) {
