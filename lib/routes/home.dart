@@ -15,8 +15,14 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AnimatedAppBar90s(
-        title: Text('Список дел'),
+      appBar: AnimatedAppBar90s(
+        actions: [
+          IconButton(
+            onPressed: _authController.signOut,
+            icon: const Icon(Icons.remove_circle),
+          )
+        ],
+        title: const Text('Список дел'),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {

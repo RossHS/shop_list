@@ -6,10 +6,14 @@ import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   const AnimatedAppBar90s({
     this.title,
+    this.actions,
     Key? key,
   }) : super(key: key);
 
   final Widget? title;
+
+  /// Список виджетов, которые будут располагаться после [title]
+  final List<Widget>? actions;
 
   /// Прописал значение размера стандартное для SDK Flutter AppBar.
   /// Не стал производить самостоятельный расчет, т.к. высота не динамическая
@@ -23,12 +27,14 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
 
     final Color foregroundColor = appBarTheme.foregroundColor ??
-        (colorScheme.brightness == Brightness.dark
-            ? colorScheme.onSurface
-            : colorScheme.onPrimary);
+        (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
 
-    TextStyle? titleTextStyle = appBarTheme.titleTextStyle ??
-        theme.textTheme.headline6?.copyWith(color: foregroundColor);
+    TextStyle? titleTextStyle =
+        appBarTheme.titleTextStyle ?? theme.textTheme.headline6?.copyWith(color: foregroundColor);
+
+    IconThemeData overallIconTheme = appBarTheme.iconTheme ?? theme.iconTheme.copyWith(color: foregroundColor);
+
+    IconThemeData actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
 
     // Оборачиваем виджет заголовка в виджет стиля текста,
     // чтобы придать тексту необходимы вид во всем поддереве
@@ -42,6 +48,21 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
+    // Создание ряда с виджетами из списка активностей
+    Widget? actions;
+    if (this.actions != null && this.actions!.isNotEmpty) {
+      actions = Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: this.actions!,
+      );
+
+      // Установка тем для иконок
+      actions = IconTheme.merge(
+        data: actionsIconTheme,
+        child: actions,
+      );
+    }
     var config = Paint90sConfig(
       backgroundColor: appBarTheme.backgroundColor ?? theme.primaryColor,
     );
@@ -54,6 +75,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
         bottom: false,
         child: NavigationToolbar(
           middle: title,
+          trailing: actions,
           centerMiddle: true,
         ),
       ),
