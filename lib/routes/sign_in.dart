@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/utils/text_validators.dart' as validators;
@@ -33,7 +34,6 @@ class _CustomForm extends StatefulWidget {
 class _CustomFormState extends State<_CustomForm> {
   final _formStateKey = GlobalKey<FormState>();
   final _authController = AuthenticationController.instance;
-  var _passwordAndEmailValid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +63,11 @@ class _CustomFormState extends State<_CustomForm> {
                         obscureText: true,
                       ),
                       const SizedBox(height: 15),
-                      if (!_passwordAndEmailValid) const Text('Non valid email/password'),
+                      Obx(() => _authController.authErrorMessage.value != null
+                          ? Text(_authController.authErrorMessage.value!)
+                          : const SizedBox()),
                       TextButton(
-                        onPressed: () {
-                          if (_authController.validatePasswordAndEmail()) {
-                            _authController.signInWithEmail(context);
-                          } else {
-                            setState(() {
-                              _passwordAndEmailValid = false;
-                            });
-                          }
-                        },
+                        onPressed: () => _authController.signInWithEmail(context),
                         child: const Text('SIGN IN'),
                       ),
                     ],

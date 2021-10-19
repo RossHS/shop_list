@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -19,7 +20,18 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   final _random = Random();
+
+  /// Содержит в себе значение для сида Random(), чтобы управлять случайной
+  /// составляющей отрисовки и производить видимую перестройку только лишь
+  /// при смене ValueNotifier<int>
   late final ValueNotifier<int> notifier;
+
+  /// Предзадержка инициализации повторения анимации. Необходим для того,
+  /// чтобы переключение анимации всех элементов унаследованных от этого
+  /// класса не происходило одновременно, а происходило выраженно для каждого
+  /// элемента на экране по отдельности.
+  /// Находится в диапазоне 0 < delay < widget.duration
+  late final Timer preDelay;
 
   @override
   void initState() {
@@ -29,11 +41,16 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
       duration: widget.duration,
       vsync: this,
     );
-    _repeater();
+
+    preDelay = Timer(
+      Duration(microseconds: _random.nextInt(widget.duration.inMicroseconds)),
+      _repeater,
+    );
   }
 
   @override
   void dispose() {
+    preDelay.cancel();
     _controller
       ..stop()
       ..dispose();
@@ -54,7 +71,7 @@ class Paint90sConfig {
   // т.е. можно передавать null в качестве аргумента, и он спокойно преобразуется
   // в осмысленное значение. Иначе, если писать напрямую через this.outLineColor = Colors.black
   // в конструкторе, то при вызове конструктора нужно гарантировать non-null, и тогда
-  // приходится неоправдано раздувать вызывающий код, чтобы это гарантировать
+  // приходится неоправданно раздувать вызывающий код, чтобы это гарантировать
   const Paint90sConfig({
     int? offset,
     double? strokeWidth,

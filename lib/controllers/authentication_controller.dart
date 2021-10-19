@@ -20,12 +20,15 @@ class AuthenticationController extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // База данных firestore
+  /// База данных firestore
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Модель пользователя, которая идет с библиотекой FirebaseAuthentication
+  /// Модель пользователя, которая идет с библиотекой FirebaseAuthentication
   final firebaseUser = Rxn<User>();
   final firestoreUser = Rxn<UserModel>();
+
+  /// Сообщение об ошибке аутентификации
+  final authErrorMessage = Rxn<String>();
   final _isAdmin = false.obs;
 
   @override
@@ -68,15 +71,41 @@ class AuthenticationController extends GetxController {
 
   /// Вход в сервис firebase при помощи почты и пароля
   void signInWithEmail(BuildContext context) async {
-    if (validatePasswordAndEmail()) {
-      try {
-        await _auth.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-        );
-      } catch (error) {
-        print(error);
-      }
+    // Валидация входных значений пароля и почты
+    if (!validatePasswordAndEmail()) {
+      authErrorMessage.value = 'Non valid email/password';
+      return;
+    }
+
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      // Если аутентификация прошла успешно, то обнуляем сообщение об ошибке
+      authErrorMessage.value = null;
+    } on FirebaseAuthException catch (error) {
+      _handleFirebaseAuthException(error.code);
+      print(error);
+    }
+  }
+
+  /// Метод парсинга приходящего кода ошибки от сервиса FirebaseAuth,
+  /// и запаковка данного кода в специальное сообщение об ошибке [authErrorMessage]
+  void _handleFirebaseAuthException(String errorCode) {
+    switch (errorCode) {
+      case 'invalid-email':
+        authErrorMessage.value = 'Invalid email';
+        break;
+      case 'user-disabled':
+        authErrorMessage.value = 'User disabled';
+        break;
+      case 'user-not-found':
+        authErrorMessage.value = 'User not found';
+        break;
+      case 'wrong-password':
+        authErrorMessage.value = 'Wrong password';
+        break;
     }
   }
 
