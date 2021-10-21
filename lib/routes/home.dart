@@ -66,57 +66,42 @@ class _HomeState extends State<Home> {
           child: ListTileTheme(
             textColor: Colors.white,
             iconColor: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  width: 128.0,
-                  height: 128.0,
-                  margin: const EdgeInsets.only(
-                    top: 24.0,
-                    bottom: 64.0,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    color: Colors.black26,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const FlutterLogo(),
-                ),
-                // ListTile(
-                //   onTap: () {},
-                //   leading: const Icon(Icons.home),
-                //   title: const Text('Home'),
-                // ),
-                // ListTile(
-                //   onTap: () {},
-                //   leading: const Icon(Icons.account_circle_rounded),
-                //   title: const Text('Profile'),
-                // ),
-                // ListTile(
-                //   onTap: () {},
-                //   leading: const Icon(Icons.favorite),
-                //   title: const Text('Favourites'),
-                // ),
-                // ListTile(
-                //   onTap: () {},
-                //   leading: const Icon(Icons.settings),
-                //   title: const Text('Settings'),
-                // ),
-                const Spacer(),
-                DefaultTextStyle(
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white54,
-                  ),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 16.0,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints.tightFor(
+                width: 200,
+                height: double.infinity,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 34, bottom: 54),
+                    child: AnimatedPainterCircleWithBorder90s(
+                      boxColor: Colors.blueGrey,
+                      child: SizedBox(
+                        width: 128.0,
+                        height: 128.0,
+                        child: FlutterLogo(),
+                      ),
                     ),
-                    child: const Text('Terms of Service | Privacy Policy'),
                   ),
-                ),
-              ],
+                  ListTile(
+                    onTap: () {},
+                    leading: const AnimatedIcon90s(iconsList: CustomIcons.user),
+                    title: const Text('Account'),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(Icons.settings),
+                    title: const Text('Settings'),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: _authController.signOut,
+                    child: const Text('Sign out'),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
