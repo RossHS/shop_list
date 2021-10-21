@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'animated_90s_painter.dart';
@@ -49,6 +50,8 @@ class AnimatedCircleButton90s extends StatelessWidget {
   }
 }
 
+//-------------------------------------------------------------------------------------------//
+
 /// Анимированный круг
 class AnimatedPainterCircle90s extends AnimatedPainter90s {
   const AnimatedPainterCircle90s({
@@ -72,7 +75,7 @@ class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPai
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: CustomPaint(
-        painter: _Painter(
+        painter: _CirclePainter(
           config: widget.config,
           notifier: notifier,
         ),
@@ -83,8 +86,8 @@ class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPai
 }
 
 /// Отрисовщик круга
-class _Painter extends CustomPainter {
-  const _Painter({
+class _CirclePainter extends CustomPainter {
+  const _CirclePainter({
     required this.config,
     required this.notifier,
   }) : super(repaint: notifier);
@@ -94,7 +97,13 @@ class _Painter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = _generatePath(size);
+    final center = size / 2;
+    final path = _generatePath(
+      center: center,
+      radius: center.width,
+      notifier: notifier,
+      config: config,
+    );
 
     final outLine = Paint()
       ..strokeWidth = config.strokeWidth
@@ -109,50 +118,140 @@ class _Painter extends CustomPainter {
     canvas.drawPath(path, outLine);
   }
 
-  /// Генерация круга с "помехами" по краям
-  Path _generatePath(Size size) {
-    final path = Path();
-    var random = math.Random(notifier.value);
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+//-------------------------------------------------------------------------------------------------//
+
+/// Так как использование PathClipper слишком затратное, а использовать его придется часто -
+/// было принято решение создать рамку с "вырезанным" кругом, где цвет рамки совпадает со цветом
+/// фона.
+/// НЕ РЕКОМЕНДУЕТСЯ К ПРИМЕНЕНИЮ! Т.к. это решение для узкой задачи
+class AnimatedPainterCircleWithBorder90s extends AnimatedPainter90s {
+  const AnimatedPainterCircleWithBorder90s({
+    required Widget child,
+    Duration? duration,
+    Paint90sConfig? config,
+    this.boxColor,
+    Key? key,
+  }) : super(
+          child: child,
+          duration: duration ?? const Duration(milliseconds: 80),
+          config: config ?? const Paint90sConfig(),
+          key: key,
+        );
+
+  final Color? boxColor;
+
+  @override
+  State<StatefulWidget> createState() => _AnimatedPainterCircleWithBorder90sState();
+}
+
+class _AnimatedPainterCircleWithBorder90sState extends AnimatedPainter90sState<AnimatedPainterCircleWithBorder90s> {
+  @override
+  Widget build(BuildContext context) {
+    var backgroundColor = widget.boxColor ?? Colors.black;
+
+    return RepaintBoundary(
+      child: CustomPaint(
+        foregroundPainter: _CircleWithBorderPainter(
+          config: widget.config,
+          notifier: notifier,
+          boxColor: backgroundColor,
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class _CircleWithBorderPainter extends CustomPainter {
+  const _CircleWithBorderPainter({
+    required this.config,
+    required this.notifier,
+    required this.boxColor,
+  }) : super(repaint: notifier);
+
+  final Paint90sConfig config;
+  final ValueNotifier<int> notifier;
+  final Color boxColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
     final center = size / 2;
+    final path = _generatePath(
+      center: center,
+      radius: center.width - config.offset,
+      notifier: notifier,
+      config: config,
+    );
 
-    final radius = center.width;
+    final outPath = Path()
+      ..addPath(path, Offset.zero)
+      ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
+      ..fillType = PathFillType.evenOdd;
 
-    var rotateAngle = 0.0;
-    path.moveTo(center.width + random.nextInt(config.offset), size.height + random.nextInt(config.offset));
-    do {
-      rotateAngle += random.nextInt(config.offset) + config.offset;
-      if (rotateAngle > 360) rotateAngle = 360;
+    final outLine = Paint()
+      ..strokeWidth = config.strokeWidth
+      ..color = config.outLineColor
+      ..style = PaintingStyle.stroke;
 
-      var radian = rotateAngle * math.pi / 180;
-      var rndX = random.nextInt(config.offset);
-      var rndY = random.nextInt(config.offset);
-      var x = radius + radius * math.sin(radian);
-      var y = radius + radius * math.cos(radian);
+    final background = Paint()
+      ..style = PaintingStyle.fill
+      ..color = boxColor;
 
-      // корректное "увеличение" круга в зависимости от квадранта
-      if (rotateAngle >= 0 && rotateAngle <= 90) {
-        x += rndX;
-        y += rndY;
-      } else if (rotateAngle >= 90 && rotateAngle <= 180) {
-        x += rndX;
-        y -= rndY;
-      } else if (rotateAngle >= 180 && rotateAngle <= 270) {
-        x -= rndX;
-        y -= rndY;
-      } else if (rotateAngle >= 270 && rotateAngle <= 360) {
-        x -= rndX;
-        y += rndY;
-      }
-
-      path.lineTo(x, y);
-    } while (rotateAngle < 360);
-
-    path.close();
-    return path;
+    canvas.drawPath(outPath, background);
+    canvas.drawPath(path, outLine);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//--------------------------------------------------------------------------------------------------//
+
+/// Генерация круга с "помехами" по краям. Минимальный отступ равен размеру [size],
+/// а максимальный определяется [config.offset]
+Path _generatePath({
+  required Size center,
+  required double radius,
+  required ValueNotifier<int> notifier,
+  required Paint90sConfig config,
+}) {
+  final path = Path();
+  var random = math.Random(notifier.value);
+
+  var rotateAngle = 0.0;
+  path.moveTo(radius + random.nextInt(config.offset), center.height + radius + random.nextInt(config.offset));
+  do {
+    rotateAngle += random.nextInt(config.offset) + config.offset;
+    if (rotateAngle > 360) rotateAngle = 360;
+
+    var radian = rotateAngle * math.pi / 180;
+    var rndX = random.nextInt(config.offset);
+    var rndY = random.nextInt(config.offset);
+    var x = center.width + radius * math.sin(radian);
+    var y = center.height + radius * math.cos(radian);
+
+    // корректное "увеличение" круга в зависимости от квадранта
+    if (rotateAngle >= 0 && rotateAngle <= 90) {
+      x += rndX;
+      y += rndY;
+    } else if (rotateAngle >= 90 && rotateAngle <= 180) {
+      x += rndX;
+      y -= rndY;
+    } else if (rotateAngle >= 180 && rotateAngle <= 270) {
+      x -= rndX;
+      y -= rndY;
+    } else if (rotateAngle >= 270 && rotateAngle <= 360) {
+      x -= rndX;
+      y += rndY;
+    }
+
+    path.lineTo(x, y);
+  } while (rotateAngle < 360);
+
+  path.close();
+  return path;
 }
