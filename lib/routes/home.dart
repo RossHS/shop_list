@@ -35,13 +35,25 @@ class _HomeState extends State<Home> {
         ),
         child: Scaffold(
           appBar: AnimatedAppBar90s(
+            title: const Text('Список дел'),
+            leading: IconButton(
+              onPressed: _advancedDrawerController.showDrawer,
+              icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                valueListenable: _advancedDrawerController,
+                builder: (_, value, __) {
+                  return AnimatedIcon90s(
+                    iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
+                    key: ValueKey<bool>(value.visible),
+                  );
+                },
+              ),
+            ),
             actions: [
               IconButton(
                 onPressed: _authController.signOut,
                 icon: const Icon(Icons.remove_circle),
               )
             ],
-            title: const Text('Список дел'),
           ),
           body: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {

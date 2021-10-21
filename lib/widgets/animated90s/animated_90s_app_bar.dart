@@ -5,10 +5,14 @@ import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 /// Реализация аналога AppBar с наличием анимации 90х
 class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   const AnimatedAppBar90s({
+    this.leading,
     this.title,
     this.actions,
     Key? key,
   }) : super(key: key);
+
+  /// Виджет предшествующий заголовку
+  final Widget? leading;
 
   final Widget? title;
 
@@ -35,6 +39,15 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     IconThemeData overallIconTheme = appBarTheme.iconTheme ?? theme.iconTheme.copyWith(color: foregroundColor);
 
     IconThemeData actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
+
+    // Установка темы для виджета перед заголовком
+    Widget? leading = this.leading;
+    if (leading != null) {
+      leading = IconTheme.merge(
+        data: actionsIconTheme,
+        child: leading,
+      );
+    }
 
     // Оборачиваем виджет заголовка в виджет стиля текста,
     // чтобы придать тексту необходимы вид во всем поддереве
@@ -74,6 +87,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
       child: SafeArea(
         bottom: false,
         child: NavigationToolbar(
+          leading: leading,
           middle: title,
           trailing: actions,
           centerMiddle: true,
