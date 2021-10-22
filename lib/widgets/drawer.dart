@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
+import 'package:shop_list/widgets/avatar.dart';
 
 /// Drawer в отдельном файле для лучшей читаемости и гибкости кода
 class AppDrawer extends StatelessWidget {
@@ -52,11 +54,9 @@ class AppDrawer extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 34, bottom: 54),
                   child: AnimatedPainterCircleWithBorder90s(
                     boxColor: backgroundColor,
-                    child: const SizedBox(
-                      width: 128.0,
-                      height: 128.0,
-                      child: FlutterLogo(),
-                    ),
+                    child: Obx(() => authController.firestoreUser.value != null
+                        ? Avatar(user: authController.firestoreUser.value!)
+                        : const SizedBox()),
                   ),
                 ),
                 ListTile(
@@ -66,7 +66,7 @@ class AppDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   onTap: () {},
-                  leading:  const AnimatedIcon90s(iconsList: CustomIcons.user),
+                  leading: const AnimatedIcon90s(iconsList: CustomIcons.user),
                   title: const Text('Settings'),
                 ),
                 const Spacer(),

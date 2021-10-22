@@ -187,9 +187,14 @@ class _CircleWithBorderPainter extends CustomPainter {
       config: config,
     );
 
+    // Небольшой отступ для квадрата, чтобы он не ложился пиксель в пиксель на ребенка
+    const rectOffset = 3.0;
     final outPath = Path()
       ..addPath(path, Offset.zero)
-      ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
+      ..addRect(Rect.fromCenter(
+          center: Offset(center.width, center.height),
+          width: size.width + rectOffset,
+          height: size.height + rectOffset))
       ..fillType = PathFillType.evenOdd;
 
     final outLine = Paint()
