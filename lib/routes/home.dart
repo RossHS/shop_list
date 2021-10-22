@@ -7,6 +7,7 @@ import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
+import 'package:shop_list/widgets/drawer.dart';
 
 /// Главный экран пользователя, где отображаются все актуальные списки покупок
 class Home extends StatefulWidget {
@@ -18,105 +19,54 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final _authController = AuthenticationController.instance;
+  final _advancedDrawerController = AdvancedDrawerController();
 
   @override
   Widget build(BuildContext context) {
-    final _advancedDrawerController = AdvancedDrawerController();
-    return AdvancedDrawer(
-        backdropColor: Colors.blueGrey,
-        controller: _advancedDrawerController,
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 300),
-        animateChildDecoration: true,
-        rtlOpening: false,
-        disabledGestures: false,
-        childDecoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
-        child: Scaffold(
-          appBar: AnimatedAppBar90s(
-            title: const Text('Список дел'),
-            leading: IconButton(
-              onPressed: _advancedDrawerController.showDrawer,
-              icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                valueListenable: _advancedDrawerController,
-                builder: (_, value, __) {
-                  return AnimatedIcon90s(
-                    iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
-                    key: ValueKey<bool>(value.visible),
-                  );
-                },
-              ),
+    return AppDrawer(
+      advancedDrawerController: _advancedDrawerController,
+      child: Scaffold(
+        appBar: AnimatedAppBar90s(
+          title: const Text('Список дел'),
+          leading: IconButton(
+            onPressed: _advancedDrawerController.showDrawer,
+            icon: ValueListenableBuilder<AdvancedDrawerValue>(
+              valueListenable: _advancedDrawerController,
+              builder: (_, value, __) {
+                return AnimatedIcon90s(
+                  iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
+                  key: ValueKey<bool>(value.visible),
+                );
+              },
             ),
-            actions: [
-              IconButton(
-                onPressed: _authController.signOut,
-                icon: const Icon(Icons.remove_circle),
-              )
-            ],
           ),
-          body: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              var rowCount = 2;
-              for (var width = 500; width < 3000; rowCount++, width += 400) {
-                if (constraints.maxWidth < width) {
-                  return Stagged(key: ValueKey<int>(rowCount), rowCount: rowCount);
-                }
+          actions: [
+            IconButton(
+              onPressed: _authController.signOut,
+              icon: const Icon(Icons.remove_circle),
+            )
+          ],
+        ),
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            var rowCount = 2;
+            for (var width = 500; width < 3000; rowCount++, width += 400) {
+              if (constraints.maxWidth < width) {
+                return Stagged(key: ValueKey<int>(rowCount), rowCount: rowCount);
               }
-              return Stagged(key: ValueKey<int>(rowCount), rowCount: rowCount);
-            },
-          ),
-          floatingActionButton: AnimatedCircleButton90s(
-            onPressed: () {},
-            child: const AnimatedIcon90s(
-              color: Colors.white,
-              iconsList: CustomIcons.create,
-            ),
+            }
+            return Stagged(key: ValueKey<int>(rowCount), rowCount: rowCount);
+          },
+        ),
+        floatingActionButton: AnimatedCircleButton90s(
+          onPressed: () {},
+          child: const AnimatedIcon90s(
+            color: Colors.white,
+            iconsList: CustomIcons.create,
           ),
         ),
-        drawer: SafeArea(
-          child: ListTileTheme(
-            textColor: Colors.white,
-            iconColor: Colors.white,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints.tightFor(
-                width: 200,
-                height: double.infinity,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 34, bottom: 54),
-                    child: AnimatedPainterCircleWithBorder90s(
-                      boxColor: Colors.blueGrey,
-                      child: SizedBox(
-                        width: 128.0,
-                        height: 128.0,
-                        child: FlutterLogo(),
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    leading: const AnimatedIcon90s(iconsList: CustomIcons.user),
-                    title: const Text('Account'),
-                  ),
-                  ListTile(
-                    onTap: () {},
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Settings'),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: _authController.signOut,
-                    child: const Text('Sign out'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ));
+      ),
+    );
   }
 }
 
