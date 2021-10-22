@@ -83,14 +83,18 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     return AnimatedPainterSquare90s(
       config: config,
       borderPaint: const BorderPaint.bottom(),
-      // Специальный виджет для 3 элементов в ряду
       child: SafeArea(
         bottom: false,
-        child: NavigationToolbar(
-          leading: leading,
-          middle: title,
-          trailing: actions,
-          centerMiddle: true,
+        // Чтобы Ink эффект был над AnimatedPainterSquare90s, а не под ним
+        child: Material(
+          type: MaterialType.transparency,
+          // Специальный виджет для 3 элементов в ряду
+          child: NavigationToolbar(
+            leading: leading,
+            middle: title,
+            trailing: actions,
+            centerMiddle: true,
+          ),
         ),
       ),
     );
