@@ -60,7 +60,9 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed('/account');
+                  },
                   leading: const AnimatedIcon90s(iconsList: CustomIcons.user),
                   title: const Text('Account'),
                 ),
