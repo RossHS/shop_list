@@ -19,7 +19,7 @@ class Avatar extends StatelessWidget {
     // Если у пользователя нет аватара, то используем стандартную картинку
     return user.photoUrl == ''
         ? Image.asset(
-            'img/sample.jpg',
+            'assets/img/sample.jpg',
             fit: BoxFit.cover,
             width: width,
             height: height,
