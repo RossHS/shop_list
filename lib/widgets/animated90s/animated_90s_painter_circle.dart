@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'animated_90s_painter.dart';

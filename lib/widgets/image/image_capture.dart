@@ -8,15 +8,15 @@ import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 /// где проинициализирован контроллер UserPhotoController
 class ImageCapture extends StatelessWidget {
   const ImageCapture({
-    required this.userPhotoController,
+    required this.userInfoUpdateController,
     Key? key,
   }) : super(key: key);
-  final UserPhotoController userPhotoController;
+  final UserInfoUpdateController userInfoUpdateController;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedCircleButton90s(
-      onPressed: () => userPhotoController.pickImage(ImageSource.gallery),
+      onPressed: () => userInfoUpdateController.pickImage(ImageSource.gallery),
       child: const Icon(Icons.file_upload),
     );
   }

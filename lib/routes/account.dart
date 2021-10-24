@@ -17,7 +17,9 @@ class Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = AuthenticationController.instance;
-    Get.put(UserPhotoController());
+    Get.put(UserInfoUpdateController());
+    Get.put(FirebaseStorageUploaderController());
+
     return Scaffold(
       appBar: AnimatedAppBar90s(
         leading: IconButton(
@@ -51,17 +53,16 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  TextEditingController nameController = TextEditingController();
+  final userUpdateController = Get.find<UserInfoUpdateController>();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.userModel.name;
+    userUpdateController.nameController.text = widget.userModel.name;
   }
 
   @override
   Widget build(BuildContext context) {
-    final userPhotoController = Get.find<UserPhotoController>();
     Color backgroundColor = Colors.yellow;
     return SizedBox(
       height: double.infinity,
@@ -87,12 +88,12 @@ class _BodyState extends State<_Body> {
                   Positioned.fill(
                     child: Align(
                         alignment: Alignment.topRight,
-                        child: ImageSelectedIndicator(userPhotoController: userPhotoController)),
+                        child: ImageSelectedIndicator(userInfoUpdateController: userUpdateController)),
                   ),
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.bottomRight,
-                      child: ImageCapture(userPhotoController: userPhotoController),
+                      child: ImageCapture(userInfoUpdateController: userUpdateController),
                     ),
                   ),
                 ],
@@ -103,7 +104,7 @@ class _BodyState extends State<_Body> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: CustomTextField(
-                  controller: nameController,
+                  controller: userUpdateController.nameController,
                   hint: 'User Name',
                   prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
                 ),
@@ -132,9 +133,8 @@ class _BodyState extends State<_Body> {
   }
 
   /// Обновление информации пользователя в сервисе firebase
-  void _updateUserInfo() {
-    var auth = AuthenticationController.instance;
-    final updatedUserModel = widget.userModel.copyWith(name: nameController.text);
-    auth.updateUserFirestore(widget.userModel, updatedUserModel, auth.firebaseUser.value!);
+  void _updateUserInfo() async {
+    final auth = AuthenticationController.instance;
+    auth.updateUserInfo(Get.find<UserInfoUpdateController>(), Get.find<FirebaseStorageUploaderController>());
   }
 }

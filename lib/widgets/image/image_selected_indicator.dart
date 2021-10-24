@@ -7,15 +7,15 @@ import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 /// Индикация того, выбрал ли пользователь фотографию для загрузки
 class ImageSelectedIndicator extends StatelessWidget {
   const ImageSelectedIndicator({
-    required this.userPhotoController,
+    required this.userInfoUpdateController,
     Key? key,
   }) : super(key: key);
-  final UserPhotoController userPhotoController;
+  final UserInfoUpdateController userInfoUpdateController;
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      switch (userPhotoController.photoSelectedState.value) {
+      switch (userInfoUpdateController.photoSelectedState.value) {
         case PhotoSelectionState.error:
           return const _AnimatedIconWrapper(Icon(Icons.error));
         case PhotoSelectionState.nonSelected:

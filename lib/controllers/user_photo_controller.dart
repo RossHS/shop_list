@@ -1,10 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-/// Логика загрузки и обработки фотографии для последующей загрузки в Firebase Storage
-class UserPhotoController extends GetxController {
+/// Новые данные информации пользователя. Логика загрузки и обработки фотографии
+class UserInfoUpdateController extends GetxController {
   /// Объект выбранной фотографии
   final userPhoto = Rxn<XFile>();
+
+  /// Контроллер поля ввода нового имени пользователя
+  TextEditingController nameController = TextEditingController();
 
   /// Состояние процесса выбора фотографии
   final photoSelectedState = Rx<PhotoSelectionState>(PhotoSelectionState.nonSelected);
@@ -18,8 +22,12 @@ class UserPhotoController extends GetxController {
       e.printError();
       photoSelectedState.value = PhotoSelectionState.error;
     }
+  }
 
-    print('${photoSelectedState.value}');
+  /// метод сброса загруженной фотографии
+  void clearUserPhotoFile() {
+    userPhoto.value = null;
+    photoSelectedState.value = PhotoSelectionState.nonSelected;
   }
 }
 

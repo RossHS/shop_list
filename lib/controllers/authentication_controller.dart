@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/text_validators.dart' as text_validation;
 
@@ -119,12 +120,40 @@ class AuthenticationController extends GetxController {
     update();
   }
 
-  /// Обновление пользователя в firestore коллекции пользователей users
-  void updateUserFirestore(UserModel oldUserData, UserModel user, User _firebaseUser) {
-    const snackBarTitle = 'Update User data';
-    if (oldUserData == user) {
-      return;
+  /// Обновление данных пользователя на основании новый данных из контроллеров
+  void updateUserInfo(UserInfoUpdateController userInfoUpdateController,
+      FirebaseStorageUploaderController firebaseStorageUploader) async {
+    final currentUserModel = firestoreUser.value!;
+
+    // Если была выбрана другой аватар, то сначала следует его загрузить на сервис Firebase Storage
+    final userAvatar = userInfoUpdateController.userPhoto.value;
+    // Ссылка на загруженный аватар в сервис fireStore
+    String? userPickUrl;
+    if (userAvatar != null) {
+      final storageUploader = firebaseStorageUploader;
+      userPickUrl = await storageUploader.startUpload(userAvatar, currentUserModel);
+      // Сброс файла аватара в контроллере
+      userInfoUpdateController.clearUserPhotoFile();
     }
+
+    // Создание нового объекта пользователя на основании новый данных и текущей модели
+    final updatedUserModel = currentUserModel.copyWith(
+      name: userInfoUpdateController.nameController.text,
+      photoUrl: userPickUrl,
+    );
+
+    // Обновляем только при наличии различий между текущей моделью пользователя и новой
+    if (updatedUserModel != currentUserModel) {
+      _updateUserFirestore(
+        updatedUserModel,
+        firebaseUser.value!,
+      );
+    }
+  }
+
+  /// Обновление пользователя в firestore коллекции пользователей users
+  void _updateUserFirestore(UserModel user, User _firebaseUser) {
+    const snackBarTitle = 'Update User data';
     _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
     Get.snackbar(snackBarTitle, 'Updated');
     update();
