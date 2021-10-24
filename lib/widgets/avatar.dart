@@ -5,14 +5,16 @@ import 'package:shop_list/models/models.dart';
 class Avatar extends StatelessWidget {
   const Avatar({
     required this.user,
+    this.width = 120.0,
+    this.height = 120.0,
     Key? key,
   }) : super(key: key);
 
   final UserModel user;
 
   /// Размеры картинки аватара
-  final width = 120.0;
-  final height = 120.0;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
+import 'package:shop_list/widgets/image/image_capture.dart';
+import 'package:shop_list/widgets/image/image_selected_indicator.dart';
 
 class Account extends StatelessWidget {
   const Account({Key? key}) : super(key: key);
@@ -15,10 +17,16 @@ class Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = AuthenticationController.instance;
-
+    Get.put(UserPhotoController());
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Account'),
+      appBar: AnimatedAppBar90s(
+        leading: IconButton(
+          onPressed: Get.back,
+          icon: const AnimatedIcon90s(
+            iconsList: CustomIcons.arrow,
+          ),
+        ),
+        title: const Text('Аккаунт'),
       ),
       body: Center(
         child: Obx(() {
@@ -53,6 +61,7 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
+    final userPhotoController = Get.find<UserPhotoController>();
     Color backgroundColor = Colors.yellow;
     return SizedBox(
       height: double.infinity,
@@ -62,9 +71,31 @@ class _BodyState extends State<_Body> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(25.0),
-              child: AnimatedPainterCircleWithBorder90s(
-                boxColor: backgroundColor,
-                child: Avatar(user: widget.userModel),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: AnimatedPainterCircleWithBorder90s(
+                      boxColor: backgroundColor,
+                      child: Avatar(
+                        height: 280,
+                        width: 280,
+                        user: widget.userModel,
+                      ),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: ImageSelectedIndicator(userPhotoController: userPhotoController)),
+                  ),
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: ImageCapture(userPhotoController: userPhotoController),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(

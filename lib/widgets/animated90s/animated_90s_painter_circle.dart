@@ -24,6 +24,11 @@ class AnimatedCircleButton90s extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final FloatingActionButtonThemeData floatingActionButtonTheme = theme.floatingActionButtonTheme;
+    final ColorScheme colorScheme = theme.colorScheme;
+
+    final Color foregroundColor =
+        (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
+    final IconThemeData overallIconTheme = theme.iconTheme.copyWith(color: foregroundColor);
 
     Paint90sConfig paintConfig = Paint90sConfig(
       backgroundColor:
@@ -42,7 +47,10 @@ class AnimatedCircleButton90s extends StatelessWidget {
           child: RawMaterialButton(
             shape: const CircleBorder(),
             onPressed: onPressed,
-            child: child,
+            child: IconTheme.merge(
+              data: overallIconTheme,
+              child: child,
+            ),
           ),
         ),
       ),

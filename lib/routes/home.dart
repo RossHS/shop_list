@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
@@ -18,7 +17,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final _authController = AuthenticationController.instance;
   final _advancedDrawerController = AdvancedDrawerController();
 
   @override
@@ -40,12 +38,6 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          actions: [
-            IconButton(
-              onPressed: _authController.signOut,
-              icon: const Icon(Icons.remove_circle),
-            )
-          ],
         ),
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -61,7 +53,6 @@ class _HomeState extends State<Home> {
         floatingActionButton: AnimatedCircleButton90s(
           onPressed: () {},
           child: const AnimatedIcon90s(
-            color: Colors.white,
             iconsList: CustomIcons.create,
           ),
         ),
