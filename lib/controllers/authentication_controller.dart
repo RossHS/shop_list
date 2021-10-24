@@ -126,12 +126,12 @@ class AuthenticationController extends GetxController {
     final currentUserModel = firestoreUser.value!;
 
     // Если была выбрана другой аватар, то сначала следует его загрузить на сервис Firebase Storage
-    final userAvatar = userInfoUpdateController.userPhoto.value;
+    final userAvatarBytes = userInfoUpdateController.userPhotoBytes.value;
     // Ссылка на загруженный аватар в сервис fireStore
     String? userPickUrl;
-    if (userAvatar != null) {
+    if (userAvatarBytes != null) {
       final storageUploader = firebaseStorageUploader;
-      userPickUrl = await storageUploader.startUpload(userAvatar, currentUserModel);
+      userPickUrl = await storageUploader.startUpload(userAvatarBytes, currentUserModel);
       // Сброс файла аватара в контроллере
       userInfoUpdateController.clearUserPhotoFile();
     }
