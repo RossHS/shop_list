@@ -12,11 +12,6 @@ part 'user_model.g.dart';
 /// и после каждого изменения класса будет автоматически вызван build
 @JsonSerializable()
 class UserModel {
-  final String name;
-  final String email;
-  final String photoUrl;
-  final String uid;
-
   UserModel({
     required this.name,
     required this.email,
@@ -24,10 +19,28 @@ class UserModel {
     required this.uid,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  final String name;
+  final String email;
+  final String photoUrl;
+  final String uid;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  UserModel copyWith({
+    String? name,
+    String? email,
+    String? photoUrl,
+    String? uid,
+  }) {
+    return UserModel(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      photoUrl: photoUrl ?? this.photoUrl,
+      uid: uid ?? this.uid,
+    );
+  }
 
   @override
   bool operator ==(Object other) =>

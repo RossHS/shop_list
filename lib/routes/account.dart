@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/controllers/authentication_controller.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
@@ -44,21 +45,10 @@ class _Body extends StatefulWidget {
 class _BodyState extends State<_Body> {
   TextEditingController nameController = TextEditingController();
 
-  /// Слушатель наличия изменений в имени пользователя,
-  /// если есть изменения, появляется кнопка Сохранить
-  var isChanged = ValueNotifier<bool>(false);
-
   @override
   void initState() {
     super.initState();
     nameController.text = widget.userModel.name;
-    nameController.addListener(() {
-      if (nameController.text != widget.userModel.name) {
-        isChanged.value = true;
-      } else {
-        isChanged.value = false;
-      }
-    });
   }
 
   @override
@@ -97,23 +87,23 @@ class _BodyState extends State<_Body> {
                 Text('uid - ${widget.userModel.uid}'),
               ],
             ),
-            ValueListenableBuilder<bool>(
-              valueListenable: isChanged,
-              builder: (_, value, __) {
-                return value
-                    ? Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Save'),
-                        ),
-                      )
-                    : const SizedBox();
-              },
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: ElevatedButton(
+                onPressed: _updateUserInfo,
+                child: const Text('Save'),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Обновление информации пользователя в сервисе firebase
+  void _updateUserInfo() {
+    var auth = AuthenticationController.instance;
+    final updatedUserModel = widget.userModel.copyWith(name: nameController.text);
+    auth.updateUserFirestore(widget.userModel, updatedUserModel, auth.firebaseUser.value!);
   }
 }

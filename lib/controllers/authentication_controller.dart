@@ -120,8 +120,13 @@ class AuthenticationController extends GetxController {
   }
 
   /// Обновление пользователя в firestore коллекции пользователей users
-  void _updateUserFirestore(UserModel user, User _firebaseUser) {
+  void updateUserFirestore(UserModel oldUserData, UserModel user, User _firebaseUser) {
+    const snackBarTitle = 'Update User data';
+    if (oldUserData == user) {
+      return;
+    }
     _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
+    Get.snackbar(snackBarTitle, 'Updated');
     update();
   }
 
