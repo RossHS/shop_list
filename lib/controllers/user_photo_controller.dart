@@ -34,7 +34,10 @@ class UserInfoUpdateController extends GetxController {
         userPhotoBytes.value = await userPhotoFile?.readAsBytes();
       }
 
-      photoSelectedState.value = PhotoSelectionState.loaded;
+      // Согласование статуса загруженной картинки с наличием объекта по ссылке
+      userPhotoBytes.value == null
+          ? photoSelectedState.value = PhotoSelectionState.nonSelected
+          : photoSelectedState.value = PhotoSelectionState.loaded;
     } catch (e) {
       e.printError();
       photoSelectedState.value = PhotoSelectionState.error;
