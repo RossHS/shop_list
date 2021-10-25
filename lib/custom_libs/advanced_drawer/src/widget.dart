@@ -137,6 +137,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
                   end: RelativeRect.fromLTRB(_drawerSize?.width ?? 0, 0, -(_drawerSize?.width ?? 0), 0),
                 ).animate(_parentAnimation),
                 child: ScaleTransition(
+                  alignment: Alignment.centerLeft,
                   scale: _childScaleAnimation,
                   child: Builder(
                     builder: (_) {

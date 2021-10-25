@@ -25,6 +25,13 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+    final Color foregroundColor =
+        colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary;
+    // Стиль отображения имени пользователя
+    TextStyle? titleTextStyle = theme.textTheme.headline6?.copyWith(color: foregroundColor);
+
     final authController = AuthenticationController.instance;
     return AdvancedDrawer(
       backdropColor: backgroundColor,
@@ -35,7 +42,7 @@ class AppDrawer extends StatelessWidget {
       rtlOpening: false,
       disabledGestures: false,
       childDecoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(32)),
       ),
       child: child,
       drawer: SafeArea(
@@ -51,7 +58,7 @@ class AppDrawer extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 34),
+                  padding: const EdgeInsets.only(top: 34, bottom: 20),
                   child: Obx(
                     () => authController.firestoreUser.value != null
                         ? AnimatedPainterCircleWithBorder90s(
@@ -61,6 +68,11 @@ class AppDrawer extends StatelessWidget {
                         : const SizedBox(),
                   ),
                 ),
+                Text(
+                  '${authController.firestoreUser.value?.name}',
+                  style: titleTextStyle,
+                ),
+                const SizedBox(height: 50),
                 ListTile(
                   onTap: () {
                     Get.toNamed('/account');
