@@ -53,23 +53,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: TextFormField(
-            obscureText: widget.obscureText,
-            controller: widget.controller,
-            onChanged: (value) {
-              if (widget.inputValidator == null) return;
-              setState(() {
-                if (widget.inputValidator!(value)) {
-                  _currentColor = widget.successColor;
-                } else {
-                  _currentColor = widget.errorColor;
-                }
-              });
-            },
-            decoration: InputDecoration(
-              prefixIcon: widget.prefixIcon,
-              labelText: widget.hint,
-              border: InputBorder.none,
+          child: RepaintBoundary(
+            child: TextFormField(
+              obscureText: widget.obscureText,
+              controller: widget.controller,
+              onChanged: (value) {
+                if (widget.inputValidator == null) return;
+                setState(() {
+                  if (widget.inputValidator!(value)) {
+                    _currentColor = widget.successColor;
+                  } else {
+                    _currentColor = widget.errorColor;
+                  }
+                });
+              },
+              decoration: InputDecoration(
+                prefixIcon: widget.prefixIcon,
+                labelText: widget.hint,
+                border: InputBorder.none,
+              ),
             ),
           ),
         ),
