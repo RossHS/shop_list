@@ -66,6 +66,7 @@ class _BodyState extends State<_Body> {
     Color backgroundColor = Colors.yellow;
     return SizedBox(
       height: double.infinity,
+      width: double.infinity,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
