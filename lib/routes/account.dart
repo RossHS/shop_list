@@ -79,8 +79,7 @@ class _BodyState extends State<_Body> {
                     child: AnimatedPainterCircleWithBorder90s(
                       boxColor: backgroundColor,
                       child: Avatar(
-                        height: 280,
-                        width: 280,
+                        diameter: 280,
                         user: widget.userModel,
                       ),
                     ),

@@ -5,16 +5,15 @@ import 'package:shop_list/models/models.dart';
 class Avatar extends StatelessWidget {
   const Avatar({
     required this.user,
-    this.width = 120.0,
-    this.height = 120.0,
+    this.diameter = 160.0,
     Key? key,
-  }) : super(key: key);
+  })  : assert(diameter > 0, 'incorrect diameter $diameter'),
+        super(key: key);
 
   final UserModel user;
 
-  /// Размеры картинки аватара
-  final double width;
-  final double height;
+  /// Диаметр аватара пользователя
+  final double diameter;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +22,58 @@ class Avatar extends StatelessWidget {
         ? Image.asset(
             'assets/img/sample.jpg',
             fit: BoxFit.cover,
-            width: width,
-            height: height,
+            width: diameter,
+            height: diameter,
           )
         : Image.network(
             user.photoUrl,
             fit: BoxFit.cover,
-            width: width,
-            height: height,
+            width: diameter,
+            height: diameter,
+            // Обработка процесса загрузки аватара пользователя
+            loadingBuilder: (context, child, progress) {
+              if (progress == null) {
+                return child;
+              } else {
+                return _PlaceHolder(
+                  user: user,
+                  diameter: diameter,
+                );
+              }
+            },
           );
+  }
+}
+
+/// PlaceHolder процесса загрузки аватара пользователя из сети
+/// В нем отображается первая буква имени пользователя с цветным фоном
+class _PlaceHolder extends StatelessWidget {
+  const _PlaceHolder({
+    required this.user,
+    required this.diameter,
+    Key? key,
+  }) : super(key: key);
+
+  final UserModel user;
+
+  /// Диаметр PlaceHolder
+  final double diameter;
+
+  @override
+  Widget build(BuildContext context) {
+    // Первая буква имени пользователя
+    final firstChar = user.name != '' ? user.name[0] : '?';
+
+    return Container(
+      height: diameter,
+      width: diameter,
+      color: Colors.yellow,
+      child: Center(
+        child: Text(
+          firstChar,
+          style: TextStyle(fontSize: diameter),
+        ),
+      ),
+    );
   }
 }

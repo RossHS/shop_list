@@ -51,12 +51,14 @@ class AppDrawer extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 34, bottom: 54),
-                  child: AnimatedPainterCircleWithBorder90s(
-                    boxColor: backgroundColor,
-                    child: Obx(() => authController.firestoreUser.value != null
-                        ? Avatar(user: authController.firestoreUser.value!)
-                        : const SizedBox()),
+                  padding: const EdgeInsets.symmetric(vertical: 34),
+                  child: Obx(
+                    () => authController.firestoreUser.value != null
+                        ? AnimatedPainterCircleWithBorder90s(
+                            boxColor: backgroundColor,
+                            child: Avatar(user: authController.firestoreUser.value!),
+                          )
+                        : const SizedBox(),
                   ),
                 ),
                 ListTile(
