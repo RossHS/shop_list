@@ -53,6 +53,11 @@ class AuthenticationController extends GetxController {
     nameController.clear();
     emailController.clear();
     passwordController.clear();
+    // Очищение ресурсов пользователя,
+    // чтобы при выходе из системы не
+    // висели данные прошлого пользователя
+    firebaseUser.value = null;
+    firestoreUser.value = null;
     return _auth.signOut();
   }
 

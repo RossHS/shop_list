@@ -6,7 +6,7 @@ import 'package:shop_list/models/user_model.dart';
 
 /// Юнит тестирование работы класса [UserModel]
 void main() {
-  var user = UserModel(
+  var user = const UserModel(
     name: 'Bill',
     email: 'example@gmail.com',
     photoUrl: '',

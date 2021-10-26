@@ -12,7 +12,7 @@ part 'user_model.g.dart';
 /// и после каждого изменения класса будет автоматически вызван build
 @JsonSerializable()
 class UserModel {
-  UserModel({
+  const UserModel({
     required this.name,
     required this.email,
     required this.photoUrl,

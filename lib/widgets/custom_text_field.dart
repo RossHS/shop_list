@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 
