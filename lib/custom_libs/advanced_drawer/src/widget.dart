@@ -63,7 +63,14 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
   Offset? _startPosition;
   bool _captured = false;
 
+  /// Динамически определенный размер шторки
   Size? _drawerSize;
+
+  /// Состояние, полностью ли закрыта шторка, необходимо для оптимизации
+  /// анимации невидимых элементов. Если шторка полностью закрыта (т.е. ее не видно),
+  /// то останавливаются все анимации на фоне, если шторка начинает открываться,
+  /// анимации продолжаются
+  late final ValueNotifier<bool> _drawerVisibilityNotifier;
 
   @override
   void initState() {
@@ -77,6 +84,9 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
       duration: widget.animationDuration,
       value: _controller.value.visible ? 1 : 0,
     );
+
+    _drawerVisibilityNotifier = ValueNotifier(_controller.value.visible);
+    _animationController.addListener(_handleDrawerVisibilityListener);
 
     _parentAnimation = widget.animationCurve != null
         ? CurvedAnimation(
@@ -126,7 +136,16 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
                         _drawerSize = size;
                       });
                     },
-                    child: widget.drawer,
+                    // Стоп/запуск всех анимаций в поддереве, оптимизация производительности,
+                    // чтобы не дергать Ticker на невидимых элементах
+                    child: ValueListenableBuilder(
+                      valueListenable: _drawerVisibilityNotifier,
+                      builder: (_, bool value, child) => TickerMode(
+                        enabled: value,
+                        child: child!,
+                      ),
+                      child: widget.drawer,
+                    ),
                   ),
                 ),
               ),
@@ -241,9 +260,22 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
     _captured = false;
   }
 
+  /// Метод прослушивания состояния контроллера анимации,
+  /// который напрямую связан с состояние шторки. Если текущее значение 0,
+  /// то шторка полностью закрыта, если больше нуля то видима и можно
+  /// запускать анимации шторки
+  void _handleDrawerVisibilityListener() {
+    if (_animationController.value > 0) {
+      _drawerVisibilityNotifier.value = true;
+    } else {
+      _drawerVisibilityNotifier.value = false;
+    }
+  }
+
   @override
   void dispose() {
     _controller.removeListener(handleControllerChanged);
+    _animationController.removeListener(_handleDrawerVisibilityListener);
     _animationController.dispose();
 
     if (widget.controller == null) {
