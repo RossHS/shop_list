@@ -34,6 +34,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # Для генерации кода запаковки/распаковки объектов в JSON
+  json_annotation: ^4.3.0
+
   get: ^4.3.0
   get_storage: ^2.0.3
 
