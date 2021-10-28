@@ -15,9 +15,9 @@ class AuthenticationController extends GetxController {
   // инициализируется еще до запуска приложения
   static final AuthenticationController instance = Get.find();
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

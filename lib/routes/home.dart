@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get/get.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
@@ -51,13 +52,17 @@ class _HomeState extends State<Home> {
           },
         ),
         floatingActionButton: AnimatedCircleButton90s(
-          onPressed: () {},
+          onPressed: _openCreateTodo,
           child: const AnimatedIcon90s(
             iconsList: CustomIcons.create,
           ),
         ),
       ),
     );
+  }
+
+  void _openCreateTodo() {
+    Get.toNamed('/createTodo');
   }
 }
 

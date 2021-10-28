@@ -17,6 +17,13 @@ class UserInfoUpdateController extends GetxController {
   /// Состояние процесса выбора фотографии
   final photoSelectedState = Rx<PhotoSelectionState>(PhotoSelectionState.nonSelected);
 
+  @override
+  void onClose() {
+    // dispose чтобы убрать потенциальную утечку памяти
+    nameController.dispose();
+    super.onClose();
+  }
+
   /// Метод загрузки файла из источника [source] (галерея). После чего преобразование
   /// загруженного файла в бинарный вид, а для не веб платформы добавляется шаг с обрезанием фотографии
   Future<void> pickImage(ImageSource source) async {
