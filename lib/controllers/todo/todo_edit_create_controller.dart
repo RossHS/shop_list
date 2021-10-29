@@ -11,12 +11,19 @@ class TodoEditCreateController extends GetxController {
   /// Контроллер поля ввода заголовка списка
   final todoTitleTextController = TextEditingController();
 
+  /// Контроллер текущего элемента для списка
+  final todoElementNameTextController = TextEditingController();
+
   /// Общая ли задача
   var isPublicTodo = false.obs;
+
+  /// перечень задач в списке
+  var todoElements = <TodoElement>[].obs;
 
   @override
   void onClose() {
     todoTitleTextController.dispose();
+    todoElementNameTextController.dispose();
     super.onClose();
   }
 
@@ -25,6 +32,12 @@ class TodoEditCreateController extends GetxController {
     if (value != null) {
       isPublicTodo.value = value;
     }
+  }
+
+  /// Метод формирования TodoElement и добавление его в коллекцию
+  void addTodoElementToList() {
+    todoElements.add(TodoElement(name: todoElementNameTextController.text));
+    todoElementNameTextController.clear();
   }
 
   /// Создание и запись списка дел в базу данных
