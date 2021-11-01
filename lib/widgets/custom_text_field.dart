@@ -16,6 +16,10 @@ class CustomTextField extends StatefulWidget {
     this.errorColor = Colors.red,
     this.successColor = Colors.green,
     this.inputValidator,
+    this.maxLines,
+    this.minLines,
+    this.drawUnderLine = true,
+    this.decoration,
   }) : super(key: key);
 
   final String? hint;
@@ -27,6 +31,12 @@ class CustomTextField extends StatefulWidget {
   final Color errorColor;
   final Color successColor;
   final bool Function(String)? inputValidator;
+  final int? maxLines;
+  final int? minLines;
+
+  /// Отображать ли нижнюю волнистую линию
+  final bool drawUnderLine;
+  final InputDecoration? decoration;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -39,20 +49,30 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final inputDecoration = widget.decoration ??
+        InputDecoration(
+          prefixIcon: widget.prefixIcon,
+          labelText: widget.hint,
+          border: InputBorder.none,
+        );
+
     return Stack(
       children: <Widget>[
-        Positioned.fill(
-          bottom: 10,
-          child: AnimatedPainterLine90s(
-            paintSide: PaintSide.bottom,
-            config: Paint90sConfig(outLineColor: _currentColor),
-            child: const SizedBox(),
+        if (widget.drawUnderLine)
+          Positioned.fill(
+            bottom: 10,
+            child: AnimatedPainterLine90s(
+              paintSide: PaintSide.bottom,
+              config: Paint90sConfig(outLineColor: _currentColor),
+              child: const SizedBox(),
+            ),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: RepaintBoundary(
             child: TextFormField(
+              minLines: widget.minLines,
+              maxLines: widget.maxLines,
               obscureText: widget.obscureText,
               controller: widget.controller,
               onChanged: (value) {
@@ -65,11 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   }
                 });
               },
-              decoration: InputDecoration(
-                prefixIcon: widget.prefixIcon,
-                labelText: widget.hint,
-                border: InputBorder.none,
-              ),
+              decoration: inputDecoration,
             ),
           ),
         ),

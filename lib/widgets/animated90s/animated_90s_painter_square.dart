@@ -167,6 +167,14 @@ class BorderPaint {
           right: false,
         );
 
+  const BorderPaint.top()
+      : this(
+          top: true,
+          bottom: false,
+          left: false,
+          right: false,
+        );
+
   final bool top;
   final bool bottom;
   final bool left;
