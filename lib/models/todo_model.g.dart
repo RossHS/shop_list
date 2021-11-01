@@ -31,10 +31,12 @@ Map<String, dynamic> _$TodoModelToJson(TodoModel instance) => <String, dynamic>{
 TodoElement _$TodoElementFromJson(Map<String, dynamic> json) => TodoElement(
       name: json['name'] as String,
       completed: json['completed'] as bool? ?? false,
+      uid: json['uid'] as String?,
     );
 
 Map<String, dynamic> _$TodoElementToJson(TodoElement instance) =>
     <String, dynamic>{
       'name': instance.name,
       'completed': instance.completed,
+      'uid': instance.uid,
     };

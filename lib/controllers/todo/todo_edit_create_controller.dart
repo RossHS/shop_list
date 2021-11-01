@@ -36,7 +36,10 @@ class TodoEditCreateController extends GetxController {
 
   /// Метод формирования TodoElement и добавление его в коллекцию
   void addTodoElementToList() {
-    todoElements.add(TodoElement(name: todoElementNameTextController.text));
+    final elementsMsg = todoElementNameTextController.text.trim();
+    if (elementsMsg.isEmpty) return;
+
+    todoElements.add(TodoElement(name: elementsMsg));
     todoElementNameTextController.clear();
   }
 
@@ -48,6 +51,7 @@ class TodoEditCreateController extends GetxController {
         authorId: userModel.uid,
         title: todoTitleTextController.text,
         isPublic: isPublicTodo.value,
+        elements: todoElements,
       );
       _todoService.addTodo(todoModel);
     }

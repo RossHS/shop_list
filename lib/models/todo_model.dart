@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 
 part 'todo_model.g.dart';
 
@@ -75,10 +76,14 @@ class TodoElement {
   TodoElement({
     required this.name,
     this.completed = false,
-  });
+    String? uid,
+  }) : uid = uid ?? const Uuid().v4();
 
   final String name;
   final bool completed;
+
+  /// UID для работы с одинаковыми элементами в рамках одного списка дел
+  final String uid;
 
   factory TodoElement.fromJson(Map<String, dynamic> json) => _$TodoElementFromJson(json);
 
@@ -87,8 +92,12 @@ class TodoElement {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TodoElement && runtimeType == other.runtimeType && name == other.name && completed == other.completed;
+      other is TodoElement &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          completed == other.completed &&
+          uid == other.uid;
 
   @override
-  int get hashCode => Object.hashAll([name, completed]);
+  int get hashCode => Object.hashAll([name, completed, uid]);
 }
