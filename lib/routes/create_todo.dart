@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_button.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
@@ -97,7 +100,7 @@ class _Body extends StatelessWidget {
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: ElevatedButton(
+                    child: AnimatedButton90s(
                       onPressed: () {
                         controller.createAndAddTodo();
                         // После создание записи возвращаемся на предыдущий экран
@@ -130,6 +133,8 @@ class _AnimatedElementsList extends StatelessWidget {
     return Expanded(
       child: Obx(
         () => ImplicitlyAnimatedReorderableList<TodoElement>(
+          // Пишем controller.todoElements.value с value на конце т.к.
+          // Obx выкидывает исключение о не нахождении стрима
           items: controller.todoElements.value,
           areItemsTheSame: (a, b) => a == b,
           onReorderFinished: (item, from, to, newItems) {

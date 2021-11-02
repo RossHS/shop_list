@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/image/image_capture.dart';
@@ -121,7 +119,7 @@ class _BodyState extends State<_Body> {
             ),
             Padding(
               padding: const EdgeInsets.all(24.0),
-              child: ElevatedButton(
+              child: AnimatedButton90s(
                 onPressed: _updateUserInfo,
                 child: const Text('Save'),
               ),

@@ -21,17 +21,15 @@ class AnimatedCircleButton90s extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final FloatingActionButtonThemeData floatingActionButtonTheme = theme.floatingActionButtonTheme;
-    final ColorScheme colorScheme = theme.colorScheme;
+    final theme = Theme.of(context);
+    final floatingActionButtonTheme = theme.floatingActionButtonTheme;
+    final colorScheme = theme.colorScheme;
 
-    final Color foregroundColor =
-        (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
-    final IconThemeData overallIconTheme = theme.iconTheme.copyWith(color: foregroundColor);
+    final foregroundColor = (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
+    final overallIconTheme = theme.iconTheme.copyWith(color: foregroundColor);
 
-    Paint90sConfig paintConfig = Paint90sConfig(
-      backgroundColor:
-          config?.backgroundColor ?? floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
+    final paintConfig = Paint90sConfig(
+      backgroundColor: config?.backgroundColor ?? floatingActionButtonTheme.backgroundColor ?? colorScheme.secondary,
       outLineColor: config?.outLineColor,
       offset: config?.offset,
       strokeWidth: config?.strokeWidth,
