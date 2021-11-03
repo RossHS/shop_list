@@ -102,6 +102,7 @@ class _BodyState extends State<_Body> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: CustomTextField(
+                  maxLines: 1,
                   controller: userUpdateController.nameController,
                   hint: 'User Name',
                   prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),

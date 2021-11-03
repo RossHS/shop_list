@@ -186,8 +186,11 @@ class _TileItem extends StatelessWidget {
     final actions = <Widget>[
       SlideAction(
         closeOnTap: false,
-        color: Colors.redAccent,
-        child: const Icon(Icons.delete),
+        color: Colors.red,
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
         onTap: () => controller.todoElements.remove(item),
       ),
     ];
@@ -235,6 +238,7 @@ class _TodoElementsMsgInput extends StatelessWidget {
       borderPaint: const BorderPaint.top(),
       config: const Paint90sConfig(backgroundColor: Colors.white),
       child: Material(
+        color: Colors.transparent,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
