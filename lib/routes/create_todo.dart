@@ -102,9 +102,10 @@ class _Body extends StatelessWidget {
                   Expanded(
                     child: AnimatedButton90s(
                       onPressed: () {
-                        controller.createAndAddTodo();
-                        // После создание записи возвращаемся на предыдущий экран
-                        Get.back();
+                        if (controller.createAndAddTodo()) {
+                          // После создание записи возвращаемся на предыдущий экран
+                          Get.back();
+                        }
                       },
                       child: const Text('Создать'),
                     ),

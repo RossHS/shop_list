@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
+import 'package:shop_list/controllers/snackbar_controller.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
 import 'package:shop_list/models/models.dart';
 
@@ -44,16 +45,32 @@ class TodoEditCreateController extends GetxController {
   }
 
   /// Создание и запись списка дел в базу данных
-  void createAndAddTodo() {
+  /// Возвращает успешность операции
+  bool createAndAddTodo() {
     var userModel = AuthenticationController.instance.firestoreUser.value;
-    if (userModel != null) {
+    var todoTitle = todoTitleTextController.text.trim();
+
+    // Формирование данных для SnackBarBuilder
+    final snackBarBuilder = SnackBarBuilder(title: 'Создание списка');
+
+    if (userModel == null) snackBarBuilder.addMsg('Нет активного пользователя!');
+    if (todoTitle.isEmpty) snackBarBuilder.addMsg('Не указано название списка!');
+    if (todoElements.isEmpty) snackBarBuilder.addMsg('Пустой список!');
+
+    if (userModel != null && todoTitle.isNotEmpty && todoElements.isNotEmpty) {
       final todoModel = TodoModel(
         authorId: userModel.uid,
-        title: todoTitleTextController.text,
+        title: todoTitle,
         isPublic: isPublicTodo.value,
         elements: todoElements,
       );
       _todoService.addTodo(todoModel);
+      snackBarBuilder.addMsg('Список успешно создан!');
+      snackBarBuilder.show();
+      return true;
+    } else {
+      snackBarBuilder.show();
+      return false;
     }
   }
 }
