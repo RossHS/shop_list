@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/controllers/snackbar_controller.dart';
+import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
 import 'package:shop_list/models/models.dart';
 
@@ -51,7 +51,7 @@ class TodoEditCreateController extends GetxController {
     var todoTitle = todoTitleTextController.text.trim();
 
     // Формирование данных для SnackBarBuilder
-    final snackBarBuilder = SnackBarBuilder(title: 'Создание списка');
+    final snackBarBuilder = OverlayBuilder(title: 'Создание списка');
 
     if (userModel == null) snackBarBuilder.addMsg('Нет активного пользователя!');
     if (todoTitle.isEmpty) snackBarBuilder.addMsg('Не указано название списка!');
