@@ -62,70 +62,77 @@ class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Colors.yellow;
-    return SizedBox(
-      height: double.infinity,
-      width: double.infinity,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(25.0),
-                    child: AnimatedPainterCircleWithBorder90s(
-                      boxColor: backgroundColor,
-                      child: Avatar(
-                        diameter: 280,
-                        user: widget.userModel,
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                        alignment: Alignment.topRight,
-                        child: ImageSelectedIndicator(userInfoUpdateController: userUpdateController)),
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: ImageCapture(userInfoUpdateController: userUpdateController),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 400,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: CustomTextField(
-                  maxLines: 1,
-                  controller: userUpdateController.nameController,
-                  hint: 'User Name',
-                  prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
-                ),
-              ),
-            ),
-            const SizedBox(height: 50),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: constraints.maxWidth,
+            minHeight: constraints.maxHeight,
+          ),
+          child: IntrinsicHeight(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('email - ${widget.userModel.email}'),
-                Text('uid - ${widget.userModel.uid}'),
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: AnimatedPainterCircleWithBorder90s(
+                          boxColor: backgroundColor,
+                          child: Avatar(
+                            diameter: 280,
+                            user: widget.userModel,
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                            alignment: Alignment.topRight,
+                            child: ImageSelectedIndicator(userInfoUpdateController: userUpdateController)),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: ImageCapture(userInfoUpdateController: userUpdateController),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 400,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: CustomTextField(
+                      maxLines: 1,
+                      controller: userUpdateController.nameController,
+                      hint: 'User Name',
+                      prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('email - ${widget.userModel.email}'),
+                    Text('uid - ${widget.userModel.uid}'),
+                  ],
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: AnimatedButton90s(
+                    onPressed: _updateUserInfo,
+                    child: const Text('Save'),
+                  ),
+                ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: AnimatedButton90s(
-                onPressed: _updateUserInfo,
-                child: const Text('Save'),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

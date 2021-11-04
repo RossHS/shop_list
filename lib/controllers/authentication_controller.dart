@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
+import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/text_validators.dart' as text_validation;
 
@@ -157,10 +158,10 @@ class AuthenticationController extends GetxController {
   }
 
   /// Обновление пользователя в firestore коллекции пользователей users
-  void _updateUserFirestore(UserModel user, User _firebaseUser) {
-    const snackBarTitle = 'Update User data';
-    _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
-    Get.snackbar(snackBarTitle, 'Updated');
+  void _updateUserFirestore(UserModel user, User _firebaseUser) async{
+    const snackBarTitle = 'Данные пользователя';
+    await _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
+    CustomInfoOverlay.show(title: snackBarTitle, msg: 'Обновлено!');
     update();
   }
 
