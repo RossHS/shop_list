@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shop_list/models/models.dart';
 
-/// Класс с бизнес-логикой добавления/обновления/удаления списков дел
+/// Класс с бизнес-логикой добавления/обновления/удаления/прослушивания списков дел
 class TodoService {
   /// Аргумент _db (Dependency injection) необходим, чтобы вынести контекст
   /// за пределы класса, таким образом делая класс тестируемым
@@ -16,6 +16,11 @@ class TodoService {
 
   /// Путь к коллекции списка дел
   CollectionReference<Map<String, dynamic>> get _collectionRef => _db.collection('todos');
+
+  /// Стрим всех списков дел, которые в последствии будут отфильтрованы для дальнейшей работы
+  Stream<QuerySnapshot<Map<String, dynamic>>> createStream(String userId) {
+    return _collectionRef.where('authorId', isEqualTo: userId).snapshots();
+  }
 
   /// Проверка, имеется ли в БД по указанному пути документ
   Future<bool> isDocExists(String docId) async {
