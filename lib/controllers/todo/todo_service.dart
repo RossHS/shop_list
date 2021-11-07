@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:async/async.dart';
 
 /// Класс с бизнес-логикой добавления/обновления/удаления/прослушивания списков дел
 class TodoService {
@@ -19,7 +20,9 @@ class TodoService {
 
   /// Стрим всех списков дел, которые в последствии будут отфильтрованы для дальнейшей работы
   Stream<QuerySnapshot<Map<String, dynamic>>> createStream(String userId) {
-    return _collectionRef.where('authorId', isEqualTo: userId).snapshots();
+    final userStream = _collectionRef.where('authorId', isEqualTo: userId).snapshots();
+    final publicStream = _collectionRef.where('isPublic', isEqualTo: true).snapshots();
+    return StreamGroup.merge([userStream, publicStream]);
   }
 
   /// Проверка, имеется ли в БД по указанному пути документ

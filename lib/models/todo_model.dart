@@ -101,3 +101,30 @@ class TodoElement {
   @override
   int get hashCode => Object.hashAll([name, completed, uid]);
 }
+
+/// Класс обертка над обычным [TodoModel], но содержащий ссылку на документ firestore,
+/// по которой находится TodoModel. Необходим чтобы совершать операции обновления,
+/// удаления существующих записей
+class FirestoreRefTodoModel {
+  const FirestoreRefTodoModel({
+    required this.idRef,
+    required this.todoModel,
+  });
+
+  /// Id документа в коллекции списка дел Todos
+  final String idRef;
+
+  /// Модель списка дел
+  final TodoModel todoModel;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FirestoreRefTodoModel &&
+          runtimeType == other.runtimeType &&
+          todoModel == other.todoModel &&
+          idRef == other.idRef;
+
+  @override
+  int get hashCode => Object.hashAll([idRef, todoModel]);
+}
