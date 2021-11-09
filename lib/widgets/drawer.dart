@@ -32,7 +32,7 @@ class AppDrawer extends StatelessWidget {
     final Color foregroundColor =
         colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary;
     // Стиль отображения имени пользователя
-    TextStyle? titleTextStyle = theme.textTheme.headline6?.copyWith(color: foregroundColor);
+    final titleTextStyle = theme.textTheme.headline6?.copyWith(color: foregroundColor);
 
     final authController = AuthenticationController.instance;
     return AdvancedDrawer(

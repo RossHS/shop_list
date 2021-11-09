@@ -215,22 +215,24 @@ void main() async {
     test('AllTodosList check', () async {
       final service = TodoService(FakeFirebaseFirestore());
       // Оболочка Rxn - чтобы корректно работал с контроллером
-      final userModel = Rxn(const UserModel(
+      final realAuthor = Rxn(const UserModel(
         name: 'name',
         email: 'email',
         photoUrl: 'photoUrl',
         uid: 'uid',
       ));
 
-      service.addTodo(TodoModel(authorId: userModel.value!.uid, title: 'PRE_first_ADD'));
+      service.addTodo(TodoModel(authorId: realAuthor.value!.uid, title: 'PRE_first_ADD'));
 
       final todosController = Get.put(
-        TodosController(user: userModel, todoService: service),
+        TodosController(user: realAuthor, todoService: service),
         tag: 'all_todos_list',
       );
 
-      service.addTodo(TodoModel(authorId: userModel.value!.uid, title: 'POST_second_ADD'));
-      service.addTodo(TodoModel(authorId: userModel.value!.uid, title: 'POST_third_ADD'));
+      service.addTodo(TodoModel(authorId: realAuthor.value!.uid, title: 'POST_second_ADD'));
+      service.addTodo(TodoModel(authorId: realAuthor.value!.uid, title: 'POST_third_ADD'));
+      service.addTodo(TodoModel(authorId: 'dif_user', title: 'POST_dif_user_private_ADD', isPublic: false));
+      service.addTodo(TodoModel(authorId: 'dif_user', title: 'POST_dif_user_ADD', isPublic: true));
 
       // К сожалению, в библиотеке https://pub.dev/packages/fake_cloud_firestore  на данном этапе не поддерживаются
       // в query.docChanges другие типы DocumentChangeType кроме как added, который ставится независимо
@@ -244,7 +246,14 @@ void main() async {
 
       // После небольшой задержки проверяем коллекцию списка дел
       await Future.delayed(const Duration(milliseconds: 200));
-      expect(todosController.allTodosList.length, 3);
+      expect(todosController.allTodosList.length, 4);
+      // Проверка заголовков
+      expect(todosController.allTodosList.map((element) => element.todoModel.title), [
+        'PRE_first_ADD',
+        'POST_second_ADD',
+        'POST_third_ADD',
+        'POST_dif_user_ADD',
+      ]);
     });
   });
 }

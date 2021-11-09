@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/controllers/todo/todo_service.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/models.dart';
@@ -64,85 +63,58 @@ class _HomeState extends State<Home> {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends StatelessWidget {
   const _Body({Key? key}) : super(key: key);
 
   @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<_Body> {
-  final AuthenticationController controller = AuthenticationController.instance;
-  late final Stream<QuerySnapshot<Map<String, dynamic>>> stream;
-
-  @override
-  void initState() {
-    super.initState();
-    stream = TodoService().createStream(controller.firestoreUser.value!.uid);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: stream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('ERROR'));
-          } else if (snapshot.hasData) {
-            final data = snapshot.data;
-            if (data != null) {
-              return LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  var rowCount = 2;
-                  for (var width = 500; width < 3000; rowCount++, width += 400) {
-                    if (constraints.maxWidth < width) {
-                      return _ItemGrid(
-                        key: ValueKey<int>(rowCount),
-                        rowCount: rowCount,
-                        data: data,
-                      );
-                    }
-                  }
+    return GetBuilder<TodosController>(
+      init: TodosController(),
+      builder: (todosController) => Obx(() {
+        if (!todosController.isTodoStreamSubscribedNonNull) return const Center(child: CircularProgressIndicator());
+        if (todosController.allTodosList.isEmpty) {
+          return const Center(child: Text('Нет данных'));
+        } else {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              var rowCount = 2;
+              for (var width = 500; width < 3000; rowCount++, width += 400) {
+                if (constraints.maxWidth < width) {
                   return _ItemGrid(
                     key: ValueKey<int>(rowCount),
                     rowCount: rowCount,
-                    data: data,
                   );
-                },
+                }
+              }
+              return _ItemGrid(
+                key: ValueKey<int>(rowCount),
+                rowCount: rowCount,
               );
-            } else {
-              return const Center(child: Text('Non Data'));
-            }
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
+            },
+          );
+        }
+      }),
+    );
   }
 }
 
 class _ItemGrid extends StatelessWidget {
   const _ItemGrid({
     required this.rowCount,
-    required this.data,
     Key? key,
   }) : super(key: key);
-  final QuerySnapshot<Map<String, dynamic>> data;
   final int rowCount;
 
   @override
   Widget build(BuildContext context) {
+    final todosController = Get.find<TodosController>();
     return StaggeredGridView.countBuilder(
       crossAxisCount: rowCount,
-      itemCount: data.docs.length,
+      itemCount: todosController.allTodosList.length,
       itemBuilder: (context, index) {
-        final todoModel = TodoModel.fromJson(data.docs[index].data());
         return _TodoItem(
-          key: ObjectKey(todoModel),
-          model: todoModel,
+          key: ObjectKey(todosController.allTodosList[index]),
+          refModel: todosController.allTodosList[index],
         );
       },
       staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
@@ -153,21 +125,156 @@ class _ItemGrid extends StatelessWidget {
   }
 }
 
-class _TodoItem extends StatelessWidget {
+/// Виджет элемента записи списка дел
+class _TodoItem extends StatefulWidget {
   const _TodoItem({
-    required this.model,
+    required this.refModel,
     Key? key,
   }) : super(key: key);
-  final TodoModel model;
+  final FirestoreRefTodoModel refModel;
+
+  @override
+  State<_TodoItem> createState() => _TodoItemState();
+}
+
+class _TodoItemState extends State<_TodoItem> with SingleTickerProviderStateMixin {
+  /// Укороченная ссылка на элемент списка дел, чьи данные здесь и визуализированы
+  late final TodoModel _todoModel;
+
+  /// Контроллер управлением списка дел
+  late final TodosController _todosController;
+
+  /// Есть ли на экране панель управления списком дел с командами - удаление, изменение, закрытие
+  var _isControlPanelInserted = false;
+
+  /// Контроллер анимации прозрачности панели управления списком дел
+  late final AnimationController _opacityController;
+
+  final formatter = DateFormat('dd MM yyyy');
+
+  @override
+  void initState() {
+    super.initState();
+    _todoModel = widget.refModel.todoModel;
+    _todosController = Get.find<TodosController>();
+    _opacityController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _opacityController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AnimatedPainterSquare90s(
-      child: SizedBox(
-        child: Center(
-          child: Text('${model.title}'),
-        ),
+      child: Stack(
+        children: [
+          RawMaterialButton(
+            onLongPress: _longPressed,
+            onPressed: _onPressed,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(child: Text(_todoModel.title)),
+                  for (var element in _todoModel.elements.take(5)) Text('• ${element.name}'),
+                  const SizedBox(height: 15),
+                  Text(
+                    formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                    style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                  ),
+                  // TODO дописать функцию получения по ID пользователя в БД его имя. Скорее всего потребуется контроллер с прослушиванием коллекции пользователей
+                  Text(
+                    _todoModel.authorId,
+                    style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                  )
+                ],
+              ),
+            ),
+          ),
+          if (_isControlPanelInserted)
+            Positioned.fill(
+              key: ValueKey(widget.refModel),
+              child: FadeTransition(
+                opacity: _opacityController,
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondary.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: RawMaterialButton(
+                            onPressed: () {},
+                            shape: const CircleBorder(),
+                            child: const Icon(Icons.check),
+                          ),
+                        ),
+                        Expanded(
+                          child: RawMaterialButton(
+                            onPressed: () {},
+                            shape: const CircleBorder(),
+                            child: const Icon(Icons.edit),
+                          ),
+                        ),
+                        Expanded(
+                          child: RawMaterialButton(
+                            onPressed: () => _todosController.deleteTodo(widget.refModel.idRef),
+                            shape: const CircleBorder(),
+                            child: const Icon(Icons.remove),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
+  }
+
+  /// Обработка долгого нажатия на списке дел.
+  /// Открывает/закрывает опции управления списков (удалить/редактировать)
+  void _longPressed() {
+    _opacityController.stop();
+    _animationControl(isForward: !_isControlPanelInserted);
+  }
+
+  /// Обычное нажатие. Если открыта панель редактирования списка, то закрывает ее
+  void _onPressed() {
+    if (_isControlPanelInserted) {
+      _animationControl(isForward: false);
+      return;
+    }
+  }
+
+  /// Метод контроля анимации и состояния виджетов. Вынес код в отдельный метод, чтобы избежать
+  /// дублирование кода в методах обработки нажатий на RawMaterialButton
+  void _animationControl({required bool isForward}) {
+    if (isForward) {
+      setState(() {
+        _isControlPanelInserted = true;
+        _opacityController.forward();
+      });
+    } else {
+      _opacityController.reverse().whenCompleteOrCancel(() {
+        setState(() {
+          _isControlPanelInserted = false;
+        });
+      });
+    }
   }
 }

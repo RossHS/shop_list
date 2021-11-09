@@ -57,6 +57,11 @@ class TodosController extends GetxController {
     super.onClose();
   }
 
+  void deleteTodo(String docId) {
+    // TODO прописать появление оверлея с инфой при работе с этим методом
+    todoService.deleteTodo(docId);
+  }
+
   void _userModelChangesListener(UserModel? userModel) {
     if (userModel != null) {
       // Отмена предыдущего подписчика
@@ -65,12 +70,11 @@ class TodosController extends GetxController {
       // TODO написать работу с фильтром
       todoStreamSubscriber = todoService.createStream(userModel.uid).listen((query) {
         for (var docChanges in query.docChanges) {
-          final docId = docChanges.doc.id;
           final jsonData = docChanges.doc.data();
 
           if (jsonData != null) {
             final refModel = FirestoreRefTodoModel(
-              idRef: docId,
+              idRef: docChanges.doc.id,
               todoModel: TodoModel.fromJson(jsonData),
             );
             switch (docChanges.type) {
@@ -80,9 +84,11 @@ class TodosController extends GetxController {
                 }
                 break;
               case DocumentChangeType.modified:
-              case DocumentChangeType.removed:
                 allTodosList.remove(refModel);
                 allTodosList.add(refModel);
+                break;
+              case DocumentChangeType.removed:
+                allTodosList.remove(refModel);
                 break;
             }
           }
