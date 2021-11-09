@@ -137,7 +137,7 @@ class _TodoItem extends StatefulWidget {
   State<_TodoItem> createState() => _TodoItemState();
 }
 
-class _TodoItemState extends State<_TodoItem> with SingleTickerProviderStateMixin {
+class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   /// Укороченная ссылка на элемент списка дел, чьи данные здесь и визуализированы
   late final TodoModel _todoModel;
 
@@ -150,6 +150,10 @@ class _TodoItemState extends State<_TodoItem> with SingleTickerProviderStateMixi
   /// Контроллер анимации прозрачности панели управления списком дел
   late final AnimationController _opacityController;
 
+  /// Контроллер Bouncing эффекта при нажатии виджет
+  late final AnimationController _bouncingEffectController;
+  late final Animation<double> _animation;
+
   final formatter = DateFormat('dd MM yyyy');
 
   @override
@@ -161,87 +165,128 @@ class _TodoItemState extends State<_TodoItem> with SingleTickerProviderStateMixi
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+
+    _bouncingEffectController = AnimationController(
+      duration: const Duration(milliseconds: 50),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 1, end: 0.9).animate(
+      CurvedAnimation(
+        parent: _bouncingEffectController,
+        curve: Curves.ease,
+      ),
+    );
   }
 
   @override
   void dispose() {
     _opacityController.dispose();
+    _bouncingEffectController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final authController = AuthenticationController.instance;
 
-    return AnimatedPainterSquare90s(
-      child: Stack(
-        children: [
-          RawMaterialButton(
-            onLongPress: _longPressed,
-            onPressed: _onPressed,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(child: Text(_todoModel.title)),
-                  for (var element in _todoModel.elements.take(5)) Text('• ${element.name}'),
-                  const SizedBox(height: 15),
-                  Text(
-                    formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
-                    style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
-                  ),
-                  // TODO дописать функцию получения по ID пользователя в БД его имя. Скорее всего потребуется контроллер с прослушиванием коллекции пользователей
-                  Text(
-                    _todoModel.authorId,
-                    style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
-                  )
-                ],
-              ),
-            ),
-          ),
-          if (_isControlPanelInserted)
-            Positioned.fill(
-              key: ValueKey(widget.refModel),
-              child: FadeTransition(
-                opacity: _opacityController,
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.secondary.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: RawMaterialButton(
-                            onPressed: () {},
-                            shape: const CircleBorder(),
-                            child: const Icon(Icons.check),
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      onPointerDown: _onPointerDown,
+      onPointerUp: _onPointerUp,
+      child: ScaleTransition(
+        scale: _animation,
+        child: AnimatedPainterSquare90s(
+          child: Stack(
+            children: [
+              RawMaterialButton(
+                onLongPress: _longPressed,
+                onPressed: _onPressed,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                          child: Text(
+                        _todoModel.title,
+                        style: textTheme.bodyText1,
+                        textAlign: TextAlign.center,
+                      )),
+                      const SizedBox(height: 10),
+                      for (var element in _todoModel.elements.take(5))
+                        Text(
+                          ' ${element.name}',
+                          style: textTheme.bodyText2?.copyWith(
+                            fontSize: 18,
+                            decoration: element.completed ? TextDecoration.lineThrough : null,
                           ),
                         ),
-                        Expanded(
-                          child: RawMaterialButton(
-                            onPressed: () {},
-                            shape: const CircleBorder(),
-                            child: const Icon(Icons.edit),
-                          ),
-                        ),
-                        Expanded(
-                          child: RawMaterialButton(
-                            onPressed: () => _todosController.deleteTodo(widget.refModel.idRef),
-                            shape: const CircleBorder(),
-                            child: const Icon(Icons.remove),
-                          ),
-                        ),
-                      ],
-                    ),
+                      if (_todoModel.elements.length > 5) const Center(child: Text('...')),
+                      const SizedBox(height: 15),
+                      Text(
+                        formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                        style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                      ),
+                      // TODO дописать функцию получения по ID пользователя в БД его имя. Скорее всего потребуется контроллер с прослушиванием коллекции пользователей
+                      Text(
+                        _todoModel.authorId,
+                        style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                      ),
+                      if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
+                    ],
                   ),
                 ),
               ),
-            ),
-        ],
+              if (_isControlPanelInserted)
+                Positioned.fill(
+                  key: ValueKey(widget.refModel),
+                  child: FadeTransition(
+                    opacity: _opacityController,
+                    child: Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondary.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: RawMaterialButton(
+                                onPressed: () {},
+                                child: const Icon(Icons.check),
+                              ),
+                            ),
+                            if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                              Expanded(
+                                child: RawMaterialButton(
+                                  onPressed: () => Get.toNamed(
+                                    '/todo/${widget.refModel.idRef}/edit',
+                                    arguments: widget.refModel,
+                                  ),
+                                  child: const Icon(Icons.edit),
+                                ),
+                              ),
+                            if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                              Expanded(
+                                child: RawMaterialButton(
+                                  onPressed: () => _todosController.deleteTodo(widget.refModel.idRef),
+                                  child: const Icon(Icons.remove),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -276,5 +321,15 @@ class _TodoItemState extends State<_TodoItem> with SingleTickerProviderStateMixi
         });
       });
     }
+  }
+
+  /// Перехватчик нажатия на виджет, который запускает анимацию "уменьшения" виджета при нажатии
+  void _onPointerDown(PointerDownEvent event) {
+    _bouncingEffectController.forward();
+  }
+
+  /// При отпускании кнопки на экране запускает в обратную сторону анимацию нажатия
+  void _onPointerUp(PointerUpEvent event) {
+    _bouncingEffectController.reverse();
   }
 }

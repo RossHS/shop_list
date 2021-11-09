@@ -84,15 +84,16 @@ class TodosController extends GetxController {
                 }
                 break;
               case DocumentChangeType.modified:
-                allTodosList.remove(refModel);
+                allTodosList.removeWhere((e) => e.idRef == refModel.idRef);
                 allTodosList.add(refModel);
                 break;
               case DocumentChangeType.removed:
-                allTodosList.remove(refModel);
+                allTodosList.removeWhere((e) => e.idRef == refModel.idRef);
                 break;
             }
           }
         }
+        allTodosList.sort((a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp);
       });
     }
   }
