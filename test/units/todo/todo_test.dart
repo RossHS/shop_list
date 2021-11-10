@@ -179,7 +179,7 @@ void main() async {
 
   // Группа тестов
   group('TodosController tests', () {
-    final service = TodoService(FakeFirebaseFirestore());
+    final fakeFirebaseFirestore = FakeFirebaseFirestore();
     test('Checking stream creation with an auth user', () {
       // Оболочка Rxn - чтобы корректно работал с контроллером
       final userModel = Rxn(const UserModel(
@@ -192,7 +192,7 @@ void main() async {
       // Инициализация в GetX чтобы приблизить тестовые условия к реальным.
       // Использую тег, чтобы гарантировать инициализацию разных контроллеров,
       final todosController = Get.put(
-        TodosController(user: userModel, todoService: service),
+        TodosController(user: userModel, db: fakeFirebaseFirestore),
         tag: 'auth_user',
       );
       expect(todosController.todoStreamSubscriber, isNotNull);
@@ -201,7 +201,7 @@ void main() async {
     test('Checking stream creation with delayed user auth', () async {
       final userModel = Rxn<UserModel>();
       final todosController = Get.put(
-        TodosController(user: userModel, todoService: service),
+        TodosController(user: userModel, db: fakeFirebaseFirestore),
         tag: 'null_user',
       );
       expect(todosController.isTodoStreamSubscribedNonNull, false);
@@ -213,7 +213,8 @@ void main() async {
     });
 
     test('AllTodosList check', () async {
-      final service = TodoService(FakeFirebaseFirestore());
+      final fakeFirebaseFirestore = FakeFirebaseFirestore();
+      final service = TodoService(fakeFirebaseFirestore);
       // Оболочка Rxn - чтобы корректно работал с контроллером
       final realAuthor = Rxn(const UserModel(
         name: 'name',
@@ -225,7 +226,7 @@ void main() async {
       service.addTodo(TodoModel(authorId: realAuthor.value!.uid, title: 'PRE_first_ADD'));
 
       final todosController = Get.put(
-        TodosController(user: realAuthor, todoService: service),
+        TodosController(user: realAuthor, db: fakeFirebaseFirestore),
         tag: 'all_todos_list',
       );
 

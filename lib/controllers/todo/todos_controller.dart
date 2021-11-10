@@ -14,11 +14,13 @@ class TodosController extends GetxController {
   /// который инициализируется при старте приложения
   TodosController({
     Rxn<UserModel>? user,
-    TodoService? todoService,
+    FirebaseFirestore? db,
+    UsersMapController? usersMapController,
   })  : user = user ?? AuthenticationController.instance.firestoreUser,
-        todoService = todoService ?? TodoService();
+        todoService = TodoService(db),
+        _usersMapController = usersMapController;
 
-  late final UsersMapController _usersMapController;
+  final UsersMapController? _usersMapController;
 
   /// Ссылка на текущего пользователя, чтобы знать чьи приватные списки мы можем читать
   final Rxn<UserModel> user;
@@ -47,7 +49,7 @@ class TodosController extends GetxController {
     super.onInit();
     // Так как UsersMapController идет в связке с текущим контроллером, то имеет смысл
     // инициализировать его совместно с этим контроллером
-    _usersMapController = Get.put(UsersMapController());
+    if (_usersMapController != null) Get.put(_usersMapController!);
     // При инициализации вычитываем значение текущего пользователя, т.к. возможна ситуация,
     // когда пользователь уже есть, мы подписываемся на стрим, а слушатель реагирует только
     // на изменения, поэтому следует сделать начальную синхронизацию
@@ -84,7 +86,7 @@ class TodosController extends GetxController {
             );
             // При чтении списка дел отправляем id автора на проверку в мапу,
             // если такого пользователя нет, то вычитываем его из БД
-            _usersMapController.readId(userId: refModel.todoModel.authorId);
+            _usersMapController?.readId(userId: refModel.todoModel.authorId);
             switch (docChanges.type) {
               case DocumentChangeType.added:
                 if (!allTodosList.contains(refModel)) {

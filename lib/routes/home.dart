@@ -69,7 +69,7 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TodosController>(
-      init: TodosController(),
+      init: TodosController(usersMapController: UsersMapController()),
       builder: (todosController) => Obx(() {
         if (!todosController.isTodoStreamSubscribedNonNull) return const Center(child: CircularProgressIndicator());
         if (todosController.allTodosList.isEmpty) {
