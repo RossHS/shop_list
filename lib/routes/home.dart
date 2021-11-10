@@ -230,11 +230,10 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                         formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
                         style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
                       ),
-                      // TODO дописать функцию получения по ID пользователя в БД его имя. Скорее всего потребуется контроллер с прослушиванием коллекции пользователей
-                      Text(
-                        _todoModel.authorId,
-                        style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
-                      ),
+                      Obx(() => Text(
+                            '${Get.find<UsersMapController>().usersMap.value[_todoModel.authorId]?.name}',
+                            style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                          )),
                       if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
                     ],
                   ),
