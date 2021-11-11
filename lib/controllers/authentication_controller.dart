@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/models/models.dart';
@@ -9,6 +10,8 @@ import 'package:shop_list/utils/text_validators.dart' as text_validation;
 
 /// Бизнес-логика управления состоянием аутентификации пользователя
 class AuthenticationController extends GetxController {
+  final _log = Logger('AuthenticationController');
+
   // Ссылка на сам объект контроллера аутентификации,
   // чтобы не искать каждый раз данный объект в менеджере состояний
   // через Getx. Достаточно найти нужный нам объект 1 раз и возвращать ссылку
@@ -51,6 +54,7 @@ class AuthenticationController extends GetxController {
 
   /// Функция выхода из профиля
   Future<void> signOut() {
+    _log.fine('${firestoreUser.value?.name} - SignOut');
     nameController.clear();
     emailController.clear();
     passwordController.clear();
@@ -93,7 +97,7 @@ class AuthenticationController extends GetxController {
       authErrorMessage.value = null;
     } on FirebaseAuthException catch (error) {
       _handleFirebaseAuthException(error.code);
-      print(error);
+      _log.shout(error);
     }
   }
 
@@ -158,7 +162,7 @@ class AuthenticationController extends GetxController {
   }
 
   /// Обновление пользователя в firestore коллекции пользователей users
-  void _updateUserFirestore(UserModel user, User _firebaseUser) async{
+  void _updateUserFirestore(UserModel user, User _firebaseUser) async {
     const snackBarTitle = 'Данные пользователя';
     await _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
     CustomInfoOverlay.show(title: snackBarTitle, msg: 'Обновлено!');
@@ -167,7 +171,7 @@ class AuthenticationController extends GetxController {
 
   /// Поток загрузки модели пользователя из базы данных firestore users
   Stream<UserModel> get streamFirestoreUser {
-    print('streamFirestoreUser()');
+    _log.fine('streamFirestoreUser()');
 
     return _db
         .doc('/users/${firebaseUser.value!.uid}')

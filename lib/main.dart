@@ -2,11 +2,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/routes/get_routes.dart';
 import 'package:shop_list/utils/application_themes.dart' as app_theme;
 
 void main() async {
+  // Настройка логгера. Просто выводит в консоль сообщение в определенном формате
+  Logger.root.level = Level.FINE; // defaults to Level.INFO
+  Logger.root.onRecord.listen((log) {
+    // ignore: avoid_print
+    print('[${log.level.name}] ${log.loggerName} \t ${log.time} \t ${log.message}');
+  });
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await GetStorage.init();

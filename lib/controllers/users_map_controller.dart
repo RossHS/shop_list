@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/models/models.dart';
 
 /// Контроллер необходимый для отображения имени пользователя по его id.
@@ -10,6 +11,8 @@ class UsersMapController extends GetxController {
     FirebaseFirestore? db,
   }) : _usersMapService = _UsersMapService(db);
 
+  final _log = Logger('UsersMapController');
+
   final _UsersMapService _usersMapService;
 
   /// Мапа, где ключ - id пользователя, значение его имя
@@ -19,8 +22,8 @@ class UsersMapController extends GetxController {
     if (!usersMap.containsKey(userId)) {
       try {
         usersMap[userId] = await _usersMapService.findUser(userId);
-      } catch (e) {
-        print(e);
+      } catch (error) {
+        _log.shout(error);
       }
     }
   }
@@ -30,8 +33,8 @@ class UsersMapController extends GetxController {
       usersId.where((e) => !usersMap.containsKey(e)).forEach((e) async {
         usersMap[e] = await _usersMapService.findUser(e);
       });
-    } catch (e) {
-      print(e);
+    } catch (error) {
+      _log.shout(error);
     }
   }
 }
