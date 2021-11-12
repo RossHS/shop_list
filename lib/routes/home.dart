@@ -141,9 +141,6 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   /// Укороченная ссылка на элемент списка дел, чьи данные здесь и визуализированы
   late final TodoModel _todoModel;
 
-  /// Контроллер управлением списка дел
-  late final TodosController _todosController;
-
   /// Есть ли на экране панель управления списком дел с командами - удаление, изменение, закрытие
   var _isControlPanelInserted = false;
 
@@ -160,7 +157,6 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _todoModel = widget.refModel.todoModel;
-    _todosController = Get.find<TodosController>();
     _opacityController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -190,7 +186,6 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final authController = AuthenticationController.instance;
 
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -201,92 +196,65 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
         child: AnimatedPainterSquare90s(
           child: Stack(
             children: [
-              RawMaterialButton(
-                onLongPress: _longPressed,
-                onPressed: _onPressed,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                          child: Text(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
                         _todoModel.title,
                         style: textTheme.bodyText1,
                         textAlign: TextAlign.center,
-                      )),
-                      const SizedBox(height: 10),
-                      for (var element in _todoModel.elements.take(5))
-                        Text(
-                          ' ${element.name}',
-                          style: textTheme.bodyText2?.copyWith(
-                            fontSize: 18,
-                            decoration: element.completed ? TextDecoration.lineThrough : null,
-                          ),
-                        ),
-                      if (_todoModel.elements.length > 5) const Center(child: Text('...')),
-                      const SizedBox(height: 15),
-                      Text(
-                        formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
-                        style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
-                      ),
-                      Obx(() => Text(
-                            // ignore: invalid_use_of_protected_member
-                            '${Get.find<UsersMapController>().usersMap.value[_todoModel.authorId]?.name}',
-                            style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
-                          )),
-                      if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
-                    ],
-                  ),
-                ),
-              ),
-              if (_isControlPanelInserted)
-                Positioned.fill(
-                  key: ValueKey(widget.refModel),
-                  child: FadeTransition(
-                    opacity: _opacityController,
-                    child: Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.secondary.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Если список дел не закрыт, то у пользователя есть
-                            // возможность его быстро закрыть по шорт-кату
-                            if (!_todoModel.completed)
-                              Expanded(
-                                child: RawMaterialButton(
-                                  onPressed: () => _todosController.completeTodo(widget.refModel.idRef),
-                                  child: const Icon(Icons.check),
-                                ),
-                              ),
-                            // Только автор списка может его менять или удалять
-                            if (authController.firestoreUser.value?.uid == _todoModel.authorId)
-                              Expanded(
-                                child: RawMaterialButton(
-                                  onPressed: () => Get.toNamed(
-                                    '/todo/${widget.refModel.idRef}/edit',
-                                    arguments: widget.refModel,
-                                  ),
-                                  child: const Icon(Icons.edit),
-                                ),
-                              ),
-                            if (authController.firestoreUser.value?.uid == _todoModel.authorId)
-                              Expanded(
-                                child: RawMaterialButton(
-                                  onPressed: () => _todosController.deleteTodo(widget.refModel.idRef),
-                                  child: const Icon(Icons.remove),
-                                ),
-                              ),
-                          ],
-                        ),
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    for (var element in _todoModel.elements.take(5))
+                      Text(
+                        ' ${element.name}',
+                        style: textTheme.bodyText2?.copyWith(
+                          fontSize: 18,
+                          decoration: element.completed ? TextDecoration.lineThrough : null,
+                        ),
+                      ),
+                    if (_todoModel.elements.length > 5) const Center(child: Text('...')),
+                    const SizedBox(height: 15),
+                    Text(
+                      formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                      style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                    ),
+                    Obx(() => Text(
+                          // ignore: invalid_use_of_protected_member
+                          '${Get.find<UsersMapController>().usersMap.value[_todoModel.authorId]?.name}',
+                          style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                        )),
+                    if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
+                  ],
+                ),
+              ),
+              // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
+              if (_todoModel.completed)
+                Positioned.fill(
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      painter: _CrossLinePainter(),
+                    ),
                   ),
+                ),
+              // Вынес "наверх" виджет обработки нажатий, чтобы виджет
+              // индикации завершенности работы не загораживал нажатия
+              Positioned.fill(
+                child: RawMaterialButton(
+                  onLongPress: _longPressed,
+                  onPressed: _onPressed,
+                ),
+              ),
+              // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
+              if (_isControlPanelInserted)
+                _ItemControlPanel(
+                  refModel: widget.refModel,
+                  opacityController: _opacityController,
+                  todoModel: _todoModel,
                 ),
             ],
           ),
@@ -335,5 +303,105 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   /// При отпускании кнопки на экране запускает в обратную сторону анимацию нажатия
   void _onPointerUp(PointerUpEvent event) {
     _bouncingEffectController.reverse();
+  }
+}
+
+/// Панель управления списком дел. Где пользователь может быстро удалить/изменить/закрыть задачу.
+/// Панель вызывается по длинному нажатию на предмете
+class _ItemControlPanel extends StatelessWidget {
+  const _ItemControlPanel({
+    Key? key,
+    required FirestoreRefTodoModel refModel,
+    required AnimationController opacityController,
+    required TodoModel todoModel,
+  })  : _refModel = refModel,
+        _opacityController = opacityController,
+        _todoModel = todoModel,
+        super(key: key);
+
+  final FirestoreRefTodoModel _refModel;
+  final AnimationController _opacityController;
+  final TodoModel _todoModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final todosController = Get.find<TodosController>();
+    final authController = Get.find<AuthenticationController>();
+    return Positioned.fill(
+      key: ValueKey(_refModel),
+      child: FadeTransition(
+        opacity: _opacityController,
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondary.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Если список дел не закрыт, то у пользователя есть
+                // возможность его быстро закрыть по шорт-кату
+                if (!_todoModel.completed)
+                  Expanded(
+                    child: RawMaterialButton(
+                      onPressed: () => todosController.completeTodo(_refModel.idRef),
+                      child: const Icon(Icons.check),
+                    ),
+                  ),
+                // Только автор списка может его менять или удалять
+                if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                  Expanded(
+                    child: RawMaterialButton(
+                      onPressed: () => Get.toNamed(
+                        '/todo/${_refModel.idRef}/edit',
+                        arguments: _refModel,
+                      ),
+                      child: const Icon(Icons.edit),
+                    ),
+                  ),
+                if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                  Expanded(
+                    child: RawMaterialButton(
+                      onPressed: () => todosController.deleteTodo(_refModel.idRef),
+                      child: const Icon(Icons.remove),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CrossLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..strokeWidth = 3
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke;
+    // TODO константы связанные с "рванной областью"
+    const offsetConst = 10.0;
+    canvas.drawLine(
+      const Offset(-offsetConst, -offsetConst),
+      Offset(size.width + offsetConst, size.height + offsetConst),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(size.width + offsetConst, -offsetConst),
+      Offset(-offsetConst, size.height + offsetConst),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
