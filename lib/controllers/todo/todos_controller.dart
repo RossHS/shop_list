@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
 import 'package:shop_list/models/models.dart';
@@ -19,6 +20,8 @@ class TodosController extends GetxController {
   })  : user = user ?? AuthenticationController.instance.firestoreUser,
         todoService = TodoService(db),
         _usersMapController = usersMapController;
+
+  final _log = Logger('TodosController');
 
   final UsersMapController? _usersMapController;
 
@@ -64,9 +67,32 @@ class TodosController extends GetxController {
     super.onClose();
   }
 
-  void deleteTodo(String docId) {
+  Future<void> deleteTodo(String docId) async {
     // TODO прописать появление оверлея с инфой при работе с этим методом
     todoService.deleteTodo(docId);
+  }
+
+  /// Метод смены статуса на завершенный
+  ///
+  /// В качестве аргумента функции используется ссылка на документ со
+  /// списком дел в БД, а не сам объект [TodoModel] обернутый в [FirestoreRefTodoModel],
+  /// чтобы избежать ситуаций рассогласования локальной модели и той, что хранится в БД,
+  /// которая безусловно имеет приоритет на локальной
+  Future<void> completeTodo(String docId) async {
+    final todoModel = await todoService.findTodo(docId);
+    if (!todoModel.completed) {
+      try {
+        _log.fine('Updating todo $docId');
+        final editedModel = todoModel.copyWith(
+          completed: true,
+          completedTimestamp: DateTime.now().millisecondsSinceEpoch,
+        );
+        await todoService.updateTodo(docId, editedModel);
+        _log.fine('Update completed! $docId');
+      } catch (error) {
+        _log.shout(error);
+      }
+    }
   }
 
   void _userModelChangesListener(UserModel? userModel) {

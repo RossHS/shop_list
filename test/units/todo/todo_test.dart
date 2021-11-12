@@ -256,5 +256,31 @@ void main() async {
         'POST_dif_user_ADD',
       ]);
     });
+
+    test('completeTodo method test', () async {
+      final service = TodoService(fakeFirebaseFirestore);
+      // Штатный режим обновления
+      final todoController = TodosController(
+          user: Rxn(const UserModel(
+            name: 'name',
+            email: 'email',
+            photoUrl: 'photo',
+            uid: 'uid',
+          )),
+          db: fakeFirebaseFirestore);
+      final todoModel = TodoModel(authorId: 'complete_test', title: 'complete_test', completed: false);
+      final ref = await service.addTodo(todoModel);
+      await todoController.completeTodo(ref.id);
+      final findTodo = await service.findTodo(ref.id);
+      expect(findTodo.completed, true);
+      // После простановки статуса завершено ставится временная метка окончания задачи
+      expect(findTodo.completedTimestamp, greaterThan(0));
+
+      // Повторное закрытие не должно сработать, проверить это можно по неизменившийся временной метки закрытия задачи
+      await Future.delayed(const Duration(milliseconds: 300));
+      await todoController.completeTodo(ref.id);
+      final doubleComplete = await service.findTodo(ref.id);
+      expect(doubleComplete.completedTimestamp, findTodo.completedTimestamp);
+    });
   });
 }

@@ -255,12 +255,16 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: RawMaterialButton(
-                                onPressed: () {},
-                                child: const Icon(Icons.check),
+                            // Если список дел не закрыт, то у пользователя есть
+                            // возможность его быстро закрыть по шорт-кату
+                            if (!_todoModel.completed)
+                              Expanded(
+                                child: RawMaterialButton(
+                                  onPressed: () => _todosController.completeTodo(widget.refModel.idRef),
+                                  child: const Icon(Icons.check),
+                                ),
                               ),
-                            ),
+                            // Только автор списка может его менять или удалять
                             if (authController.firestoreUser.value?.uid == _todoModel.authorId)
                               Expanded(
                                 child: RawMaterialButton(
