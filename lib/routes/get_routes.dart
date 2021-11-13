@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:shop_list/routes/account.dart';
 import 'package:shop_list/routes/create_todo.dart';
+import 'package:shop_list/routes/current_todo.dart';
 import 'package:shop_list/routes/edit_todo.dart';
 import 'package:shop_list/routes/home.dart';
 import 'package:shop_list/routes/sign_in.dart';
@@ -18,5 +19,6 @@ class GetRoutes {
     GetPage(name: '/createTodo', page: () => const CreateTodo()),
     // GetPage(name: '/settings', page: page),
     GetPage(name: '/todo/:id/edit', page: () => const EditTodo()),
+    GetPage(name: '/todo/:id/view', page: () => const CurrentTodo()),
   ];
 }

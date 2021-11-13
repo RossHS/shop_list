@@ -274,8 +274,8 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   void _onPressed() {
     if (_isControlPanelInserted) {
       _animationControl(isForward: false);
-      return;
     }
+    Get.toNamed('/todo/${widget.refModel.idRef}/view');
   }
 
   /// Метод контроля анимации и состояния виджетов. Вынес код в отдельный метод, чтобы избежать
@@ -355,10 +355,7 @@ class _ItemControlPanel extends StatelessWidget {
                 if (authController.firestoreUser.value?.uid == _todoModel.authorId)
                   Expanded(
                     child: RawMaterialButton(
-                      onPressed: () => Get.toNamed(
-                        '/todo/${_refModel.idRef}/edit',
-                        arguments: _refModel,
-                      ),
+                      onPressed: () => Get.toNamed('/todo/${_refModel.idRef}/edit'),
                       child: const Icon(Icons.edit),
                     ),
                   ),

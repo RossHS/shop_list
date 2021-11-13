@@ -89,6 +89,18 @@ class TodoElement {
 
   Map<String, dynamic> toJson() => _$TodoElementToJson(this);
 
+  TodoElement copyWith({
+    String? name,
+    bool? completed,
+    String? uid,
+  }) {
+    return TodoElement(
+      name: name ?? this.name,
+      completed: completed ?? this.completed,
+      uid: uid ?? this.uid,
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

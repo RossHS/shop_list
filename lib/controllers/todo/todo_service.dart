@@ -25,6 +25,9 @@ class TodoService {
     return StreamGroup.merge([userStream, publicStream]);
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> createSingleTodoStream(String docId) =>
+      _collectionRef.doc(docId).snapshots();
+
   /// Проверка, имеется ли в БД по указанному пути документ
   Future<bool> isDocExists(String docId) async {
     var snap = await _collectionRef.doc(docId).get();
