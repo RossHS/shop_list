@@ -274,8 +274,9 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   void _onPressed() {
     if (_isControlPanelInserted) {
       _animationControl(isForward: false);
+    } else {
+      Get.toNamed('/todo/${widget.refModel.idRef}/view');
     }
-    Get.toNamed('/todo/${widget.refModel.idRef}/view');
   }
 
   /// Метод контроля анимации и состояния виджетов. Вынес код в отдельный метод, чтобы избежать

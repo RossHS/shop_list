@@ -37,6 +37,8 @@ class TodoViewController extends GetxController {
   /// Статус загрузки списка дел
   TodoViewCurrentState get state => _state.value;
 
+  bool get isTodoCompleted => todoModel!.completed;
+
   @override
   void onClose() {
     _todoSubscriber?.cancel();
