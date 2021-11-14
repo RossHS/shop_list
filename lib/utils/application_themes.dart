@@ -25,7 +25,7 @@ final ThemeData lightTheme = ThemeData(
 );
 
 final ThemeData darkTheme = ThemeData(
-  scaffoldBackgroundColor: Colors.black,
+  scaffoldBackgroundColor: Colors.white,
   primarySwatch: Colors.green,
   fontFamily: fontFamily,
   textTheme: textTheme,

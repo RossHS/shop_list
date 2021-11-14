@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
-import 'package:shop_list/controllers/todo/todos_controller.dart';
 import 'package:shop_list/models/models.dart';
 
 /// Тестирование по нескольким пунктам
@@ -70,7 +70,7 @@ void main() async {
     });
   });
 
-  // Тестирование оберточного  класса
+  // Тестирование оберточного класса
   group('FirestoreRefTodoModel testing', () {
     test('== and hashSet test', () {
       // Создаем два одинаковых объекта
@@ -177,7 +177,7 @@ void main() async {
     });
   });
 
-  // Группа тестов
+  // Группа тестов TodosController
   group('TodosController tests', () {
     final fakeFirebaseFirestore = FakeFirebaseFirestore();
     test('Checking stream creation with an auth user', () {
@@ -281,6 +281,64 @@ void main() async {
       await todoController.completeTodo(ref.id);
       final doubleComplete = await service.findTodo(ref.id);
       expect(doubleComplete.completedTimestamp, findTodo.completedTimestamp);
+    });
+  });
+
+  // Тестирование TodoViewController контроллера
+  group('TodoViewController tests', () {
+    final db = FakeFirebaseFirestore();
+    final service = TodoService(db);
+    // Желаемый сценарий работы (загрузка реальной модели по корректному id)
+    test('loadTodoModel test correct data', () async {
+      final controller = TodoViewController(db: db);
+      final todoModel = TodoModel(title: 'title', authorId: 'author');
+      final ref = await service.addTodo(todoModel);
+
+      controller.loadTodoModel(ref.id);
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(controller.todoModel, todoModel);
+      expect(controller.state, TodoViewCurrentState.loaded);
+    });
+
+    // Ошибочный сценарий (некорректное id документа)
+    test('loadTodoModel test incorrect doc id', () async {
+      final controller = TodoViewController(db: db);
+
+      controller.loadTodoModel('error_id');
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(controller.todoModel, null);
+      expect(controller.state, TodoViewCurrentState.error);
+    });
+
+    // Заготовка списка дел с двумя элементами, где в конце теста у каждого должен стоять статус - завершено
+    test('changeTodoElementCompleteStatus test', () async {
+      final controller = TodoViewController(db: db);
+      // Формирование модели для проведения тестирования
+      final firstElement = TodoElement(name: 'first_element', completed: true);
+      final secondElement = TodoElement(name: 'second_element', completed: false);
+      final todoModel = TodoModel(
+        authorId: 'changeTodoElementCompleteStatus_test',
+        title: 'changeTodoElementCompleteStatus_test',
+        elements: [firstElement, secondElement],
+      );
+      final docRef = await service.addTodo(todoModel);
+
+      // Загрузка модели в контроллер, смена статуса элемента в списке на завершенный
+      controller.loadTodoModel(docRef.id);
+      await Future.delayed(const Duration(milliseconds: 200));
+      await controller.changeTodoElementCompleteStatus(
+        isCompleted: true,
+        todoElementUid: firstElement.uid,
+      );
+      await controller.changeTodoElementCompleteStatus(
+        isCompleted: true,
+        todoElementUid: secondElement.uid,
+      );
+      final resTodo = await service.findTodo(docRef.id);
+
+      for (var element in resTodo.elements) {
+        expect(element.completed, true);
+      }
     });
   });
 }

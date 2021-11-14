@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 
 /// Окно текущей задачи, которую выбрал пользователь
@@ -78,17 +79,24 @@ class _LoadedWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final element = controller.todoModel!.elements[index];
                 return ListTile(
-                  key: ObjectKey(element),
+                  // Используем uid в качестве ключа, а не сам элемент, так как при изменении
+                  // элемента (к примеру, смена статуса на выполнено) => ключ тоже меняется
+                  // и создается новый виджет.
+                  key: ValueKey(element.uid),
                   onTap: () {
-                    controller.changeTodoElementCompleteStatus(isCompleted: !element.completed, uid: element.uid);
+                    _changeTodoElementCompleteStatus(element);
                   },
+                  leading: Checkbox(
+                      value: element.completed,
+                      onChanged: (_) {
+                        _changeTodoElementCompleteStatus(element);
+                      }),
                   title: Text(
                     element.name,
                     style: textTheme.bodyText2?.copyWith(
                       decoration: element.completed ? TextDecoration.lineThrough : null,
                     ),
                   ),
-                  trailing: element.completed ? const FlutterLogo() : null,
                 );
               },
             ),
@@ -105,5 +113,18 @@ class _LoadedWidget extends StatelessWidget {
     );
   }
 
-  void _completeTodo() {}
+  /// Метод закрытия задачи
+  void _completeTodo() {
+    // Не стал дублировать код из контроллера TodosController в TodoViewController.
+    // А решил просто использовать контроллер, в котором уже реализован данный код
+    final todoViewController = Get.find<TodoViewController>();
+    final todosController = Get.find<TodosController>();
+    todosController.completeTodo(todoViewController.docId!);
+  }
+
+  /// Смена статуса элемента списка дел
+  void _changeTodoElementCompleteStatus(TodoElement element) {
+    final controller = Get.find<TodoViewController>();
+    controller.changeTodoElementCompleteStatus(isCompleted: !element.completed, todoElementUid: element.uid);
+  }
 }

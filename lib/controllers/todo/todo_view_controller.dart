@@ -60,7 +60,9 @@ class TodoViewController extends GetxController {
             _state.value = TodoViewCurrentState.loaded;
           }
         } else {
+          // Данных может не быть, если документа по этому id не существует
           _log.shout('non data - $docId');
+          _state.value = TodoViewCurrentState.error;
         }
       });
     } catch (e) {
@@ -69,22 +71,22 @@ class TodoViewController extends GetxController {
     }
   }
 
-  /// Сменить статус элемента с писке дел на тот, что представлен в параметре [isCompleted]
-  Future<void> changeTodoElementCompleteStatus({required bool isCompleted, required String uid}) async {
+  /// Сменить статус элемента [todoElementUid] в писке дел на тот, что представлен в параметре [isCompleted]
+  Future<void> changeTodoElementCompleteStatus({required bool isCompleted, required String todoElementUid}) async {
     try {
-      _log.fine('Change element $uid to completed status - $isCompleted');
+      _log.fine('Change element $todoElementUid to completed status - $isCompleted');
       if (docId != null && todoModel != null) {
         final todo = todoModel!;
-        final item = todo.elements.firstWhere((element) => element.uid == uid);
+        final item = todo.elements.firstWhere((element) => element.uid == todoElementUid);
         if (item.completed != isCompleted) {
           final changedItem = item.copyWith(completed: isCompleted);
           final index = todo.elements.indexOf(item);
           todo.elements[index] = changedItem;
           await _service.updateTodo(docId!, todo);
-          _log.fine('Successful change of element $uid status to - $isCompleted');
+          _log.fine('Successful change of element $todoElementUid status to - $isCompleted');
         }
       } else {
-        _log.fine('Assert error while change element $uid to status - $isCompleted');
+        _log.fine('Assert error while change element $todoElementUid to status - $isCompleted');
       }
     } catch (error) {
       _log.shout(error);
