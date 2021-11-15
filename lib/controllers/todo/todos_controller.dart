@@ -78,7 +78,10 @@ class TodosController extends GetxController {
   /// списком дел в БД, а не сам объект [TodoModel] обернутый в [FirestoreRefTodoModel],
   /// чтобы избежать ситуаций рассогласования локальной модели и той, что хранится в БД,
   /// которая безусловно имеет приоритет на локальной
-  Future<void> completeTodo(String docId) async {
+  Future<void> completeTodo({
+    required String docId,
+    required String completedAuthorUid,
+  }) async {
     final todoModel = await todoService.findTodo(docId);
     if (!todoModel.completed) {
       try {
@@ -86,6 +89,7 @@ class TodosController extends GetxController {
         final editedModel = todoModel.copyWith(
           completed: true,
           completedTimestamp: DateTime.now().millisecondsSinceEpoch,
+          completedAuthorId: completedAuthorUid,
         );
         await todoService.updateTodo(docId, editedModel);
         _log.fine('Update completed! $docId');

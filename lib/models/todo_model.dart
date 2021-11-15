@@ -14,6 +14,7 @@ class TodoModel {
     this.isPublic = false,
     int? createdTimestamp,
     this.completed = false,
+    this.completedAuthorId = '',
     this.completedTimestamp = 0,
     List<TodoElement>? elements,
   })  : assert(createdTimestamp == null || createdTimestamp > 0, 'incorrect createdTimestamp $createdTimestamp'),
@@ -25,6 +26,7 @@ class TodoModel {
   final bool isPublic;
   final int createdTimestamp;
   final bool completed;
+  final String completedAuthorId;
   final int completedTimestamp;
   final List<TodoElement> elements;
 
@@ -38,6 +40,7 @@ class TodoModel {
     bool? isPublic,
     int? createdTimestamp,
     bool? completed,
+    String? completedAuthorId,
     int? completedTimestamp,
     List<TodoElement>? elements,
   }) {
@@ -47,6 +50,7 @@ class TodoModel {
       isPublic: isPublic ?? this.isPublic,
       createdTimestamp: createdTimestamp ?? this.createdTimestamp,
       completed: completed ?? this.completed,
+      completedAuthorId: completedAuthorId ?? this.completedAuthorId,
       completedTimestamp: completedTimestamp ?? this.completedTimestamp,
       elements: elements ?? [...this.elements],
     );

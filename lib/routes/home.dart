@@ -348,7 +348,10 @@ class _ItemControlPanel extends StatelessWidget {
                 if (!_todoModel.completed)
                   Expanded(
                     child: RawMaterialButton(
-                      onPressed: () => todosController.completeTodo(_refModel.idRef),
+                      onPressed: () => todosController.completeTodo(
+                        docId: _refModel.idRef,
+                        completedAuthorUid: authController.firestoreUser.value!.uid,
+                      ),
                       child: const Icon(Icons.check),
                     ),
                   ),

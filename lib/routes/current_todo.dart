@@ -308,7 +308,11 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
     // А решил просто использовать контроллер, в котором уже реализован данный код
     final todoViewController = Get.find<TodoViewController>();
     final todosController = Get.find<TodosController>();
-    todosController.completeTodo(todoViewController.docId!);
+    final authController = Get.find<AuthenticationController>();
+    todosController.completeTodo(
+      docId: todoViewController.docId!,
+      completedAuthorUid: authController.firestoreUser.value!.uid,
+    );
   }
 
   /// Смена статуса элемента списка дел
@@ -356,10 +360,11 @@ class _CompletedInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<TodoViewController>();
-    assert(controller.todoModel != null);
-
-    final completedDateTime = DateTime.fromMillisecondsSinceEpoch(controller.todoModel!.completedTimestamp);
+    final todoViewController = Get.find<TodoViewController>();
+    final userMapController = Get.find<UsersMapController>();
+    assert(todoViewController.todoModel != null);
+    final completedAuthor = userMapController.usersMap[todoViewController.todoModel!.completedAuthorId];
+    final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
     return AnimatedPainterSquare90s(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -372,6 +377,7 @@ class _CompletedInformation extends StatelessWidget {
               style: Get.textTheme.headline5,
             ),
             const SizedBox(height: 10),
+            Text(completedAuthor?.name ?? ''),
             Text(
               formatterDate.format(completedDateTime),
               style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),

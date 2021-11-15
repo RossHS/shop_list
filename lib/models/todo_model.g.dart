@@ -12,6 +12,7 @@ TodoModel _$TodoModelFromJson(Map<String, dynamic> json) => TodoModel(
       isPublic: json['isPublic'] as bool? ?? false,
       createdTimestamp: json['createdTimestamp'] as int?,
       completed: json['completed'] as bool? ?? false,
+      completedAuthorId: json['completedAuthorId'] as String? ?? '',
       completedTimestamp: json['completedTimestamp'] as int? ?? 0,
       elements: (json['elements'] as List<dynamic>?)
           ?.map((e) => TodoElement.fromJson(e as Map<String, dynamic>))
@@ -24,6 +25,7 @@ Map<String, dynamic> _$TodoModelToJson(TodoModel instance) => <String, dynamic>{
       'isPublic': instance.isPublic,
       'createdTimestamp': instance.createdTimestamp,
       'completed': instance.completed,
+      'completedAuthorId': instance.completedAuthorId,
       'completedTimestamp': instance.completedTimestamp,
       'elements': instance.elements.map((e) => e.toJson()).toList(),
     };

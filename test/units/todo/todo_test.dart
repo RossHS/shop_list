@@ -270,7 +270,7 @@ void main() async {
           db: fakeFirebaseFirestore);
       final todoModel = TodoModel(authorId: 'complete_test', title: 'complete_test', completed: false);
       final ref = await service.addTodo(todoModel);
-      await todoController.completeTodo(ref.id);
+      await todoController.completeTodo(docId: ref.id, completedAuthorUid: 'completedAuthor');
       final findTodo = await service.findTodo(ref.id);
       expect(findTodo.completed, true);
       // После простановки статуса завершено ставится временная метка окончания задачи
@@ -278,7 +278,7 @@ void main() async {
 
       // Повторное закрытие не должно сработать, проверить это можно по неизменившийся временной метки закрытия задачи
       await Future.delayed(const Duration(milliseconds: 300));
-      await todoController.completeTodo(ref.id);
+      await todoController.completeTodo(docId: ref.id, completedAuthorUid: 'completedAuthor');
       final doubleComplete = await service.findTodo(ref.id);
       expect(doubleComplete.completedTimestamp, findTodo.completedTimestamp);
     });
