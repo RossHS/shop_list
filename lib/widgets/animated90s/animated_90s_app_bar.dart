@@ -8,6 +8,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.title,
     this.actions,
+    this.bottom,
     Key? key,
   }) : super(key: key);
 
@@ -19,10 +20,15 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   /// Список виджетов, которые будут располагаться после [title]
   final List<Widget>? actions;
 
+  /// Виджет находящийся под основной частью appBar
+  final PreferredSizeWidget? bottom;
+
+  static const toolBarHeight = 56.0;
+
   /// Прописал значение размера стандартное для SDK Flutter AppBar.
   /// Не стал производить самостоятельный расчет, т.к. высота не динамическая
   @override
-  Size get preferredSize => const Size(0, 56);
+  Size get preferredSize => Size.fromHeight(toolBarHeight + (bottom?.preferredSize.height ?? 0));
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +39,13 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     final Color foregroundColor = appBarTheme.foregroundColor ??
         (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
 
-    TextStyle? titleTextStyle =
-        appBarTheme.titleTextStyle ?? theme.textTheme.headline6?.copyWith(color: foregroundColor);
+    final titleTextStyle = appBarTheme.titleTextStyle ?? theme.textTheme.headline6?.copyWith(color: foregroundColor);
 
-    IconThemeData overallIconTheme = appBarTheme.iconTheme ?? theme.iconTheme.copyWith(color: foregroundColor);
+    final bodyTextStyle = theme.textTheme.bodyText2?.copyWith(color: foregroundColor);
 
-    IconThemeData actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
+    final overallIconTheme = appBarTheme.iconTheme ?? theme.iconTheme.copyWith(color: foregroundColor);
+
+    final actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
 
     // Установка темы для виджета перед заголовком
     Widget? leading = this.leading;
@@ -76,6 +83,32 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
         child: actions,
       );
     }
+
+    Widget appBarBody = NavigationToolbar(
+      leading: leading,
+      middle: title,
+      trailing: actions,
+      centerMiddle: true,
+    );
+
+    if (bottom != null) {
+      appBarBody = Column(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: toolBarHeight),
+              child: appBarBody,
+            ),
+          ),
+          DefaultTextStyle(
+            style: bodyTextStyle!,
+            child: bottom!,
+          ),
+        ],
+      );
+    }
+
     var config = Paint90sConfig(
       backgroundColor: appBarTheme.backgroundColor ?? theme.primaryColor,
     );
@@ -89,12 +122,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
         child: Material(
           type: MaterialType.transparency,
           // Специальный виджет для 3 элементов в ряду
-          child: NavigationToolbar(
-            leading: leading,
-            middle: title,
-            trailing: actions,
-            centerMiddle: true,
-          ),
+          child: appBarBody,
         ),
       ),
     );

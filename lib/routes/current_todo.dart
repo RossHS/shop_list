@@ -7,6 +7,9 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/widgets/avatar.dart';
+
+final dateTimeFormatter = DateFormat('dd MM yyyy HH:mm:ss');
 
 /// Окно текущей задачи, которую выбрал пользователь
 class CurrentTodo extends StatelessWidget {
@@ -14,8 +17,12 @@ class CurrentTodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+
     final docId = Get.parameters['id'];
     final TodoViewController viewController = TodoViewController();
+    final userMapController = Get.find<UsersMapController>();
     return GetBuilder<TodoViewController>(
         init: viewController,
         initState: (_) {
@@ -48,6 +55,10 @@ class CurrentTodo extends StatelessWidget {
                   appBarTitle = '${controller.todoModel?.title}';
                   body = const _LoadedWidget();
               }
+              UserModel? authorModel;
+              if (controller.todoModel != null) {
+                authorModel = userMapController.usersMap[controller.todoModel?.authorId];
+              }
               return Scaffold(
                 appBar: AnimatedAppBar90s(
                   title: Text(appBarTitle),
@@ -57,6 +68,39 @@ class CurrentTodo extends StatelessWidget {
                       iconsList: CustomIcons.arrow,
                     ),
                   ),
+                  bottom: controller.todoModel != null && authorModel != null
+                      ? PreferredSize(
+                          preferredSize: const Size.fromHeight(75),
+                          child: SizedBox(
+                            height: 75,
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: AnimatedPainterCircleWithBorder90s(
+                                    boxColor: appBarTheme.backgroundColor ?? theme.primaryColor,
+                                    child: Avatar(diameter: 70, user: authorModel),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(authorModel.name),
+                                    Text(
+                                      dateTimeFormatter.format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                          controller.todoModel!.createdTimestamp,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
                 body: body,
               );
