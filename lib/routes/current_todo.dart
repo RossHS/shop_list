@@ -57,7 +57,7 @@ class CurrentTodo extends StatelessWidget {
               }
               UserModel? authorModel;
               if (controller.todoModel != null) {
-                authorModel = userMapController.usersMap[controller.todoModel?.authorId];
+                authorModel = userMapController.getUserModel(controller.todoModel!.authorId);
               }
               return Scaffold(
                 appBar: AnimatedAppBar90s(
@@ -363,7 +363,7 @@ class _CompletedInformation extends StatelessWidget {
     final todoViewController = Get.find<TodoViewController>();
     final userMapController = Get.find<UsersMapController>();
     assert(todoViewController.todoModel != null);
-    final completedAuthor = userMapController.usersMap[todoViewController.todoModel!.completedAuthorId];
+    final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
     return AnimatedPainterSquare90s(
       child: Padding(

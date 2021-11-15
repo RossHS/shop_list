@@ -224,8 +224,7 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                       style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
                     ),
                     Obx(() => Text(
-                          // ignore: invalid_use_of_protected_member
-                          '${Get.find<UsersMapController>().usersMap.value[_todoModel.authorId]?.name}',
+                          '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
                           style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
                         )),
                     if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),

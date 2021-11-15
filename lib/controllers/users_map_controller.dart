@@ -16,12 +16,16 @@ class UsersMapController extends GetxController {
   final _UsersMapService _usersMapService;
 
   /// Мапа, где ключ - id пользователя, значение его имя
-  var usersMap = <String, UserModel>{}.obs;
+  final _usersMap = <String, UserModel>{}.obs;
+
+  Map<String, UserModel> get usersMap => Map<String, UserModel>.unmodifiable(_usersMap);
+
+  UserModel? getUserModel(String key) => _usersMap[key];
 
   Future<void> readId({required String userId}) async {
-    if (!usersMap.containsKey(userId)) {
+    if (!_usersMap.containsKey(userId)) {
       try {
-        usersMap[userId] = await _usersMapService.findUser(userId);
+        _usersMap[userId] = await _usersMapService.findUser(userId);
       } catch (error) {
         _log.shout(error);
       }
@@ -30,8 +34,8 @@ class UsersMapController extends GetxController {
 
   Future<void> readIds({required List<String> usersId}) async {
     try {
-      usersId.where((e) => !usersMap.containsKey(e)).forEach((e) async {
-        usersMap[e] = await _usersMapService.findUser(e);
+      usersId.where((e) => !_usersMap.containsKey(e)).forEach((e) async {
+        _usersMap[e] = await _usersMapService.findUser(e);
       });
     } catch (error) {
       _log.shout(error);
