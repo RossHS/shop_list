@@ -6,6 +6,7 @@ import 'package:shop_list/routes/edit_todo.dart';
 import 'package:shop_list/routes/home.dart';
 import 'package:shop_list/routes/sign_in.dart';
 import 'package:shop_list/routes/splash.dart';
+import 'package:shop_list/routes/todos_sort.dart';
 
 /// Все константные маршруты
 class GetRoutes {
@@ -20,5 +21,6 @@ class GetRoutes {
     // GetPage(name: '/settings', page: page),
     GetPage(name: '/todo/:id/edit', page: () => const EditTodo()),
     GetPage(name: '/todo/:id/view', page: () => const CurrentTodo()),
+    GetPage(name: '/todosOrder', page: () => const TodosOrder()),
   ];
 }

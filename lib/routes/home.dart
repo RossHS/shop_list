@@ -42,6 +42,15 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
+          actions: <Widget>[
+            Tooltip(
+              message: 'Отображение списков',
+              child: IconButton(
+                onPressed: () => Get.toNamed('/todosOrder'),
+                icon: const Icon(Icons.sort),
+              ),
+            ),
+          ],
         ),
         // Проверка, что основное тело маршрута будет работать при наличии авторизированного пользователя
         body: Obx(() {
