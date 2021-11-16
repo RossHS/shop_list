@@ -181,17 +181,18 @@ class _TileItem extends StatelessWidget {
     final elevation = lerpDouble(0, 8, t);
 
     // Список элементов находящихся "за" элементом
-    final actions = <Widget>[
-      SlideAction(
-        closeOnTap: false,
-        color: Colors.red,
-        child: const Icon(
-          Icons.delete,
-          color: Colors.white,
+    final actions = ActionPane(
+      motion: const ScrollMotion(),
+      children: <Widget>[
+        SlidableAction(
+          onPressed: (_) => controller.todoElements.remove(item),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          label: 'Удалить',
+          icon: Icons.delete,
         ),
-        onTap: () => controller.todoElements.remove(item),
-      ),
-    ];
+      ],
+    );
 
     //TODO проработать установку цветов
     return SizeFadeTransition(
@@ -202,7 +203,6 @@ class _TileItem extends StatelessWidget {
         elevation: elevation!,
         color: color,
         child: Slidable(
-          actionPane: const SlidableScrollActionPane(),
           child: ListTile(
             title: Text(
               item.name,
@@ -216,8 +216,8 @@ class _TileItem extends StatelessWidget {
               ),
             ),
           ),
-          actions: actions,
-          secondaryActions: actions,
+          startActionPane: actions,
+          endActionPane: actions,
         ),
       ),
     );
