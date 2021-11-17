@@ -171,21 +171,47 @@ class TodosController extends GetxController {
 
   /// Установка новых параметров валидации приходящих списков дел
   void setValidation({CompletedValidation? completedValidation, AuthorValidation? authorValidation}) {
-    validator.update((val) {
-      validator.value
-        ..completedValidation = completedValidation ?? validator.value.completedValidation
-        ..authorValidation = authorValidation ?? validator.value.authorValidation;
-    });
+    validator.value = validator.value.copyWith(
+      completedValidation: completedValidation,
+      authorValidation: authorValidation,
+    );
   }
 }
 
 /// Валидатор, то, по каким параметрам фильтруются списки дел для отображения пользователю
 class Validator {
-  var completedValidation = CompletedValidation.all;
-  var authorValidation = AuthorValidation.all;
+  Validator({
+    CompletedValidation? completedValidation,
+    AuthorValidation? authorValidation,
+  })  : completedValidation = completedValidation ?? CompletedValidation.all,
+        authorValidation = authorValidation ?? AuthorValidation.all;
+
+  final CompletedValidation completedValidation;
+  final AuthorValidation authorValidation;
 
   bool validate(TodoModel todoModel, UserModel currentUser) {
     return completedValidation.valid(todoModel) && authorValidation.valid(todoModel, currentUser);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Validator &&
+          runtimeType == other.runtimeType &&
+          completedValidation == other.completedValidation &&
+          authorValidation == other.authorValidation;
+
+  @override
+  int get hashCode => Object.hashAll([completedValidation, authorValidation]);
+
+  Validator copyWith({
+    CompletedValidation? completedValidation,
+    AuthorValidation? authorValidation,
+  }) {
+    return Validator(
+      completedValidation: completedValidation ?? this.completedValidation,
+      authorValidation: authorValidation ?? this.authorValidation,
+    );
   }
 }
 

@@ -29,7 +29,10 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todosController = Get.find<TodosController>();
+    // TODO вставить отступы из animated90sConfig
+    const padding = 24.0;
     return Obx(() => ListView(
+          padding: const EdgeInsets.all(padding),
           children: <Widget>[
             _BoxItemWidget(
               children: [
@@ -59,6 +62,7 @@ class _Body extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: padding),
             _BoxItemWidget(
               children: [
                 const _Title('Авторство списков'),
@@ -87,6 +91,7 @@ class _Body extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: padding),
             _BoxItemWidget(
               children: [
                 const _Title('Сортировка по'),
@@ -114,6 +119,7 @@ class _Body extends StatelessWidget {
   }
 }
 
+/// Блок с настройками
 class _BoxItemWidget extends StatelessWidget {
   const _BoxItemWidget({required this.children, Key? key}) : super(key: key);
   final List<Widget> children;
@@ -121,9 +127,9 @@ class _BoxItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const config = Paint90sConfig();
-    final padding = 24.0 + config.offset;
+    final padding = config.offset.toDouble();
     return Padding(
-      padding: EdgeInsets.only(left: padding, right: padding, top: padding),
+      padding: EdgeInsets.all(padding),
       child: AnimatedPainterSquare90s(
         config: config,
         child: Material(
@@ -143,14 +149,17 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Divider(
-      indent: 20,
-      endIndent: 20,
-      thickness: 2,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        height: 2,
+        color: Colors.grey.shade300,
+      ),
     );
   }
 }
 
+/// Заголовок "блока" настроек
 class _Title extends StatelessWidget {
   const _Title(this.title, {Key? key}) : super(key: key);
   final String title;
