@@ -81,7 +81,7 @@ class _Body extends StatelessWidget {
       init: TodosController(usersMapController: UsersMapController()),
       builder: (todosController) => Obx(() {
         if (!todosController.isTodoStreamSubscribedNonNull) return const Center(child: CircularProgressIndicator());
-        if (todosController.allTodosList.isEmpty) {
+        if (todosController.filteredTodoList.isEmpty) {
           return const Center(child: Text('Нет данных'));
         } else {
           return LayoutBuilder(
@@ -119,11 +119,11 @@ class _ItemGrid extends StatelessWidget {
     final todosController = Get.find<TodosController>();
     return StaggeredGridView.countBuilder(
       crossAxisCount: rowCount,
-      itemCount: todosController.allTodosList.length,
+      itemCount: todosController.filteredTodoList.length,
       itemBuilder: (context, index) {
         return _TodoItem(
-          key: ObjectKey(todosController.allTodosList[index]),
-          refModel: todosController.allTodosList[index],
+          key: ObjectKey(todosController.filteredTodoList[index]),
+          refModel: todosController.filteredTodoList[index],
         );
       },
       staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),

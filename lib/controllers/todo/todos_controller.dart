@@ -45,6 +45,12 @@ class TodosController extends GetxController {
   /// Именно его и следует использовать при построении GUI
   final filteredTodoList = <FirestoreRefTodoModel>[].obs;
 
+  /// То, по каким параметрам следует фильтровать приходящий список дел
+  final validator = Validator().obs;
+
+  /// Критерий сортировки списка дел
+  final sortFilteredList = SortFilteredList.dateDown.obs;
+
   bool get isTodoStreamSubscribedNonNull => todoStreamSubscriber != null;
 
   @override
@@ -58,6 +64,21 @@ class TodosController extends GetxController {
     // на изменения, поэтому следует сделать начальную синхронизацию
     _userModelChangesListener(user.value);
     userStreamSubscriber = user.listen(_userModelChangesListener);
+
+    // При смене фильтра - производится перерасчет коллекции отфильтрованной
+    // коллекции на базе коллекции со всеми элементами
+    ever<Validator>(validator, (changedValidator) {
+      _log.fine('validator changes');
+      filteredTodoList.clear();
+      for (var element in allTodosList) {
+        filteredTodoList.addIf(changedValidator.validate(element.todoModel, user.value!), element);
+      }
+      sortFilteredList.value.sort(filteredTodoList);
+    });
+    // Применение нового способа сортировки списка
+    ever<SortFilteredList>(sortFilteredList, (changedSortFilteredList) {
+      changedSortFilteredList.sort(filteredTodoList);
+    });
   }
 
   @override
@@ -104,7 +125,6 @@ class TodosController extends GetxController {
       // Отмена предыдущего подписчика
       todoStreamSubscriber?.cancel();
       allTodosList.clear();
-      // TODO написать работу с фильтром
       todoStreamSubscriber = todoService.createStream(userModel.uid).listen((query) {
         for (var docChanges in query.docChanges) {
           final jsonData = docChanges.doc.data();
@@ -117,24 +137,109 @@ class TodosController extends GetxController {
             // При чтении списка дел отправляем id автора на проверку в мапу,
             // если такого пользователя нет, то вычитываем его из БД
             _usersMapController?.readId(userId: refModel.todoModel.authorId);
+            // Для оптимизации продублировал код добавления элементов в коллекции,
+            // т.к. если условно делать привязку к коллекции путем метода ever,
+            // то на любые изменения в коллекции allTodosList будет возвращаться
+            // полная коллекция => придется стирать и составлять целиком с нуля
+            // коллекцию filteredTodosList, что плохо может сказаться на производительности
+
             switch (docChanges.type) {
               case DocumentChangeType.added:
-                if (!allTodosList.contains(refModel)) {
-                  allTodosList.add(refModel);
-                }
+                allTodosList.addIf(!allTodosList.contains(refModel), refModel);
+                filteredTodoList.addIf(
+                  !filteredTodoList.contains(refModel) && validator.value.validate(refModel.todoModel, userModel),
+                  refModel,
+                );
                 break;
               case DocumentChangeType.modified:
                 allTodosList.removeWhere((e) => e.idRef == refModel.idRef);
                 allTodosList.add(refModel);
+                filteredTodoList.removeWhere((e) => e.idRef == refModel.idRef);
+                filteredTodoList.addIf(validator.value.validate(refModel.todoModel, userModel), refModel);
                 break;
               case DocumentChangeType.removed:
                 allTodosList.removeWhere((e) => e.idRef == refModel.idRef);
+                filteredTodoList.removeWhere((e) => e.idRef == refModel.idRef);
                 break;
             }
           }
         }
-        allTodosList.sort((a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp);
+        sortFilteredList.value.sort(filteredTodoList);
       });
     }
+  }
+
+  /// Установка новых параметров валидации приходящих списков дел
+  void setValidation({CompletedValidation? completedValidation, AuthorValidation? authorValidation}) {
+    validator.update((val) {
+      validator.value
+        ..completedValidation = completedValidation ?? validator.value.completedValidation
+        ..authorValidation = authorValidation ?? validator.value.authorValidation;
+    });
+  }
+}
+
+/// Валидатор, то, по каким параметрам фильтруются списки дел для отображения пользователю
+class Validator {
+  var completedValidation = CompletedValidation.all;
+  var authorValidation = AuthorValidation.all;
+
+  bool validate(TodoModel todoModel, UserModel currentUser) {
+    return completedValidation.valid(todoModel) && authorValidation.valid(todoModel, currentUser);
+  }
+}
+
+/// Валидация списков из коллекции [allTodosList] по критерию открыта/закрыта задача
+class CompletedValidation {
+  static final CompletedValidation all = CompletedValidation._('all', (_) => true);
+  static final CompletedValidation opened = CompletedValidation._('opened', (todoModel) => !todoModel.completed);
+  static final CompletedValidation closed = CompletedValidation._('closed', (todoModel) => todoModel.completed);
+
+  CompletedValidation._(this._debugName, this.valid);
+
+  final bool Function(TodoModel todoModel) valid;
+
+  // ignore: unused_field
+  final String _debugName;
+}
+
+/// Валидация по авторству списков дел, все авторы/только мои списки/только чужие
+class AuthorValidation {
+  static final all = AuthorValidation._('all', (_, __) => true);
+  static final myLists = AuthorValidation._('myLists', (todoModel, currentUser) {
+    return todoModel.authorId == currentUser.uid;
+  });
+  static final otherLists = AuthorValidation._('otherLists', (todoModel, currentUser) {
+    return todoModel.authorId != currentUser.uid;
+  });
+
+  AuthorValidation._(this._debugName, this.valid);
+
+  final bool Function(TodoModel todoModel, UserModel currentUser) valid;
+
+  // ignore: unused_field
+  final String _debugName;
+}
+
+/// Способы сортировки списков дел
+class SortFilteredList {
+  static final dateDown = SortFilteredList._(
+    'dateDown',
+    (a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp,
+  );
+  static final dateUp = SortFilteredList._(
+    'dateUp',
+    (a, b) => b.todoModel.createdTimestamp - a.todoModel.createdTimestamp,
+  );
+
+  SortFilteredList._(this._debugName, this._comparator);
+
+  final int Function(FirestoreRefTodoModel a, FirestoreRefTodoModel b) _comparator;
+
+  // ignore: unused_field
+  final String _debugName;
+
+  void sort(List<FirestoreRefTodoModel> list) {
+    list.sort(_comparator);
   }
 }

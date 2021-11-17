@@ -28,72 +28,89 @@ class TodosOrder extends StatelessWidget {
 class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _BoxItemWidget(
-          children: [
-            const _Title('Отображение списков'),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Все списки'),
+    final todosController = Get.find<TodosController>();
+    return Obx(() => ListView(
+          children: <Widget>[
+            _BoxItemWidget(
+              children: [
+                const _Title('Отображение списков'),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(completedValidation: CompletedValidation.all);
+                  },
+                  value: todosController.validator.value.completedValidation == CompletedValidation.all,
+                  title: const Text('Все списки'),
+                ),
+                const _Divider(),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(completedValidation: CompletedValidation.opened);
+                  },
+                  value: todosController.validator.value.completedValidation == CompletedValidation.opened,
+                  title: const Text('Открытые'),
+                ),
+                const _Divider(),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(completedValidation: CompletedValidation.closed);
+                  },
+                  value: todosController.validator.value.completedValidation == CompletedValidation.closed,
+                  title: const Text('Завершенные'),
+                ),
+              ],
             ),
-            const _Divider(),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Открытые'),
+            _BoxItemWidget(
+              children: [
+                const _Title('Авторство списков'),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(authorValidation: AuthorValidation.all);
+                  },
+                  value: todosController.validator.value.authorValidation == AuthorValidation.all,
+                  title: const Text('Все авторы'),
+                ),
+                const _Divider(),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(authorValidation: AuthorValidation.myLists);
+                  },
+                  value: todosController.validator.value.authorValidation == AuthorValidation.myLists,
+                  title: const Text('Мои списки'),
+                ),
+                const _Divider(),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.setValidation(authorValidation: AuthorValidation.otherLists);
+                  },
+                  value: todosController.validator.value.authorValidation == AuthorValidation.otherLists,
+                  title: const Text('Чужие'),
+                ),
+              ],
             ),
-            const _Divider(),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Завершенные'),
+            _BoxItemWidget(
+              children: [
+                const _Title('Сортировка по'),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.sortFilteredList.value = SortFilteredList.dateDown;
+                  },
+                  value: todosController.sortFilteredList.value == SortFilteredList.dateDown,
+                  title: const Text('По дате'),
+                  secondary: const Icon(Icons.arrow_downward),
+                ),
+                const _Divider(),
+                CheckboxListTile(
+                  onChanged: (_) {
+                    todosController.sortFilteredList.value = SortFilteredList.dateUp;
+                  },
+                  value: todosController.sortFilteredList.value == SortFilteredList.dateUp,
+                  title: const Text('По дате'),
+                  secondary: const Icon(Icons.arrow_upward),
+                ),
+              ],
             ),
           ],
-        ),
-        _BoxItemWidget(
-          children: [
-            const _Title('Авторство списков'),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Все авторы'),
-            ),
-            const _Divider(),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Мои списки'),
-            ),
-            const _Divider(),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('Чужие'),
-            ),
-          ],
-        ),
-        _BoxItemWidget(
-          children: [
-            const _Title('Сортировка по'),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('По дате'),
-              secondary: const Icon(Icons.arrow_downward),
-            ),
-            const _Divider(),
-            CheckboxListTile(
-              onChanged: (_) {},
-              value: false,
-              title: const Text('По дате'),
-              secondary: const Icon(Icons.arrow_upward),
-            ),
-          ],
-        ),
-      ],
-    );
+        ));
   }
 }
 

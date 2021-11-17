@@ -282,6 +282,128 @@ void main() async {
       final doubleComplete = await service.findTodo(ref.id);
       expect(doubleComplete.completedTimestamp, findTodo.completedTimestamp);
     });
+
+    test('filteredTodoList and validations tests', () async {
+      const currentUser = UserModel(
+        name: 'Author',
+        email: 'email',
+        photoUrl: 'photoUrl',
+        uid: 'author_uid',
+      );
+      final db = FakeFirebaseFirestore();
+      final service = TodoService(db);
+
+      final todosController = Get.put(
+        TodosController(db: db, user: Rxn<UserModel>(currentUser)),
+        tag: 'filteredTodoList and validations tests',
+      );
+      todosController.setValidation(
+        authorValidation: AuthorValidation.all,
+        completedValidation: CompletedValidation.all,
+      );
+
+      // Загрузка тестовых данных
+      Future<FirestoreRefTodoModel> addTodo(TodoModel todoModel) async {
+        final ref = await service.addTodo(todoModel);
+        return FirestoreRefTodoModel(todoModel: todoModel, idRef: ref.id);
+      }
+
+      final cuNonCompleted = await addTodo(
+        TodoModel(
+          authorId: currentUser.uid,
+          title: 'currentUser_non_completed',
+          completed: false,
+          isPublic: true,
+          createdTimestamp: 1,
+        ),
+      );
+      final cuCompleted = await addTodo(
+        TodoModel(
+          authorId: currentUser.uid,
+          title: 'currentUser_completed',
+          completed: true,
+          isPublic: true,
+          createdTimestamp: 2,
+        ),
+      );
+      final duNonCompleted = await addTodo(
+        TodoModel(
+          authorId: 'Dif_user',
+          title: 'difUser_non_completed',
+          completed: false,
+          isPublic: true,
+          createdTimestamp: 3,
+        ),
+      );
+      final duCompleted = await addTodo(
+        TodoModel(
+          authorId: 'Dif_user',
+          title: 'difUser_completed',
+          completed: true,
+          isPublic: true,
+          createdTimestamp: 4,
+        ),
+      );
+
+      // В текущем состоянии validator должен пропускать все приходящие данные
+      expect(todosController.filteredTodoList, todosController.allTodosList);
+
+      // Валидация списков только текущего пользователя
+      todosController.setValidation(
+        authorValidation: AuthorValidation.myLists,
+        completedValidation: CompletedValidation.all,
+      );
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(todosController.filteredTodoList, [
+        cuNonCompleted,
+        cuCompleted,
+      ]);
+
+      // Валидация только закрытых задач от текущего пользователя
+      todosController.setValidation(
+        authorValidation: AuthorValidation.myLists,
+        completedValidation: CompletedValidation.closed,
+      );
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(todosController.filteredTodoList, [
+        cuCompleted,
+      ]);
+
+      // Валидация только открытых задач ото всех пользователей
+      todosController.setValidation(
+        authorValidation: AuthorValidation.all,
+        completedValidation: CompletedValidation.opened,
+      );
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(todosController.filteredTodoList, [
+        cuNonCompleted,
+        duNonCompleted,
+      ]);
+
+      // Валидация только открытых задач ото всех других пользователей
+      todosController.setValidation(
+        authorValidation: AuthorValidation.otherLists,
+        completedValidation: CompletedValidation.opened,
+      );
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(todosController.filteredTodoList, [
+        duNonCompleted,
+      ]);
+
+      // Проверка корректности сортировки по времени
+      todosController.setValidation(
+        authorValidation: AuthorValidation.all,
+        completedValidation: CompletedValidation.all,
+      );
+      todosController.sortFilteredList.value = SortFilteredList.dateUp;
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(todosController.filteredTodoList, [
+        duCompleted,
+        duNonCompleted,
+        cuCompleted,
+        cuNonCompleted,
+      ]);
+    });
   });
 
   // Тестирование TodoViewController контроллера
