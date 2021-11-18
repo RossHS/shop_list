@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
@@ -22,6 +23,7 @@ class TodosController extends GetxController {
         _usersMapController = usersMapController;
 
   final _log = Logger('TodosController');
+  final storage = GetStorage();
 
   final UsersMapController? _usersMapController;
 
@@ -46,16 +48,19 @@ class TodosController extends GetxController {
   final filteredTodoList = <FirestoreRefTodoModel>[].obs;
 
   /// То, по каким параметрам следует фильтровать приходящий список дел
-  final validator = Validator().obs;
+  late final Rx<Validator> validator;
 
   /// Критерий сортировки списка дел
-  final sortFilteredList = SortFilteredList.dateDown.obs;
+  late final Rx<SortFilteredList> sortFilteredList;
 
   bool get isTodoStreamSubscribedNonNull => todoStreamSubscriber != null;
 
   @override
   void onInit() {
     super.onInit();
+    validator = Validator.fromGetStorage(storage).obs;
+    sortFilteredList = SortFilteredList.fromGetStorage(storage).obs;
+
     // Так как UsersMapController идет в связке с текущим контроллером, то имеет смысл
     // инициализировать его совместно с этим контроллером
     if (_usersMapController != null) Get.put(_usersMapController!);
@@ -74,10 +79,12 @@ class TodosController extends GetxController {
         filteredTodoList.addIf(changedValidator.validate(element.todoModel, user.value!), element);
       }
       sortFilteredList.value.sort(filteredTodoList);
+      Future(() => changedValidator.writeToGetStorage(storage));
     });
     // Применение нового способа сортировки списка
     ever<SortFilteredList>(sortFilteredList, (changedSortFilteredList) {
       changedSortFilteredList.sort(filteredTodoList);
+      Future(() => changedSortFilteredList.writeToGetStorage(storage));
     });
   }
 
@@ -186,11 +193,48 @@ class Validator {
   })  : completedValidation = completedValidation ?? CompletedValidation.all,
         authorValidation = authorValidation ?? AuthorValidation.all;
 
+  static const validatorCompletedKey = 'validator_completed_key';
+  static const validatorAuthorKey = 'validator_author_key';
+
   final CompletedValidation completedValidation;
   final AuthorValidation authorValidation;
 
   bool validate(TodoModel todoModel, UserModel currentUser) {
     return completedValidation.valid(todoModel) && authorValidation.valid(todoModel, currentUser);
+  }
+
+  /// Создание объекта валидатора на основе записи в устройстве
+  factory Validator.fromGetStorage(GetStorage storage) {
+    final completed = storage.read(validatorCompletedKey) as String?;
+    final author = storage.read(validatorAuthorKey) as String?;
+
+    CompletedValidation? parsedCompletedValidation;
+    if (completed == CompletedValidation.all._debugName) {
+      parsedCompletedValidation = CompletedValidation.all;
+    } else if (completed == CompletedValidation.opened._debugName) {
+      parsedCompletedValidation = CompletedValidation.opened;
+    } else if (completed == CompletedValidation.closed._debugName) {
+      parsedCompletedValidation = CompletedValidation.closed;
+    }
+
+    AuthorValidation? parsedAuthorValidation;
+    if (author == AuthorValidation.all._debugName) {
+      parsedAuthorValidation = AuthorValidation.all;
+    } else if (author == AuthorValidation.myLists._debugName) {
+      parsedAuthorValidation = AuthorValidation.myLists;
+    } else if (author == AuthorValidation.otherLists._debugName) {
+      parsedAuthorValidation = AuthorValidation.otherLists;
+    }
+
+    return Validator(
+      completedValidation: parsedCompletedValidation,
+      authorValidation: parsedAuthorValidation,
+    );
+  }
+
+  void writeToGetStorage(GetStorage storage) {
+    storage.write(validatorCompletedKey, completedValidation._debugName);
+    storage.write(validatorAuthorKey, authorValidation._debugName);
   }
 
   @override
@@ -224,26 +268,31 @@ class CompletedValidation {
   CompletedValidation._(this._debugName, this.valid);
 
   final bool Function(TodoModel todoModel) valid;
-
-  // ignore: unused_field
   final String _debugName;
 }
 
 /// Валидация по авторству списков дел, все авторы/только мои списки/только чужие
 class AuthorValidation {
-  static final all = AuthorValidation._('all', (_, __) => true);
-  static final myLists = AuthorValidation._('myLists', (todoModel, currentUser) {
-    return todoModel.authorId == currentUser.uid;
-  });
-  static final otherLists = AuthorValidation._('otherLists', (todoModel, currentUser) {
-    return todoModel.authorId != currentUser.uid;
-  });
+  static final all = AuthorValidation._(
+    'all',
+    (_, __) => true,
+  );
+  static final myLists = AuthorValidation._(
+    'myLists',
+    (todoModel, currentUser) {
+      return todoModel.authorId == currentUser.uid;
+    },
+  );
+  static final otherLists = AuthorValidation._(
+    'otherLists',
+    (todoModel, currentUser) {
+      return todoModel.authorId != currentUser.uid;
+    },
+  );
 
   AuthorValidation._(this._debugName, this.valid);
 
   final bool Function(TodoModel todoModel, UserModel currentUser) valid;
-
-  // ignore: unused_field
   final String _debugName;
 }
 
@@ -251,19 +300,32 @@ class AuthorValidation {
 class SortFilteredList {
   static final dateDown = SortFilteredList._(
     'dateDown',
-    (a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp,
+    (a, b) => b.todoModel.createdTimestamp - a.todoModel.createdTimestamp,
   );
   static final dateUp = SortFilteredList._(
     'dateUp',
-    (a, b) => b.todoModel.createdTimestamp - a.todoModel.createdTimestamp,
+    (a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp,
   );
+  static const sortFilteredListKey = 'sortFiltered_key';
 
   SortFilteredList._(this._debugName, this._comparator);
 
   final int Function(FirestoreRefTodoModel a, FirestoreRefTodoModel b) _comparator;
-
-  // ignore: unused_field
   final String _debugName;
+
+  factory SortFilteredList.fromGetStorage(GetStorage storage) {
+    final sortAlg = storage.read(sortFilteredListKey) as String?;
+    if (sortAlg == null || sortAlg == dateDown._debugName) {
+      return dateDown;
+    } else if (sortAlg == dateUp._debugName) {
+      return dateUp;
+    }
+    throw Exception('Error while parsing SortFilteredList.fromGetStorage - key $sortFilteredListKey - $sortAlg');
+  }
+
+  void writeToGetStorage(GetStorage storage) {
+    storage.write(sortFilteredListKey, _debugName);
+  }
 
   void sort(List<FirestoreRefTodoModel> list) {
     list.sort(_comparator);

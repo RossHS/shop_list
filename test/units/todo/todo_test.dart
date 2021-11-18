@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
+import 'package:shop_list/controllers/todo/todos_controller.dart';
 import 'package:shop_list/models/models.dart';
 
 /// Тестирование по нескольким пунктам
@@ -398,11 +400,44 @@ void main() async {
       todosController.sortFilteredList.value = SortFilteredList.dateUp;
       await Future.delayed(const Duration(milliseconds: 200));
       expect(todosController.filteredTodoList, [
-        duCompleted,
-        duNonCompleted,
-        cuCompleted,
         cuNonCompleted,
+        cuCompleted,
+        duNonCompleted,
+        duCompleted,
       ]);
+    });
+
+    test('GetXStorage Validator test', () {
+      final storage = GetStorage('validator_test');
+
+      // Создание валидатора, когда еще нет ключей в хранилище,
+      // т.е. должен создаться дефолтный валидатор
+      final defaultValidator = Validator.fromGetStorage(storage);
+      expect(
+          defaultValidator,
+          Validator(
+            authorValidation: AuthorValidation.all,
+            completedValidation: CompletedValidation.all,
+          ));
+
+      // Запись отличного от дефолтного валидатора
+      final validator = Validator(
+        authorValidation: AuthorValidation.myLists,
+        completedValidation: CompletedValidation.opened,
+      );
+      validator.writeToGetStorage(storage);
+      expect(Validator.fromGetStorage(storage), validator);
+    });
+
+    test('GetXStorage SortFilteredList test', () {
+      final storage = GetStorage('SortFilteredList_test');
+
+      // Попытка создать сортировочный алгоритм, когда нет записи в хранилище
+      expect(SortFilteredList.fromGetStorage(storage), SortFilteredList.dateDown);
+
+      // Запись алгоритма сортировки отличного от дефолтного
+      SortFilteredList.dateUp.writeToGetStorage(storage);
+      expect(SortFilteredList.fromGetStorage(storage), SortFilteredList.dateUp);
     });
   });
 
