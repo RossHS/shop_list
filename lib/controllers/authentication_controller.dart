@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
@@ -53,17 +54,27 @@ class AuthenticationController extends GetxController {
   }
 
   /// Функция выхода из профиля
-  Future<void> signOut() {
+  Future<void> signOut() async {
     _log.fine('${firestoreUser.value?.name} - SignOut');
     nameController.clear();
     emailController.clear();
     passwordController.clear();
-    // Очищение ресурсов пользователя,
-    // чтобы при выходе из системы не
-    // висели данные прошлого пользователя
-    firebaseUser.value = null;
-    firestoreUser.value = null;
-    return _auth.signOut();
+
+    // Удаление токена пользователя из БД
+    if (firebaseUser.value?.uid != null) {
+      await _deleteDeviceToken(firebaseUser.value!.uid);
+    }
+
+    try {
+      await _auth.signOut();
+      // Очищение ресурсов пользователя,
+      // чтобы при выходе из системы не
+      // висели данные прошлого пользователя
+      firebaseUser.value = null;
+      firestoreUser.value = null;
+    } catch (e) {
+      _log.shout(e);
+    }
   }
 
   /// Реакция на изменения в потоке FirebaseUser
@@ -71,6 +82,8 @@ class AuthenticationController extends GetxController {
     if (user?.uid != null) {
       // Загрузка модели пользователя из базы данных firestore Users
       firestoreUser.bindStream(streamFirestoreUser);
+      // Сохранение токена устройства
+      _saveDeviceToken(user!.uid);
     }
 
     if (user == null) {
@@ -169,6 +182,26 @@ class AuthenticationController extends GetxController {
     update();
   }
 
+  /// После авторизации в приложении, в документе пользователя создается/обновляется коллекция tokens,
+  /// где хранятся документы со всеми токенами сервиса Firebase Cloud Messaging.
+  /// Данные токены необходимы, чтобы корректно отсылать оповещения по всем
+  /// необходимым устройствам на стороне java сервера
+  Future<void> _saveDeviceToken(String uid) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    _db.collection('/users/$uid/tokens').doc(token).set({
+      'token': token,
+      'platform': _parsePlatform(),
+      'createdTimestamp': DateTime.now().millisecondsSinceEpoch,
+    });
+  }
+
+  /// После выхода из аккаунта - данный токен необходимо удалить.
+  /// Чтобы не приходили оповещения на устройства не с авторизированным пользователем
+  Future<void> _deleteDeviceToken(String uid) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    _db.collection('/users/$uid/tokens').doc(token).delete();
+  }
+
   /// Поток загрузки модели пользователя из базы данных firestore users
   Stream<UserModel> get streamFirestoreUser {
     _log.fine('streamFirestoreUser()');
@@ -178,4 +211,15 @@ class AuthenticationController extends GetxController {
         .snapshots()
         .map((snapshot) => UserModel.fromJson(snapshot.data()!));
   }
+}
+
+String _parsePlatform() {
+  if (GetPlatform.isAndroid) {
+    return 'android';
+  } else if (GetPlatform.isIOS) {
+    return 'ios';
+  } else if (GetPlatform.isWeb) {
+    return 'web';
+  }
+  return 'unknown';
 }
