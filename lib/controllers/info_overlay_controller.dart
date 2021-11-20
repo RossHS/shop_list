@@ -9,6 +9,7 @@ class CustomInfoOverlay {
   CustomInfoOverlay({
     this.title,
     required this.msg,
+    this.child,
   });
 
   /// Заголовок сообщения
@@ -16,6 +17,9 @@ class CustomInfoOverlay {
 
   /// Само сообщение
   String msg;
+
+  /// Дополнительный виджет для отображения в оверлее
+  Widget? child;
 
   /// Следует ли удалять оверлей
   final overlayToRemove = ValueNotifier<bool>(false);
@@ -26,10 +30,12 @@ class CustomInfoOverlay {
   static void show({
     String? title,
     required String msg,
+    Widget? child,
   }) async {
     final toastOverlay = CustomInfoOverlay(
       title: title,
       msg: msg,
+      child: child,
     );
     toastOverlay._init();
   }
@@ -42,7 +48,7 @@ class CustomInfoOverlay {
     final overlayState = navigationState.overlay!;
     overlayEntry = OverlayEntry(
       builder: (context) {
-        return _resolveTheme(title, msg);
+        return _resolveTheme();
       },
     );
     overlayState.insert(overlayEntry!);
@@ -59,7 +65,7 @@ class CustomInfoOverlay {
 
   /// В зависимости от темы будет создаваться определенный оверлей
   /// TODO когда закончу с контроллером тем, вернусь сюда
-  Widget _resolveTheme(String? title, String msg) {
+  Widget _resolveTheme() {
     final textTheme = Get.theme.textTheme;
     // TODO определять в контроллере тем стандартный Paint90sConfig
     Paint90sConfig config = const Paint90sConfig();
@@ -74,9 +80,16 @@ class CustomInfoOverlay {
               width: double.infinity,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (title != null) Text(title, style: textTheme.headline5),
+                  if (title != null)
+                    Text(
+                      title!,
+                      textAlign: TextAlign.center,
+                      style: textTheme.headline5,
+                    ),
                   Text(msg, style: textTheme.bodyText1),
+                  if (child != null) child!
                 ],
               ),
             ),
@@ -176,11 +189,15 @@ class _CustomOverlayState extends State<_CustomOverlay> with SingleTickerProvide
 
 /// Класс для упрощения создания оверлея с составным сообщением
 class OverlayBuilder {
-  OverlayBuilder({this.title});
+  OverlayBuilder({
+    this.title,
+    this.child,
+  });
 
   /// Заголовок сообщения
   final String? title;
   final List<String> _msgList = <String>[];
+  final Widget? child;
 
   String get msg => _msgList.join('\n');
 
