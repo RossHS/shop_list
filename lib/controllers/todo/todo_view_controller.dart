@@ -12,7 +12,7 @@ class TodoViewController extends GetxController {
     FirebaseFirestore? db,
   }) : _service = TodoService(db);
 
-  final _log = Logger('TodoViewController');
+  static final _log = Logger('TodoViewController');
 
   final TodoService _service;
   final _state = TodoViewCurrentState.unknown.obs;

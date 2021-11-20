@@ -11,7 +11,7 @@ import 'package:shop_list/utils/text_validators.dart' as text_validation;
 
 /// Бизнес-логика управления состоянием аутентификации пользователя
 class AuthenticationController extends GetxController {
-  final _log = Logger('AuthenticationController');
+  static final _log = Logger('AuthenticationController');
 
   // Ссылка на сам объект контроллера аутентификации,
   // чтобы не искать каждый раз данный объект в менеджере состояний

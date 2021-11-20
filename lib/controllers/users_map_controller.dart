@@ -11,7 +11,7 @@ class UsersMapController extends GetxController {
     FirebaseFirestore? db,
   }) : _usersMapService = _UsersMapService(db);
 
-  final _log = Logger('UsersMapController');
+  static final _log = Logger('UsersMapController');
 
   final _UsersMapService _usersMapService;
 

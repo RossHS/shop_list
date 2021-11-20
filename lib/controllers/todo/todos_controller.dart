@@ -22,7 +22,7 @@ class TodosController extends GetxController {
         todoService = TodoService(db),
         _usersMapController = usersMapController;
 
-  final _log = Logger('TodosController');
+  static final _log = Logger('TodosController');
   final storage = GetStorage();
 
   final UsersMapController? _usersMapController;
