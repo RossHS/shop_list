@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/routes/get_routes.dart';
 import 'package:shop_list/utils/application_themes.dart' as app_theme;
+import 'package:shop_list/utils/firebase_messaging_service.dart';
 
 void main() async {
   // Настройка логгера. Просто выводит в консоль сообщение в определенном формате
@@ -19,6 +20,7 @@ void main() async {
   await Firebase.initializeApp();
   await GetStorage.init();
   Get.put(AuthenticationController());
+  FirebaseMessagingService.init();
   runApp(const MyApp());
 }
 
