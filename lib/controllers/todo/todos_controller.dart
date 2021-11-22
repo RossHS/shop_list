@@ -205,8 +205,8 @@ class Validator {
 
   /// Создание объекта валидатора на основе записи в устройстве
   factory Validator.fromGetStorage(GetStorage storage) {
-    final completed = storage.read(validatorCompletedKey) as String?;
-    final author = storage.read(validatorAuthorKey) as String?;
+    final completed = storage.read<String>(validatorCompletedKey);
+    final author = storage.read<String>(validatorAuthorKey);
 
     CompletedValidation? parsedCompletedValidation;
     if (completed == CompletedValidation.all._debugName) {
@@ -314,7 +314,7 @@ class SortFilteredList {
   final String _debugName;
 
   factory SortFilteredList.fromGetStorage(GetStorage storage) {
-    final sortAlg = storage.read(sortFilteredListKey) as String?;
+    final sortAlg = storage.read<String>(sortFilteredListKey);
     if (sortAlg == null || sortAlg == dateDown._debugName) {
       return dateDown;
     } else if (sortAlg == dateUp._debugName) {
