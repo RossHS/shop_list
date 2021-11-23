@@ -6,7 +6,6 @@ import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/routes/get_routes.dart';
-import 'package:shop_list/utils/application_themes.dart' as app_theme;
 import 'package:shop_list/utils/firebase_messaging_service.dart';
 
 void main() async {
@@ -34,8 +33,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialRoute: '/',
       getPages: GetRoutes.routes,
-      theme: app_theme.lightTheme,
-      darkTheme: app_theme.darkTheme,
+      themeMode: ThemeController.to.themeMode.value,
+      theme: ThemeController.to.appTheme.value.lightTheme,
+      darkTheme: ThemeController.to.appTheme.value.darkTheme,
     );
   }
 }

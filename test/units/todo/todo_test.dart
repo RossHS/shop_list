@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
-import 'package:shop_list/controllers/todo/todos_controller.dart';
 import 'package:shop_list/models/models.dart';
 
 /// Тестирование по нескольким пунктам
