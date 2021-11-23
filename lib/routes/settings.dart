@@ -28,42 +28,59 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: <Widget>[
-        Obx(
-          () => ListTile(
-            title: const _Title('Стиль'),
-            trailing: DropdownButton<ThemeDataWrapper>(
-              value: controller.appTheme.value,
+        ListTile(
+          title: const _Title('Стиль'),
+          trailing: Obx(
+            () => DropdownButton<String>(
+              value: controller.appTheme.value.themePrefix,
               items: controller.appThemeList
-                  .map<DropdownMenuItem<ThemeDataWrapper>>((value) => DropdownMenuItem(
+                  .map<DropdownMenuItem<String>>((value) => DropdownMenuItem(
                         value: value,
-                        child: Text(value.themePrefix),
+                        child: Text(value),
+                      ))
+                  .toList(),
+              onChanged: controller.setAppTheme,
+            ),
+          ),
+        ),
+        ListTile(
+          title: const _Title('Шрифт'),
+          trailing: Obx(
+            () => DropdownButton<TextTheme>(
+              value: controller.textTheme.value,
+              items: TextThemeCollection.map.entries
+                  .map<DropdownMenuItem<TextTheme>>((entry) => DropdownMenuItem(
+                        value: entry.value,
+                        child: Text(entry.key),
                       ))
                   .toList(),
               onChanged: (newValue) {
                 if (newValue != null) {
-                  controller.appTheme.value = newValue;
+                  controller.textTheme.value = newValue;
                 }
               },
             ),
           ),
         ),
-        Obx(() => ListTile(
-              title: const _Title('Тема'),
-              trailing: DropdownButton<ThemeMode>(
-                value: controller.themeMode.value,
-                items: ThemeMode.values
-                    .map<DropdownMenuItem<ThemeMode>>((themeMode) => DropdownMenuItem(
-                          value: themeMode,
-                          child: Text(themeMode.name),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  if (newValue != null) {
-                    controller.themeMode.value = newValue;
-                  }
-                },
-              ),
-            )),
+        ListTile(
+          title: const _Title('Тема'),
+          trailing: Obx(
+            () => DropdownButton<ThemeMode>(
+              value: controller.themeMode.value,
+              items: ThemeMode.values
+                  .map<DropdownMenuItem<ThemeMode>>((themeMode) => DropdownMenuItem(
+                        value: themeMode,
+                        child: Text(themeMode.name),
+                      ))
+                  .toList(),
+              onChanged: (newValue) {
+                if (newValue != null) {
+                  controller.themeMode.value = newValue;
+                }
+              },
+            ),
+          ),
+        ),
       ],
     );
   }

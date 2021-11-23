@@ -16,53 +16,50 @@ class ThemeController extends GetxController {
   late final Rx<ThemeDataWrapper> appTheme;
 
   /// Список всех доступных тем на выбор
-  late final List<ThemeDataWrapper> appThemeList = [
-    Animated90sThemeData.fromGetStorage(storage),
-    MaterialThemeData.fromGetStorage(storage),
-    ModernThemeData.fromGetStorage(storage),
+  late final List<String> appThemeList = [
+    Animated90sThemeData.appThemeStorageValue,
+    ModernThemeData.appThemeStorageValue,
+    MaterialThemeData.appThemeStorageValue,
   ];
 
   /// Тип темы приложения системная/светлая/темная
   late final Rx<ThemeMode> themeMode;
 
-  // final fontFamily = 'RossFont'.obs;
+  /// Тема текста
+  late final Rx<TextTheme> textTheme;
 
   @override
   void onInit() {
     super.onInit();
     // Инициализация темы приложения
-    appTheme = _initParseAppTheme().obs;
     themeMode = _initParseThemeMode().obs;
-
-    ever<ThemeMode>(themeMode, _onThemeModeChangeState);
+    textTheme = _initParseTextTheme().obs;
+    appTheme = _initParseAppTheme().obs;
+    ever<ThemeMode>(themeMode, _onThemeModeStateChange);
+    ever<TextTheme>(textTheme, _onTextThemeStateChange);
     ever<ThemeDataWrapper>(appTheme, _onAppThemeStateChangeEvent);
   }
 
   /// Парсинг темы при инициализации контроллера из хранилища
   ThemeDataWrapper _initParseAppTheme() {
-    ThemeDataWrapper? themeWrapper;
-    final appThemeValue =
-        storage.read<String>(ThemeDataWrapper.appThemeStorageKey) ?? Animated90sThemeData.appThemeStorageValue;
-    // Определение глобального стиля
-    switch (appThemeValue) {
-      case Animated90sThemeData.appThemeStorageValue:
-        themeWrapper = Animated90sThemeData.fromGetStorage(storage);
-        break;
-      case MaterialThemeData.appThemeStorageValue:
-        themeWrapper = ModernThemeData.fromGetStorage(storage);
-        break;
-      case ModernThemeData.appThemeStorageValue:
-        themeWrapper = ModernThemeData.fromGetStorage(storage);
-        break;
-    }
-    return themeWrapper!;
+    final appThemeValue = storage.read<String>(ThemeDataWrapper.appThemeStorageKey);
+    _log.fine('init AppTheme - $appThemeValue');
+    return _getThemeDataWrapperFromString(appThemeValue);
   }
 
   /// Инициализация темы приложения [ThemeMode] при запуске приложения
   ThemeMode _initParseThemeMode() {
     // Чтение ранее записанного значения в хранилище, если ничего нет по ключу, то используем системные тему
     final themeModeValue = storage.read<String>('themeMode') ?? ThemeMode.system.name;
+    _log.fine('init ThemeMode - $themeModeValue');
     return ThemeMode.values.firstWhere((mode) => mode.name == themeModeValue);
+  }
+
+  /// Инициализация темы текста [TextTheme]
+  TextTheme _initParseTextTheme() {
+    final textThemeValue = storage.read<String>('textTheme');
+    _log.fine('init TextTheme - $textThemeValue');
+    return TextThemeCollection.fromString(textThemeValue);
   }
 
   /// Callback, который вызывается при каждом изменении значения в переменной [appTheme]
@@ -79,9 +76,37 @@ class ThemeController extends GetxController {
   }
 
   /// Callback, вызывается при смене типа темы приложения системная/светлая/темная в переменной [themeMode]
-  void _onThemeModeChangeState(ThemeMode themeMode) {
+  void _onThemeModeStateChange(ThemeMode themeMode) {
     _log.fine('changed themeMode to ${themeMode.name}');
     Get.changeThemeMode(themeMode);
     storage.write('themeMode', themeMode.name);
+  }
+
+  void _onTextThemeStateChange(TextTheme textTheme) {
+    final textThemeKey =
+        TextThemeCollection.map.keys.firstWhere((theme) => TextThemeCollection.map[theme] == textTheme);
+    _log.fine('changed textTheme to $textThemeKey');
+    appTheme.value = appTheme.value.copyWith(textTheme: textTheme);
+    storage.write('textTheme', textThemeKey);
+  }
+
+  ThemeDataWrapper _getThemeDataWrapperFromString(String? themePrefix) {
+    final toParse = themePrefix;
+    _log.fine('parse AppTheme from $toParse');
+    switch (toParse) {
+      case Animated90sThemeData.appThemeStorageValue:
+        return Animated90sThemeData.fromGetStorage(storage);
+      case MaterialThemeData.appThemeStorageValue:
+        return MaterialThemeData.fromGetStorage(storage);
+      case ModernThemeData.appThemeStorageValue:
+        return ModernThemeData.fromGetStorage(storage);
+      default:
+        return Animated90sThemeData.fromGetStorage(storage);
+    }
+  }
+
+  void setAppTheme(String? themePrefix) {
+    _log.fine('set AppTheme from GUI to $themePrefix');
+    appTheme.value = _getThemeDataWrapperFromString(themePrefix);
   }
 }
