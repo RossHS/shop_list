@@ -8,10 +8,10 @@ import 'package:get/get.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Так как маршруты изменения и формирования маршрутов отличаются одной лишь кнопкой,
 /// то имеет смысл выделить единую часть в отдельный виджет, дабы не дублировать код
@@ -35,40 +35,36 @@ class TodoRouteBase extends StatelessWidget {
       ),
       hintColor: Colors.white,
     );
-    final controller = Get.find<TodoEditCreateController>();
+    final todoEditController = Get.find<TodoEditCreateController>();
     // Гарантированная инициализация контроллера TodoEditCreatorController
-    return Scaffold(
-      appBar: AnimatedAppBar90s(
-        leading: IconButton(
-          onPressed: Get.back,
-          icon: const AnimatedIcon90s(
-            iconsList: CustomIcons.arrow,
-          ),
-        ),
-        title: SizedBox(
-          width: _Body._width,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Theme(
-              data: appBarTheme,
-              child: CustomTextField(
-                controller: controller.todoTitleTextController,
-                drawUnderLine: false,
-                maxLines: 1,
-                decoration: const InputDecoration(
-                  labelText: 'Название списка...',
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(8),
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
+    return GetX<ThemeController>(
+      builder: (themeController) => Scaffold(
+        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
+          title: SizedBox(
+            width: _Body._width,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Theme(
+                data: appBarTheme,
+                child: CustomTextField(
+                  controller: todoEditController.todoTitleTextController,
+                  drawUnderLine: false,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                    labelText: 'Название списка...',
+                    isCollapsed: true,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(8),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-      body: _Body(
-        buttonWidget: widgetButton,
+        body: _Body(
+          buttonWidget: widgetButton,
+        ),
       ),
     );
   }

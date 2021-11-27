@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
+import 'package:get/get.dart';
+import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 
 /// Реализация аналога AppBar с наличием анимации 90х
 class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
@@ -32,11 +33,11 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final appBarTheme = AppBarTheme.of(context);
 
-    final Color foregroundColor = appBarTheme.foregroundColor ??
+    final foregroundColor = appBarTheme.foregroundColor ??
         (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
 
     final titleTextStyle = appBarTheme.titleTextStyle ?? theme.textTheme.headline6?.copyWith(color: foregroundColor);
@@ -47,14 +48,20 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
 
     final actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
 
+    // Если явно не задан leading виджет,
+    // то будет отображаться кнопка перехода на предыдущий маршрут
+    var leading = this.leading ??
+        IconButton(
+          onPressed: Get.back,
+          icon: const AnimatedIcon90s(
+            iconsList: CustomIcons.arrow,
+          ),
+        );
     // Установка темы для виджета перед заголовком
-    Widget? leading = this.leading;
-    if (leading != null) {
-      leading = IconTheme.merge(
-        data: actionsIconTheme,
-        child: leading,
-      );
-    }
+    leading = IconTheme.merge(
+      data: actionsIconTheme,
+      child: leading,
+    );
 
     // Оборачиваем виджет заголовка в виджет стиля текста,
     // чтобы придать тексту необходимы вид во всем поддереве

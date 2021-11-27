@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Отображение списков дел по различным параметрам
 class TodosOrder extends StatelessWidget {
@@ -10,17 +10,13 @@ class TodosOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AnimatedAppBar90s(
-        title: const Text('Отображение списков'),
-        leading: IconButton(
-          onPressed: Get.back,
-          icon: const AnimatedIcon90s(
-            iconsList: CustomIcons.arrow,
-          ),
+    return GetX<ThemeController>(
+      builder: (themeController) => Scaffold(
+        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
+          title: const Text('Отображение списков'),
         ),
+        body: _Body(),
       ),
-      body: _Body(),
     );
   }
 }

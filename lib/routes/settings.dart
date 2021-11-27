@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
-import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Маршрут настройки тем приложения
 class Settings extends StatelessWidget {
@@ -16,22 +15,10 @@ class Settings extends StatelessWidget {
         // Obx - для перестроения темы маршрута. Нужен только здесь,
         // так как в других частях приложения не будет динамически изменяться тема
         return Obx(() {
-          // TODO 24.11.2021 придумать способ организации виджетов зависящих от темы. Скорее всего просто использовать фабрику, фабричный метод или что-то на подобии
-          PreferredSizeWidget appBar = controller.appTheme.value is Animated90sThemeData
-              ? AnimatedAppBar90s(
-                  title: const Text('Настройки темы'),
-                  leading: IconButton(
-                    onPressed: Get.back,
-                    icon: const AnimatedIcon90s(
-                      iconsList: CustomIcons.arrow,
-                    ),
-                  ),
-                )
-              : AppBar(
-                  title: const Text('Настройки темы'),
-                );
           return Scaffold(
-            appBar: appBar,
+            appBar: ThemeFactory.instance(controller.appTheme.value).appBar(
+              title: const Text('Настройка темы'),
+            ),
             body: const _Body(),
           );
         });

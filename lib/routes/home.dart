@@ -6,11 +6,11 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/models.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_app_bar.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/drawer.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Главный экран пользователя, где отображаются все актуальные списки покупок
 class Home extends StatefulWidget {
@@ -25,45 +25,49 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return AppDrawer(
-      advancedDrawerController: _advancedDrawerController,
-      child: Scaffold(
-        appBar: AnimatedAppBar90s(
-          title: const Text('Список дел'),
-          leading: IconButton(
-            onPressed: _advancedDrawerController.showDrawer,
-            icon: ValueListenableBuilder<AdvancedDrawerValue>(
-              valueListenable: _advancedDrawerController,
-              builder: (_, value, __) {
-                return AnimatedIcon90s(
-                  iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
-                  key: ValueKey<bool>(value.visible),
-                );
-              },
+    return GetX<ThemeController>(
+      builder: (themeController) {
+        return AppDrawer(
+          advancedDrawerController: _advancedDrawerController,
+          child: Scaffold(
+            appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
+              title: const Text('Список дел'),
+              leading: IconButton(
+                onPressed: _advancedDrawerController.showDrawer,
+                icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                  valueListenable: _advancedDrawerController,
+                  builder: (_, value, __) {
+                    return AnimatedIcon90s(
+                      iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
+                      key: ValueKey<bool>(value.visible),
+                    );
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                Tooltip(
+                  message: 'Отображение списков',
+                  child: IconButton(
+                    onPressed: () => Get.toNamed('/todosOrder'),
+                    icon: const Icon(Icons.sort),
+                  ),
+                ),
+              ],
             ),
-          ),
-          actions: <Widget>[
-            Tooltip(
-              message: 'Отображение списков',
-              child: IconButton(
-                onPressed: () => Get.toNamed('/todosOrder'),
-                icon: const Icon(Icons.sort),
+            // Проверка, что основное тело маршрута будет работать при наличии авторизированного пользователя
+            body: Obx(() {
+              final auth = Get.find<AuthenticationController>();
+              return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
+            }),
+            floatingActionButton: AnimatedCircleButton90s(
+              onPressed: _openCreateTodo,
+              child: const AnimatedIcon90s(
+                iconsList: CustomIcons.create,
               ),
             ),
-          ],
-        ),
-        // Проверка, что основное тело маршрута будет работать при наличии авторизированного пользователя
-        body: Obx(() {
-          final auth = Get.find<AuthenticationController>();
-          return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
-        }),
-        floatingActionButton: AnimatedCircleButton90s(
-          onPressed: _openCreateTodo,
-          child: const AnimatedIcon90s(
-            iconsList: CustomIcons.create,
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

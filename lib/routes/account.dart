@@ -8,6 +8,7 @@ import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/image/image_capture.dart';
 import 'package:shop_list/widgets/image/image_selected_indicator.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 class Account extends StatelessWidget {
   const Account({Key? key}) : super(key: key);
@@ -17,22 +18,17 @@ class Account extends StatelessWidget {
     final authController = AuthenticationController.instance;
     Get.put(UserInfoUpdateController());
     Get.put(FirebaseStorageUploaderController());
-
-    return Scaffold(
-      appBar: AnimatedAppBar90s(
-        leading: IconButton(
-          onPressed: Get.back,
-          icon: const AnimatedIcon90s(
-            iconsList: CustomIcons.arrow,
-          ),
+    return GetX<ThemeController>(
+      builder: (themeController) => Scaffold(
+        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
+          title: const Text('Аккаунт'),
         ),
-        title: const Text('Аккаунт'),
-      ),
-      body: Center(
-        child: Obx(() {
-          final userModel = authController.firestoreUser.value;
-          return userModel == null ? const CircularProgressIndicator() : _Body(userModel: userModel);
-        }),
+        body: Center(
+          child: Obx(() {
+            final userModel = authController.firestoreUser.value;
+            return userModel == null ? const CircularProgressIndicator() : _Body(userModel: userModel);
+          }),
+        ),
       ),
     );
   }
