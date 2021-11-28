@@ -57,7 +57,7 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Colors.yellow;
+    Color backgroundColor = Theme.of(context).scaffoldBackgroundColor;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) => SingleChildScrollView(
         child: ConstrainedBox(
@@ -75,8 +75,23 @@ class _BodyState extends State<_Body> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(25.0),
-                        child: AnimatedPainterCircleWithBorder90s(
-                          boxColor: backgroundColor,
+                        // Виджет аватара
+                        child: themeFactory.buildWidget(
+                          animated90s: (child) => AnimatedPainterCircleWithBorder90s(
+                            boxColor: backgroundColor,
+                            child: child!,
+                          ),
+                          material: (child) => Material(
+                            elevation: 10,
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(300),
+                            // shape: ,
+                            child: ClipOval(
+                              child: Container(
+                                child: child,
+                              ),
+                            ),
+                          ),
                           child: Avatar(
                             diameter: 280,
                             user: widget.userModel,

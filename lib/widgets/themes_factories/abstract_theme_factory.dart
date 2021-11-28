@@ -47,14 +47,26 @@ abstract class ThemeFactory {
   /// не загружая абстрактную фабрику гигантским числом мелких методов
   /// Метод выходящий за принципы паттерна "абстрактной фабрики" и отчасти нарушающий их и полиморфизм
   Widget buildWidget({
-    required Widget Function() animated90s,
-    required Widget Function() material,
-    required Widget Function() modern,
+    Widget Function(Widget? child) animated90s = _defaultBuildWidgetFunction,
+    Widget Function(Widget? child) material = _defaultBuildWidgetFunction,
+    Widget Function(Widget? child) modern = _defaultBuildWidgetFunction,
+    Widget? child,
   }) {
-    if (this is Animated90sFactory) return animated90s();
-    if (this is MaterialThemeFactory) return material();
-    if (this is ModernThemeData) return modern();
+    if (this is Animated90sFactory) return animated90s(child);
+    if (this is MaterialThemeFactory) return material(child);
+    if (this is ModernThemeData) return modern(child);
     throw Exception('Unsupported type of factory - $runtimeType');
+  }
+
+  /// Костыль к [buildWidget], так как синтаксис Dart не позволяет напрямую указывать в именованном параметре дефолтную функцию.
+  /// Т.е. вместо того чтобы разрешить использовать const к типу Function https://github.com/dart-lang/language/issues/1048
+  /// и писать напрямую
+  /// Widget Function(Widget? child) animated90s = const (child) => SizedBox(child: child),
+  /// Приходится создавать приватную статическую функцию
+  static Widget _defaultBuildWidgetFunction(Widget? child) {
+    return SizedBox(
+      child: child,
+    );
   }
 }
 

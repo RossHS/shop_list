@@ -60,45 +60,57 @@ class CurrentTodo extends StatelessWidget {
                 authorModel = userMapController.getUserModel(controller.todoModel!.authorId);
               }
               return GetX<ThemeController>(
-                builder: (themeController) => Scaffold(
-                  appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
-                    title: Text(appBarTitle),
-                    bottom: controller.todoModel != null && authorModel != null
-                        ? PreferredSize(
-                            preferredSize: const Size.fromHeight(75),
-                            child: SizedBox(
-                              height: 75,
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: AnimatedPainterCircleWithBorder90s(
-                                      boxColor: appBarTheme.backgroundColor ?? theme.primaryColor,
-                                      child: Avatar(diameter: 70, user: authorModel),
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(authorModel.name),
-                                      Text(
-                                        dateTimeFormatter.format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                            controller.todoModel!.createdTimestamp,
+                builder: (themeController) {
+                  final themeFactory = ThemeFactory.instance(themeController.appTheme.value);
+                  return Scaffold(
+                    appBar: themeFactory.appBar(
+                      title: Text(appBarTitle),
+                      bottom: controller.todoModel != null && authorModel != null
+                          ? PreferredSize(
+                              preferredSize: const Size.fromHeight(75),
+                              child: SizedBox(
+                                height: 80,
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: themeFactory.buildWidget(
+                                        animated90s: (child) => AnimatedPainterCircleWithBorder90s(
+                                          boxColor: appBarTheme.backgroundColor ?? theme.primaryColor,
+                                          child: child!,
+                                        ),
+                                        material: (child) => ConstrainedBox(
+                                          constraints: const BoxConstraints.expand(height: 70, width: 70),
+                                          child: ClipOval(
+                                            child: child,
                                           ),
                                         ),
+                                        child: Avatar(diameter: 70, user: authorModel),
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(authorModel.name),
+                                        Text(
+                                          dateTimeFormatter.format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                              controller.todoModel!.createdTimestamp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        : null,
-                  ),
-                  body: body,
-                ),
+                            )
+                          : null,
+                    ),
+                    body: body,
+                  );
+                },
               );
             }));
   }

@@ -50,7 +50,7 @@ class _AnimatedIconWrapper extends StatelessWidget {
     const width = 42.0;
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return themeFactory.buildWidget(
-      animated90s: () {
+      animated90s: (child) {
         final paintConfig = Paint90sConfig(
           backgroundColor: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
         );
@@ -61,12 +61,12 @@ class _AnimatedIconWrapper extends StatelessWidget {
             width: width,
             child: IconTheme.merge(
               data: overallIconTheme,
-              child: icon,
+              child: child!,
             ),
           ),
         );
       },
-      material: () => Container(
+      material: (child) => Container(
         height: height,
         width: width,
         decoration: BoxDecoration(
@@ -75,15 +75,16 @@ class _AnimatedIconWrapper extends StatelessWidget {
         ),
         child: IconTheme.merge(
           data: overallIconTheme,
-          child: icon,
+          child: child!,
         ),
       ),
-      modern: () => Container(
+      modern: (child) => Container(
         height: height,
         width: width,
         decoration: const BoxDecoration(shape: BoxShape.circle),
-        child: icon,
+        child: child,
       ),
+      child: icon,
     );
   }
 }

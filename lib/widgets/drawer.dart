@@ -72,8 +72,20 @@ class AppDrawer extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 34, bottom: 20),
                             child: Obx(
                               () => authController.firestoreUser.value != null
-                                  ? AnimatedPainterCircleWithBorder90s(
-                                      boxColor: backgroundColor,
+                                  ? themeFactory.buildWidget(
+                                      animated90s: (child) => AnimatedPainterCircleWithBorder90s(
+                                        boxColor: backgroundColor,
+                                        child: child!,
+                                      ),
+                                      material: (child) => Material(
+                                        elevation: 20,
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(300),
+                                        // shape: ,
+                                        child: ClipOval(
+                                          child: Container(child: child,),
+                                        ),
+                                      ),
                                       child: Avatar(user: authController.firestoreUser.value!),
                                     )
                                   : const SizedBox(),
