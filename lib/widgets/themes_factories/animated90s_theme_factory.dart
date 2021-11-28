@@ -49,6 +49,9 @@ class Animated90sFactory extends ThemeFactory {
       child: child,
     );
   }
+
+  @override
+  Widget todoItemBox({Key? key, required Widget child}) => AnimatedPainterSquare90s(key: key, child: child);
 }
 
 class Animated90IconsFactory extends IconsFactory {

@@ -47,6 +47,25 @@ class MaterialThemeFactory extends ThemeFactory {
       child: child,
     );
   }
+
+  @override
+  Widget todoItemBox({Key? key, required Widget child}) {
+    return Container(
+      key: key,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
 }
 
 class Material90IconsFactory extends IconsFactory {

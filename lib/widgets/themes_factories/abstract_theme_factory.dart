@@ -36,11 +36,15 @@ abstract class ThemeFactory {
     required Widget child,
   });
 
+  /// Самая распространенная кнопка - [ElevatedButton]
   Widget button({
     Key? key,
     required void Function() onPressed,
     required Widget child,
   });
+
+  /// Внешняя форма для списка дел на основном экране
+  Widget todoItemBox({Key? key, required Widget child});
 
   /// Динамически возвращает один из прописанных виджетов аргумента в зависимости от типа текущей реализации фабрики.
   /// Полезен, когда необходимо создавать действительно уникальные виджеты в одном конкретном месте,

@@ -71,6 +71,7 @@ class AppDrawer extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 34, bottom: 20),
                             child: Obx(
+                              // Аватар
                               () => authController.firestoreUser.value != null
                                   ? themeFactory.buildWidget(
                                       animated90s: (child) => AnimatedPainterCircleWithBorder90s(
@@ -83,7 +84,7 @@ class AppDrawer extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(300),
                                         // shape: ,
                                         child: ClipOval(
-                                          child: Container(child: child,),
+                                          child: Container(child: child),
                                         ),
                                       ),
                                       child: Avatar(user: authController.firestoreUser.value!),

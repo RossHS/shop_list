@@ -3,11 +3,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/models.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/drawer.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
@@ -37,10 +34,7 @@ class _HomeState extends State<Home> {
                 icon: ValueListenableBuilder<AdvancedDrawerValue>(
                   valueListenable: _advancedDrawerController,
                   builder: (_, value, __) {
-                    return AnimatedIcon90s(
-                      iconsList: value.visible ? CustomIcons.create : CustomIcons.arrow,
-                      key: ValueKey<bool>(value.visible),
-                    );
+                    return value.visible ? themeFactory.icons.create : themeFactory.icons.user;
                   },
                 ),
               ),
@@ -197,6 +191,7 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
 
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -204,7 +199,7 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
       onPointerUp: _onPointerUp,
       child: ScaleTransition(
         scale: _animation,
-        child: AnimatedPainterSquare90s(
+        child: themeFactory.todoItemBox(
           child: Stack(
             children: [
               Padding(
