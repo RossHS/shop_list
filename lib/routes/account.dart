@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/avatar.dart';
@@ -48,6 +47,7 @@ class _Body extends StatefulWidget {
 
 class _BodyState extends State<_Body> {
   final userUpdateController = Get.find<UserInfoUpdateController>();
+  final ThemeFactory themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _BodyState extends State<_Body> {
                       maxLines: 1,
                       controller: userUpdateController.nameController,
                       hint: 'User Name',
-                      prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
+                      prefixIcon: themeFactory.icons.user,
                     ),
                   ),
                 ),
@@ -121,9 +121,12 @@ class _BodyState extends State<_Body> {
                 const Spacer(),
                 Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: AnimatedButton90s(
-                    onPressed: _updateUserInfo,
-                    child: const Text('Save'),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: double.infinity),
+                    child: themeFactory.button(
+                      onPressed: _updateUserInfo,
+                      child: const Text('Save'),
+                    ),
                   ),
                 ),
               ],

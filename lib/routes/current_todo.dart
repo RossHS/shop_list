@@ -157,6 +157,7 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return GetBuilder<TodoViewController>(
       builder: (controller) {
         if (!controller.isTodoCompleted) {
@@ -201,9 +202,12 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
                 ),
                 Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: AnimatedButton90s(
-                    onPressed: () => _completeTodoDialog(context),
-                    child: const Text('Завершить'),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: double.infinity),
+                    child: themeFactory.button(
+                      onPressed: () => _completeTodoDialog(context),
+                      child: const Text('Завершить'),
+                    ),
                   ),
                 )
               ],

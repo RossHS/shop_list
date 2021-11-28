@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/routes/get_routes.dart';
 import 'package:shop_list/utils/firebase_messaging_service.dart';
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Индикация того, выбрал ли пользователь фотографию для загрузки
 class ImageSelectedIndicator extends StatelessWidget {
@@ -39,27 +40,49 @@ class _AnimatedIconWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final FloatingActionButtonThemeData floatingActionButtonTheme = theme.floatingActionButtonTheme;
-    final ColorScheme colorScheme = theme.colorScheme;
+    final theme = Theme.of(context);
+    final floatingActionButtonTheme = theme.floatingActionButtonTheme;
+    final colorScheme = theme.colorScheme;
+    final foregroundColor = (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
+    final overallIconTheme = theme.iconTheme.copyWith(color: foregroundColor);
 
-    final Color foregroundColor =
-        (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
-    final IconThemeData overallIconTheme = theme.iconTheme.copyWith(color: foregroundColor);
-
-    Paint90sConfig paintConfig = Paint90sConfig(
-      backgroundColor: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
-    );
-
-    return AnimatedPainterCircle90s(
-      config: paintConfig,
-      child: SizedBox(
-        height: 42,
-        width: 42,
+    const height = 42.0;
+    const width = 42.0;
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+    return themeFactory.buildWidget(
+      animated90s: () {
+        final paintConfig = Paint90sConfig(
+          backgroundColor: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
+        );
+        return AnimatedPainterCircle90s(
+          config: paintConfig,
+          child: SizedBox(
+            height: height,
+            width: width,
+            child: IconTheme.merge(
+              data: overallIconTheme,
+              child: icon,
+            ),
+          ),
+        );
+      },
+      material: () => Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
+        ),
         child: IconTheme.merge(
           data: overallIconTheme,
           child: icon,
         ),
+      ),
+      modern: () => Container(
+        height: height,
+        width: width,
+        decoration: const BoxDecoration(shape: BoxShape.circle),
+        child: icon,
       ),
     );
   }

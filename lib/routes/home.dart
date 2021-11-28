@@ -7,7 +7,6 @@ import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/drawer.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
@@ -27,10 +26,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return GetX<ThemeController>(
       builder: (themeController) {
+        final themeFactory = ThemeFactory.instance(themeController.appTheme.value);
         return AppDrawer(
           advancedDrawerController: _advancedDrawerController,
           child: Scaffold(
-            appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
+            appBar: themeFactory.appBar(
               title: const Text('Список дел'),
               leading: IconButton(
                 onPressed: _advancedDrawerController.showDrawer,
@@ -59,11 +59,9 @@ class _HomeState extends State<Home> {
               final auth = Get.find<AuthenticationController>();
               return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
             }),
-            floatingActionButton: AnimatedCircleButton90s(
+            floatingActionButton: themeFactory.floatingActionButton(
               onPressed: _openCreateTodo,
-              child: const AnimatedIcon90s(
-                iconsList: CustomIcons.create,
-              ),
+              child: themeFactory.icons.create,
             ),
           ),
         );
