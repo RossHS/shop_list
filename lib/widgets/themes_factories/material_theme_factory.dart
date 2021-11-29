@@ -108,6 +108,69 @@ class MaterialThemeFactory extends ThemeFactory {
       ),
     );
   }
+
+  @override
+  void showDialog({String? text, List<Widget>? actions}) {
+    // Продублировал код из Animated90sThemeFactory
+    showGeneralDialog(
+      context: Get.context!,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        final theme = Get.theme;
+        final textTheme = Get.textTheme;
+        Widget? titleWidget;
+        Widget? actionsWidget;
+
+        if (text != null) {
+          titleWidget = Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Text(
+              text,
+              style: textTheme.headline6,
+            ),
+          );
+        }
+
+        if (actions != null) {
+          actionsWidget = Row(
+            mainAxisSize: MainAxisSize.min,
+            children: actions,
+          );
+        }
+
+        return DefaultTextStyle(
+          style: Get.textTheme.bodyText2!,
+          child: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: theme.canvasColor,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (titleWidget != null) titleWidget,
+                    if (actionsWidget != null) actionsWidget,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 600),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return Transform.scale(
+          scale: CurvedAnimation(parent: animation, curve: Curves.easeInOutQuint).value,
+          child: child,
+        );
+      },
+      barrierDismissible: true,
+      barrierLabel: '',
+    );
+  }
 }
 
 class Material90IconsFactory extends IconsFactory {

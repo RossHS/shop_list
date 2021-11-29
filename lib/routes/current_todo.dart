@@ -217,7 +217,24 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: double.infinity),
                     child: themeFactory.button(
-                      onPressed: () => _completeTodoDialog(context),
+                      onPressed: () => themeFactory.showDialog(
+                        text: 'Завершить задачу?',
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              await _completeTodo();
+                              Get.back();
+                            },
+                            child: const Text('Ok'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text('Отмена'),
+                          ),
+                        ],
+                      ),
                       child: const Text('Завершить'),
                     ),
                   ),
@@ -249,68 +266,6 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
           ],
         );
       },
-    );
-  }
-
-  /// Вызов диалогового окна закрытия задачи
-  void _completeTodoDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (context, animation, secondaryAnimation) {
-        // final size = MediaQuery.of(context).size;
-        final textTheme = Get.textTheme;
-        return DefaultTextStyle(
-          style: Get.textTheme.bodyText2!,
-          child: Center(
-            child: AnimatedPainterSquare90s(
-              config: const Paint90sConfig(offset: 20),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Text(
-                        'Завершить задачу?',
-                        style: textTheme.headline6,
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextButton(
-                          onPressed: () async {
-                            await _completeTodo();
-                            Get.back();
-                          },
-                          child: const Text('Ok'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text('Отмена'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 600),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return Transform.scale(
-          scale: CurvedAnimation(parent: animation, curve: Curves.easeInOutQuint).value,
-          child: child,
-        );
-      },
-      barrierDismissible: true,
-      barrierLabel: '',
     );
   }
 

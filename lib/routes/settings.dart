@@ -119,7 +119,19 @@ class _ButtonsRow extends StatelessWidget {
                   child: const Text('Оповещение')),
             ),
             const SizedBox(width: 16),
-            Expanded(child: themeFactory.button(onPressed: () {}, child: const Text('Диалог'))),
+            Expanded(
+              child: themeFactory.button(
+                  onPressed: () {
+                    themeFactory.showDialog(
+                      text: 'Заголовок диалога',
+                      actions: [
+                        TextButton(onPressed: () {}, child: const Text('OK')),
+                        TextButton(onPressed: () {}, child: const Text('Отменить')),
+                      ],
+                    );
+                  },
+                  child: const Text('Диалог')),
+            ),
           ],
         );
       },

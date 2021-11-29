@@ -391,7 +391,6 @@ class _CrossLinePainter extends CustomPainter {
       ..strokeWidth = 3
       ..color = Colors.black
       ..style = PaintingStyle.stroke;
-    // TODO константы связанные с "рванной областью"
     const offsetConst = 10.0;
     canvas.drawLine(
       const Offset(-offsetConst, -offsetConst),

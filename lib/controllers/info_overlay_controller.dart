@@ -5,7 +5,6 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Класс для вызова оверлея на подобии SnackBar библиотеки GetX.
-/// TODO написать контроллер темы, который будет использоваться в цветах оверлея
 class CustomInfoOverlay {
   CustomInfoOverlay({
     this.title,
