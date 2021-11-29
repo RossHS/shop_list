@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
@@ -37,7 +38,7 @@ class _Body extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: <Widget>[
         ListTile(
-          title: const _Title('Стиль'),
+          title: const Text('Стиль'),
           trailing: Obx(
             () => DropdownButton<String>(
               value: controller.appTheme.value.themePrefix,
@@ -52,7 +53,7 @@ class _Body extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const _Title('Шрифт'),
+          title: const Text('Шрифт'),
           trailing: Obx(
             () => DropdownButton<TextTheme>(
               value: controller.textTheme.value,
@@ -71,7 +72,7 @@ class _Body extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const _Title('Тема'),
+          title: const Text('Тема'),
           trailing: Obx(
             () => DropdownButton<ThemeMode>(
               value: controller.themeMode.value,
@@ -89,24 +90,39 @@ class _Body extends StatelessWidget {
             ),
           ),
         ),
+        const _ButtonsRow(),
       ],
     );
   }
 }
 
-/// Заголовок в ListTile с настройкой
-/// TODO 23.11.2021 если не придумаю толкового применения то удалю
-class _Title extends StatelessWidget {
-  const _Title(this.title, {Key? key}) : super(key: key);
-  final String title;
+/// Ряд с кнопками для вызова различных контекстных виджетов (оповещение/snackbar/dialog)
+class _ButtonsRow extends StatelessWidget {
+  const _ButtonsRow({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-    return Text(
-      title,
-      // style: theme.textTheme.headline5,
-      // textAlign: TextAlign.center,
+    return GetX<ThemeController>(
+      builder: (controller) {
+        final themeFactory = ThemeFactory.instance(controller.appTheme.value);
+        return Row(
+          children: [
+            Expanded(
+              child: themeFactory.button(
+                  onPressed: () {
+                    CustomInfoOverlay.show(
+                      title: 'Заголовок',
+                      msg: 'Текст Сообщения',
+                      child: TextButton(onPressed: () {}, child: const Text('Кнопка')),
+                    );
+                  },
+                  child: const Text('Оповещение')),
+            ),
+            const SizedBox(width: 16),
+            Expanded(child: themeFactory.button(onPressed: () {}, child: const Text('Диалог'))),
+          ],
+        );
+      },
     );
   }
 }

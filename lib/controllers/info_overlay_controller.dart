@@ -1,7 +1,8 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/controllers/controllers.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Класс для вызова оверлея на подобии SnackBar библиотеки GetX.
 /// TODO написать контроллер темы, который будет использоваться в цветах оверлея
@@ -48,7 +49,14 @@ class CustomInfoOverlay {
     final overlayState = navigationState.overlay!;
     overlayEntry = OverlayEntry(
       builder: (context) {
-        return _resolveTheme();
+        return _CustomOverlay(
+          overlayToRemoveNotifier: overlayToRemove,
+          child: ThemeFactory.instance(ThemeController.to.appTheme.value).infoOverlay(
+            title: title,
+            msg: msg,
+            child: child,
+          ),
+        );
       },
     );
     overlayState.insert(overlayEntry!);
@@ -61,42 +69,6 @@ class CustomInfoOverlay {
       overlayToRemove.removeListener(_checkForDelete);
       overlayToRemove.dispose();
     }
-  }
-
-  /// В зависимости от темы будет создаваться определенный оверлей
-  /// TODO когда закончу с контроллером тем, вернусь сюда
-  Widget _resolveTheme() {
-    final textTheme = Get.theme.textTheme;
-    // TODO определять в контроллере тем стандартный Paint90sConfig
-    Paint90sConfig config = const Paint90sConfig();
-    return _CustomOverlay(
-      overlayToRemoveNotifier: overlayToRemove,
-      child: SafeArea(
-        // Отступы, чтобы SnackBar не выходил за границы экрана из-за AnimatedPainterSquare
-        child: Padding(
-          padding: EdgeInsets.all(10.0 + config.offset),
-          child: AnimatedPainterSquare90s(
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (title != null)
-                    Text(
-                      title!,
-                      textAlign: TextAlign.center,
-                      style: textTheme.headline5,
-                    ),
-                  Text(msg, style: textTheme.bodyText1),
-                  if (child != null) child!
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

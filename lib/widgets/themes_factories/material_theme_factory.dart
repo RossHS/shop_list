@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Фабрика классической темы дизайна Material
@@ -64,6 +65,47 @@ class MaterialThemeFactory extends ThemeFactory {
         ],
       ),
       child: child,
+    );
+  }
+
+  @override
+  Widget infoOverlay({String? title, required String msg, Widget? child}) {
+    final theme = Get.theme;
+    final textTheme = theme.textTheme;
+    return SafeArea(
+      // Отступы, чтобы SnackBar не выходил за границы экрана из-за AnimatedPainterSquare
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: theme.canvasColor,
+            boxShadow: [
+              BoxShadow(
+                color: theme.brightness == Brightness.light ? Colors.grey : Colors.black,
+                offset: const Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (title != null)
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: textTheme.headline5,
+                ),
+              Text(msg, style: textTheme.bodyText1),
+              if (child != null) child
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
