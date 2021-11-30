@@ -17,8 +17,11 @@ class CurrentTodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    final theme = Theme.of(context);
+    final appBarTheme = AppBarTheme.of(context);
+    final colorScheme = theme.colorScheme;
+    final additionInfoAppBarTextColor = appBarTheme.foregroundColor ??
+        (colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary);
 
     final docId = Get.parameters['id'];
     final TodoViewController viewController = TodoViewController();
@@ -80,7 +83,7 @@ class CurrentTodo extends StatelessWidget {
                                           child: child!,
                                         ),
                                         material: (child) => ConstrainedBox(
-                                          constraints: const BoxConstraints.expand(height: 70, width: 70),
+                                          constraints: const BoxConstraints.expand(height: 50, width: 50),
                                           child: ClipOval(
                                             child: child,
                                           ),
@@ -88,19 +91,22 @@ class CurrentTodo extends StatelessWidget {
                                         child: Avatar(diameter: 70, user: authorModel),
                                       ),
                                     ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(authorModel.name),
-                                        Text(
-                                          dateTimeFormatter.format(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                              controller.todoModel!.createdTimestamp,
+                                    DefaultTextStyle(
+                                      style: theme.textTheme.apply(bodyColor: additionInfoAppBarTextColor).bodyText1!,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(authorModel.name),
+                                          Text(
+                                            dateTimeFormatter.format(
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                controller.todoModel!.createdTimestamp,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -328,12 +334,14 @@ class _CompletedInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Get.textTheme;
     final todoViewController = Get.find<TodoViewController>();
     final userMapController = Get.find<UsersMapController>();
     assert(todoViewController.todoModel != null);
     final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
-    return AnimatedPainterSquare90s(
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+    return themeFactory.todoItemBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -348,11 +356,11 @@ class _CompletedInformation extends StatelessWidget {
             Text(completedAuthor?.name ?? ''),
             Text(
               formatterDate.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+              style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
             ),
             Text(
               formatterTime.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+              style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
             ),
           ],
         ),

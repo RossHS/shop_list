@@ -334,6 +334,7 @@ class _ItemControlPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final todosController = Get.find<TodosController>();
     final authController = Get.find<AuthenticationController>();
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return Positioned.fill(
       key: ValueKey(_refModel),
       child: FadeTransition(
@@ -353,9 +354,24 @@ class _ItemControlPanel extends StatelessWidget {
                 if (!_todoModel.completed)
                   Expanded(
                     child: RawMaterialButton(
-                      onPressed: () => todosController.completeTodo(
-                        docId: _refModel.idRef,
-                        completedAuthorUid: authController.firestoreUser.value!.uid,
+                      onPressed: () => themeFactory.showDialog(
+                        text: 'Завершить задачу?',
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                todosController.completeTodo(
+                                  docId: _refModel.idRef,
+                                  completedAuthorUid: authController.firestoreUser.value!.uid,
+                                );
+                                Get.back();
+                              },
+                              child: const Text('ОК')),
+                          TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: const Text('Отмена'))
+                        ],
                       ),
                       child: const Icon(Icons.check),
                     ),
@@ -371,7 +387,22 @@ class _ItemControlPanel extends StatelessWidget {
                 if (authController.firestoreUser.value?.uid == _todoModel.authorId)
                   Expanded(
                     child: RawMaterialButton(
-                      onPressed: () => todosController.deleteTodo(_refModel.idRef),
+                      onPressed: () => themeFactory.showDialog(
+                        text: 'Удалить задачу?',
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                todosController.deleteTodo(_refModel.idRef);
+                                Get.back();
+                              },
+                              child: const Text('ОК')),
+                          TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: const Text('Отмена'))
+                        ],
+                      ),
                       child: const Icon(Icons.remove),
                     ),
                   ),
