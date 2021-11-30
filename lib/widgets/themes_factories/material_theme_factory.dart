@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Фабрика классической темы дизайна Material
@@ -50,7 +51,7 @@ class MaterialThemeFactory extends ThemeFactory {
   }
 
   @override
-  Widget todoItemBox({Key? key, required Widget child}) {
+  Widget commonItemBox({Key? key, required Widget child}) {
     final theme = Get.theme;
     return Container(
       key: key,
@@ -115,6 +116,29 @@ class MaterialThemeFactory extends ThemeFactory {
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget textField({
+    Key? key,
+    required TextEditingController controller,
+    bool Function(String p1)? inputValidator,
+    String? hint,
+    int? maxLines,
+    int? minLines,
+    Widget? prefixIcon,
+    bool obscureText = false,
+  }) {
+    return MaterialCustomTextField(
+      key: key,
+      controller: controller,
+      inputValidator: inputValidator,
+      hint: hint,
+      maxLines: maxLines,
+      minLines: minLines,
+      prefixIcon: prefixIcon,
+      obscureText: obscureText,
     );
   }
 
@@ -190,4 +214,7 @@ class Material90IconsFactory extends IconsFactory {
 
   @override
   Widget get user => const Icon(Icons.account_circle);
+
+  @override
+  Widget get lock => const Icon(Icons.lock);
 }

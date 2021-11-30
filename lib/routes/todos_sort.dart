@@ -122,7 +122,7 @@ class _BoxItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.todoItemBox(
+    return themeFactory.commonItemBox(
       child: Material(
         type: MaterialType.transparency,
         child: Column(

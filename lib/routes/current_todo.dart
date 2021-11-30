@@ -341,7 +341,7 @@ class _CompletedInformation extends StatelessWidget {
     final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.todoItemBox(
+    return themeFactory.commonItemBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

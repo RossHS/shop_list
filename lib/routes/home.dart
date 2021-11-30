@@ -199,7 +199,7 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
       onPointerUp: _onPointerUp,
       child: ScaleTransition(
         scale: _animation,
-        child: themeFactory.todoItemBox(
+        child: themeFactory.commonItemBox(
           child: Stack(
             children: [
               Padding(

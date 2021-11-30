@@ -43,8 +43,8 @@ abstract class ThemeFactory {
     required Widget child,
   });
 
-  /// Внешняя форма для списка дел на основном экране
-  Widget todoItemBox({Key? key, required Widget child});
+  /// Самая распространенная форма - выделяет виджеты в определенный "контейнер"
+  Widget commonItemBox({Key? key, required Widget child});
 
   /// Фон для поля ввода элементов списка дел из [TodoRouteBase]
   Widget todoElementMsgInputBox({Key? key, required Widget child});
@@ -54,6 +54,18 @@ abstract class ThemeFactory {
     String? title,
     required String msg,
     Widget? child,
+  });
+
+  /// Поле текстового ввода
+  Widget textField({
+    Key? key,
+    required TextEditingController controller,
+    bool Function(String)? inputValidator,
+    String? hint,
+    int? maxLines,
+    int? minLines,
+    Widget? prefixIcon,
+    bool obscureText = false,
   });
 
   /// Диалоговое окно c текстом [text] и перечнем виджетов [actions],
@@ -95,4 +107,6 @@ abstract class IconsFactory {
   Widget get create;
 
   Widget get user;
+
+  Widget get lock;
 }

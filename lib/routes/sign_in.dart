@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_list/controllers/authentication_controller.dart';
-import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/utils/text_validators.dart' as validators;
-import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
-import 'package:shop_list/widgets/custom_text_field.dart';
+import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -37,11 +34,12 @@ class _CustomFormState extends State<_CustomForm> {
 
   @override
   Widget build(BuildContext context) {
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return RepaintBoundary(
       child: Form(
         key: _formStateKey,
         child: Center(
-          child: AnimatedPainterSquare90s(
+          child: themeFactory.commonItemBox(
             child: SizedBox(
               width: 400,
               child: Padding(
@@ -49,19 +47,19 @@ class _CustomFormState extends State<_CustomForm> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      CustomTextField(
+                      themeFactory.textField(
                         controller: _authController.emailController,
                         hint: 'email',
                         inputValidator: validators.email,
                         maxLines: 1,
-                        prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.user),
+                        prefixIcon: themeFactory.icons.user,
                       ),
-                      CustomTextField(
+                      themeFactory.textField(
                         controller: _authController.passwordController,
                         hint: 'password',
                         inputValidator: validators.password,
                         maxLines: 1,
-                        prefixIcon: const AnimatedIcon90s(iconsList: CustomIcons.lock),
+                        prefixIcon: themeFactory.icons.lock,
                         obscureText: true,
                       ),
                       const SizedBox(height: 15),

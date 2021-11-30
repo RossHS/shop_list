@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Фабрика кастомного стиля Animated90s
@@ -52,7 +53,7 @@ class Animated90sFactory extends ThemeFactory {
   }
 
   @override
-  Widget todoItemBox({Key? key, required Widget child}) {
+  Widget commonItemBox({Key? key, required Widget child}) {
     // TODO 30.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
     final theme = Get.theme;
     return AnimatedPainterSquare90s(
@@ -109,6 +110,29 @@ class Animated90sFactory extends ThemeFactory {
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget textField({
+    Key? key,
+    required TextEditingController controller,
+    bool Function(String p1)? inputValidator,
+    String? hint,
+    int? maxLines,
+    int? minLines,
+    Widget? prefixIcon,
+    bool obscureText = false,
+  }) {
+    return CustomTextField(
+      key: key,
+      controller: controller,
+      inputValidator: inputValidator,
+      hint: hint,
+      maxLines: maxLines,
+      minLines: minLines,
+      prefixIcon: prefixIcon,
+      obscureText: obscureText,
     );
   }
 
@@ -183,4 +207,7 @@ class Animated90IconsFactory extends IconsFactory {
 
   @override
   Widget get user => const AnimatedIcon90s(iconsList: CustomIcons.user);
+
+  @override
+  Widget get lock => const AnimatedIcon90s(iconsList: CustomIcons.lock);
 }
