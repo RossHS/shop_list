@@ -9,7 +9,6 @@ import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorder
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
@@ -227,10 +226,8 @@ class _TodoElementsMsgInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<TodoEditCreateController>();
-
-    return AnimatedPainterSquare90s(
-      borderPaint: const BorderPaint.top(),
-      config: const Paint90sConfig(backgroundColor: Colors.white),
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+    return themeFactory.todoElementMsgInputBox(
       child: Material(
         color: Colors.transparent,
         child: Row(
@@ -238,11 +235,10 @@ class _TodoElementsMsgInput extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: CustomTextField(
+              child: TextField(
                 controller: controller.todoElementNameTextController,
                 minLines: 1,
                 maxLines: 5,
-                drawUnderLine: false,
                 decoration: const InputDecoration(
                   labelText: 'Текст задачи...',
                   isCollapsed: true,

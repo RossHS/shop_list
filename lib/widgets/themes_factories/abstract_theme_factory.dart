@@ -46,6 +46,9 @@ abstract class ThemeFactory {
   /// Внешняя форма для списка дел на основном экране
   Widget todoItemBox({Key? key, required Widget child});
 
+  /// Фон для поля ввода элементов списка дел из [TodoRouteBase]
+  Widget todoElementMsgInputBox({Key? key, required Widget child});
+
   /// Оверлей с оповещением
   Widget infoOverlay({
     String? title,

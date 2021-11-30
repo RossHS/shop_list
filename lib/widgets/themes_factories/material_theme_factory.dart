@@ -51,11 +51,12 @@ class MaterialThemeFactory extends ThemeFactory {
 
   @override
   Widget todoItemBox({Key? key, required Widget child}) {
+    final theme = Get.theme;
     return Container(
       key: key,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
-        color: Colors.white,
+        color: theme.canvasColor,
         boxShadow: const [
           BoxShadow(
             color: Colors.black,
@@ -64,6 +65,14 @@ class MaterialThemeFactory extends ThemeFactory {
           ),
         ],
       ),
+      child: child,
+    );
+  }
+
+  @override
+  Widget todoElementMsgInputBox({Key? key, required Widget child}) {
+    return Container(
+      color: Get.theme.canvasColor,
       child: child,
     );
   }

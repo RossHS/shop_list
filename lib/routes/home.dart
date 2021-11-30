@@ -227,11 +227,11 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                     const SizedBox(height: 15),
                     Text(
                       formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
-                      style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                      style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
                     ),
                     Obx(() => Text(
                           '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
-                          style: TextStyle(fontSize: 15, color: Colors.black.withOpacity(0.3)),
+                          style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
                         )),
                     if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
                   ],

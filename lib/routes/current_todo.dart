@@ -205,6 +205,7 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
                         title: Text(
                           element.name,
                           style: textTheme.bodyText2?.copyWith(
+                            fontSize: 18,
                             decoration: element.completed ? TextDecoration.lineThrough : null,
                           ),
                         ),

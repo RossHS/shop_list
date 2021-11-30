@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Отображение списков дел по различным параметрам
@@ -122,18 +121,13 @@ class _BoxItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const config = Paint90sConfig();
-    final padding = config.offset.toDouble();
-    return Padding(
-      padding: EdgeInsets.all(padding),
-      child: AnimatedPainterSquare90s(
-        config: config,
-        child: Material(
-          type: MaterialType.transparency,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          ),
+    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+    return themeFactory.todoItemBox(
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
         ),
       ),
     );

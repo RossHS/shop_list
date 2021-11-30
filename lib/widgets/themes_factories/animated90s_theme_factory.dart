@@ -52,7 +52,27 @@ class Animated90sFactory extends ThemeFactory {
   }
 
   @override
-  Widget todoItemBox({Key? key, required Widget child}) => AnimatedPainterSquare90s(key: key, child: child);
+  Widget todoItemBox({Key? key, required Widget child}) {
+    // TODO 30.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
+    final theme = Get.theme;
+    return AnimatedPainterSquare90s(
+      key: key,
+      config: Paint90sConfig(backgroundColor: theme.canvasColor),
+      child: child,
+    );
+  }
+
+  @override
+  Widget todoElementMsgInputBox({Key? key, required Widget child}) {
+    // TODO 30.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
+    final theme = Get.theme;
+    return AnimatedPainterSquare90s(
+      key: key,
+      config: Paint90sConfig(backgroundColor: theme.canvasColor),
+      borderPaint: const BorderPaint.top(),
+      child: child,
+    );
+  }
 
   @override
   Widget infoOverlay({
