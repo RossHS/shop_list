@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 
 abstract class ThemeDataWrapper {
   /// Ключи для записи/чтения тем из хранилища
@@ -46,14 +47,24 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
 
   Animated90sThemeDataWrapper({
     required TextTheme textTheme,
+    required this.paint90sConfig,
   }) : super(textTheme: textTheme);
 
   factory Animated90sThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
+    final paint90sConfig = Paint90sConfig(
+      offset: storage.read<int>('$appThemeStorageValue-paintConfig-offset'),
+      strokeWidth: storage.read<double>('$appThemeStorageValue-paintConfig-strokeWidth'),
+    );
     return Animated90sThemeDataWrapper(
       textTheme: textTheme,
+      paint90sConfig: paint90sConfig,
     );
   }
+
+  /// Стандартный кофиг для темы Animated90sThemeDataWrapper,
+  /// на его основе абстрактная фабрика [Animated90sFactory] создает виджеты
+  final Paint90sConfig paint90sConfig;
 
   @override
   ThemeData get lightTheme => ThemeData(
@@ -75,12 +86,19 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   String get themePrefix => Animated90sThemeDataWrapper.appThemeStorageValue;
 
   @override
-  void writeToGetStorage(GetStorage storage) {}
+  void writeToGetStorage(GetStorage storage) {
+    storage.write('$appThemeStorageValue-paintConfig-offset', paint90sConfig.offset);
+    storage.write('$appThemeStorageValue-paintConfig-strokeWidth', paint90sConfig.strokeWidth);
+  }
 
   @override
-  Animated90sThemeDataWrapper copyWith({TextTheme? textTheme}) {
+  Animated90sThemeDataWrapper copyWith({
+    TextTheme? textTheme,
+    Paint90sConfig? paint90sConfig,
+  }) {
     return Animated90sThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
+      paint90sConfig: paint90sConfig ?? this.paint90sConfig,
     );
   }
 }

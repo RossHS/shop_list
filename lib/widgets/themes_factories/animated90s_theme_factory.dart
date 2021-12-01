@@ -12,7 +12,7 @@ class Animated90sFactory extends ThemeFactory {
   final Animated90sThemeDataWrapper _themeDataWrapper;
 
   @override
-  ThemeDataWrapper get themeWrapper => _themeDataWrapper;
+  Animated90sThemeDataWrapper get themeWrapper => _themeDataWrapper;
 
   @override
   Animated90IconsFactory get icons => const Animated90IconsFactory();
@@ -30,6 +30,7 @@ class Animated90sFactory extends ThemeFactory {
       title: title,
       actions: actions,
       bottom: bottom,
+      config: themeWrapper.paint90sConfig,
     );
   }
 

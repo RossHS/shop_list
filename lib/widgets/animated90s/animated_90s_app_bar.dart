@@ -10,6 +10,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.actions,
     this.bottom,
+    this.config,
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +24,8 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
 
   /// Виджет находящийся под основной частью appBar
   final PreferredSizeWidget? bottom;
+
+  final Paint90sConfig? config;
 
   static const toolBarHeight = 56.0;
 
@@ -116,7 +119,8 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    var config = Paint90sConfig(
+    var config = this.config ?? const Paint90sConfig();
+    config = config.copyWith(
       backgroundColor: appBarTheme.backgroundColor ?? theme.primaryColor,
     );
 

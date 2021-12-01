@@ -80,7 +80,7 @@ class Paint90sConfig {
   })  : assert(offset == null || (offset > 0 && offset <= 50), 'incorrect offset $offset'),
         assert(strokeWidth == null || (strokeWidth > 0 && strokeWidth <= 25), 'incorrect strokeWidth $strokeWidth'),
         offset = offset ?? 10,
-        strokeWidth = 3,
+        strokeWidth = strokeWidth ?? 3,
         backgroundColor = backgroundColor ?? Colors.white,
         outLineColor = outLineColor ?? Colors.black;
 
