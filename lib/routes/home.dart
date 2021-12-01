@@ -332,6 +332,7 @@ class _ItemControlPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final foregroundColor = theme.floatingActionButtonTheme.foregroundColor ?? theme.colorScheme.onSecondary;
     final todosController = Get.find<TodosController>();
     final authController = Get.find<AuthenticationController>();
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
@@ -345,68 +346,71 @@ class _ItemControlPanel extends StatelessWidget {
               color: theme.colorScheme.secondary.withOpacity(0.8),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Если список дел не закрыт, то у пользователя есть
-                // возможность его быстро закрыть по шорт-кату
-                if (!_todoModel.completed)
-                  Expanded(
-                    child: RawMaterialButton(
-                      onPressed: () => themeFactory.showDialog(
-                        text: 'Завершить задачу?',
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                todosController.completeTodo(
-                                  docId: _refModel.idRef,
-                                  completedAuthorUid: authController.firestoreUser.value!.uid,
-                                );
-                                Get.back();
-                              },
-                              child: const Text('ОК')),
-                          TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: const Text('Отмена'))
-                        ],
+            child: IconTheme.merge(
+              data: IconThemeData(color: foregroundColor),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Если список дел не закрыт, то у пользователя есть
+                  // возможность его быстро закрыть по шорт-кату
+                  if (!_todoModel.completed)
+                    Expanded(
+                      child: RawMaterialButton(
+                        onPressed: () => themeFactory.showDialog(
+                          text: 'Завершить задачу?',
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  todosController.completeTodo(
+                                    docId: _refModel.idRef,
+                                    completedAuthorUid: authController.firestoreUser.value!.uid,
+                                  );
+                                  Get.back();
+                                },
+                                child: const Text('ОК')),
+                            TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text('Отмена'))
+                          ],
+                        ),
+                        child: const Icon(Icons.check),
                       ),
-                      child: const Icon(Icons.check),
                     ),
-                  ),
-                // Только автор списка может его менять или удалять
-                if (authController.firestoreUser.value?.uid == _todoModel.authorId)
-                  Expanded(
-                    child: RawMaterialButton(
-                      onPressed: () => Get.toNamed('/todo/${_refModel.idRef}/edit'),
-                      child: const Icon(Icons.edit),
-                    ),
-                  ),
-                if (authController.firestoreUser.value?.uid == _todoModel.authorId)
-                  Expanded(
-                    child: RawMaterialButton(
-                      onPressed: () => themeFactory.showDialog(
-                        text: 'Удалить задачу?',
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                todosController.deleteTodo(_refModel.idRef);
-                                Get.back();
-                              },
-                              child: const Text('ОК')),
-                          TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: const Text('Отмена'))
-                        ],
+                  // Только автор списка может его менять или удалять
+                  if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                    Expanded(
+                      child: RawMaterialButton(
+                        onPressed: () => Get.toNamed('/todo/${_refModel.idRef}/edit'),
+                        child: const Icon(Icons.edit),
                       ),
-                      child: const Icon(Icons.remove),
                     ),
-                  ),
-              ],
+                  if (authController.firestoreUser.value?.uid == _todoModel.authorId)
+                    Expanded(
+                      child: RawMaterialButton(
+                        onPressed: () => themeFactory.showDialog(
+                          text: 'Удалить задачу?',
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  todosController.deleteTodo(_refModel.idRef);
+                                  Get.back();
+                                },
+                                child: const Text('ОК')),
+                            TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text('Отмена'))
+                          ],
+                        ),
+                        child: const Icon(Icons.remove),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
