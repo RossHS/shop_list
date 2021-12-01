@@ -41,16 +41,16 @@ abstract class ThemeDataWrapper {
 }
 
 //----------------------------Animated90sThemeData------------------------//
-class Animated90sThemeData extends ThemeDataWrapper {
+class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Animated90s';
 
-  Animated90sThemeData({
+  Animated90sThemeDataWrapper({
     required TextTheme textTheme,
   }) : super(textTheme: textTheme);
 
-  factory Animated90sThemeData.fromGetStorage(GetStorage storage) {
+  factory Animated90sThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
-    return Animated90sThemeData(
+    return Animated90sThemeDataWrapper(
       textTheme: textTheme,
     );
   }
@@ -58,6 +58,7 @@ class Animated90sThemeData extends ThemeDataWrapper {
   @override
   ThemeData get lightTheme => ThemeData(
         scaffoldBackgroundColor: Colors.yellow,
+        primarySwatch: Colors.pink,
         brightness: Brightness.light,
         textTheme: textTheme,
       );
@@ -65,35 +66,36 @@ class Animated90sThemeData extends ThemeDataWrapper {
   @override
   ThemeData get darkTheme => ThemeData(
         scaffoldBackgroundColor: Colors.blueGrey,
+        primarySwatch: Colors.pink,
         brightness: Brightness.dark,
         textTheme: textTheme,
       );
 
   @override
-  String get themePrefix => Animated90sThemeData.appThemeStorageValue;
+  String get themePrefix => Animated90sThemeDataWrapper.appThemeStorageValue;
 
   @override
   void writeToGetStorage(GetStorage storage) {}
 
   @override
-  Animated90sThemeData copyWith({TextTheme? textTheme}) {
-    return Animated90sThemeData(
+  Animated90sThemeDataWrapper copyWith({TextTheme? textTheme}) {
+    return Animated90sThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
     );
   }
 }
 
 //----------------------------MaterialThemeData--------------------------//
-class MaterialThemeData extends ThemeDataWrapper {
+class MaterialThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Material';
 
-  MaterialThemeData({
+  MaterialThemeDataWrapper({
     required TextTheme textTheme,
   }) : super(textTheme: textTheme);
 
-  factory MaterialThemeData.fromGetStorage(GetStorage storage) {
+  factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
-    return MaterialThemeData(
+    return MaterialThemeDataWrapper(
       textTheme: textTheme,
     );
   }
@@ -101,6 +103,7 @@ class MaterialThemeData extends ThemeDataWrapper {
   @override
   ThemeData get lightTheme => ThemeData(
         scaffoldBackgroundColor: Colors.white,
+        primarySwatch: Colors.deepPurple,
         brightness: Brightness.light,
         textTheme: textTheme,
       );
@@ -108,12 +111,13 @@ class MaterialThemeData extends ThemeDataWrapper {
   @override
   ThemeData get darkTheme => ThemeData(
         scaffoldBackgroundColor: Colors.grey,
+        primarySwatch: Colors.teal,
         brightness: Brightness.dark,
         textTheme: textTheme,
       );
 
   @override
-  String get themePrefix => MaterialThemeData.appThemeStorageValue;
+  String get themePrefix => MaterialThemeDataWrapper.appThemeStorageValue;
 
   @override
   void writeToGetStorage(GetStorage storage) {
@@ -121,24 +125,24 @@ class MaterialThemeData extends ThemeDataWrapper {
   }
 
   @override
-  MaterialThemeData copyWith({TextTheme? textTheme}) {
-    return MaterialThemeData(
+  MaterialThemeDataWrapper copyWith({TextTheme? textTheme}) {
+    return MaterialThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
     );
   }
 }
 
 //----------------------------ModernThemeData---------------------------//
-class ModernThemeData extends ThemeDataWrapper {
+class ModernThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Modern';
 
-  ModernThemeData({
+  ModernThemeDataWrapper({
     required TextTheme textTheme,
   }) : super(textTheme: textTheme);
 
-  factory ModernThemeData.fromGetStorage(GetStorage storage) {
+  factory ModernThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
-    return ModernThemeData(
+    return ModernThemeDataWrapper(
       textTheme: textTheme,
     );
   }
@@ -158,7 +162,7 @@ class ModernThemeData extends ThemeDataWrapper {
       );
 
   @override
-  String get themePrefix => ModernThemeData.appThemeStorageValue;
+  String get themePrefix => ModernThemeDataWrapper.appThemeStorageValue;
 
   @override
   void writeToGetStorage(GetStorage storage) {
@@ -166,8 +170,8 @@ class ModernThemeData extends ThemeDataWrapper {
   }
 
   @override
-  ModernThemeData copyWith({TextTheme? textTheme}) {
-    return ModernThemeData(
+  ModernThemeDataWrapper copyWith({TextTheme? textTheme}) {
+    return ModernThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
     );
   }

@@ -17,9 +17,9 @@ class ThemeController extends GetxController {
 
   /// Список всех доступных тем на выбор
   late final List<String> appThemeList = [
-    Animated90sThemeData.appThemeStorageValue,
-    ModernThemeData.appThemeStorageValue,
-    MaterialThemeData.appThemeStorageValue,
+    Animated90sThemeDataWrapper.appThemeStorageValue,
+    MaterialThemeDataWrapper.appThemeStorageValue,
+    ModernThemeDataWrapper.appThemeStorageValue,
   ];
 
   /// Тип темы приложения системная/светлая/темная
@@ -94,14 +94,14 @@ class ThemeController extends GetxController {
     final toParse = themePrefix;
     _log.fine('parse AppTheme from $toParse');
     switch (toParse) {
-      case Animated90sThemeData.appThemeStorageValue:
-        return Animated90sThemeData.fromGetStorage(storage);
-      case MaterialThemeData.appThemeStorageValue:
-        return MaterialThemeData.fromGetStorage(storage);
-      case ModernThemeData.appThemeStorageValue:
-        return ModernThemeData.fromGetStorage(storage);
+      case Animated90sThemeDataWrapper.appThemeStorageValue:
+        return Animated90sThemeDataWrapper.fromGetStorage(storage);
+      case MaterialThemeDataWrapper.appThemeStorageValue:
+        return MaterialThemeDataWrapper.fromGetStorage(storage);
+      case ModernThemeDataWrapper.appThemeStorageValue:
+        return ModernThemeDataWrapper.fromGetStorage(storage);
       default:
-        return Animated90sThemeData.fromGetStorage(storage);
+        return Animated90sThemeDataWrapper.fromGetStorage(storage);
     }
   }
 

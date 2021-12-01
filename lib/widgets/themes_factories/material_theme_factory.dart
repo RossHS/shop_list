@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Фабрика классической темы дизайна Material
 class MaterialThemeFactory extends ThemeFactory {
+  MaterialThemeFactory(this._materialThemeData) : super(_materialThemeData);
+  final MaterialThemeDataWrapper _materialThemeData;
+
+  @override
+  MaterialThemeDataWrapper get themeWrapper => _materialThemeData;
+
   @override
   Material90IconsFactory get icons => const Material90IconsFactory();
 

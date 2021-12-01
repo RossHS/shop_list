@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/custom_icons.dart';
+import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Фабрика кастомного стиля Animated90s
 class Animated90sFactory extends ThemeFactory {
+  Animated90sFactory(this._themeDataWrapper) : super(_themeDataWrapper);
+  final Animated90sThemeDataWrapper _themeDataWrapper;
+
+  @override
+  ThemeDataWrapper get themeWrapper => _themeDataWrapper;
+
   @override
   Animated90IconsFactory get icons => const Animated90IconsFactory();
 

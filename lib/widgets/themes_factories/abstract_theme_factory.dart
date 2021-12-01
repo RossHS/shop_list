@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/themes_factories/animated90s_theme_factory.dart';
 import 'package:shop_list/widgets/themes_factories/material_theme_factory.dart';
+import 'package:shop_list/widgets/themes_factories/modern_theme_factory.dart';
 
 /// Абстрактная фабрика, которая отображает интерфейс в зависимости от установленной темы
 abstract class ThemeFactory {
   static ThemeFactory instance(ThemeDataWrapper themeDataWrapper) {
-    if (themeDataWrapper is Animated90sThemeData) {
-      return Animated90sFactory();
-    } else if (themeDataWrapper is MaterialThemeData) {
-      return MaterialThemeFactory();
-    } else if (themeDataWrapper is ModernThemeData) {
+    if (themeDataWrapper is Animated90sThemeDataWrapper) {
+      return Animated90sFactory(themeDataWrapper);
+    } else if (themeDataWrapper is MaterialThemeDataWrapper) {
+      return MaterialThemeFactory(themeDataWrapper);
+    } else if (themeDataWrapper is ModernThemeDataWrapper) {
       // TODO 27.11.2021 пока возвращаем материал тему
-      return MaterialThemeFactory();
+      return MaterialThemeFactory(MaterialThemeDataWrapper(textTheme: const TextTheme()));
     }
     throw Exception('Unsupported type of ThemeDataWrapper - $themeDataWrapper');
   }
+
+  ThemeFactory(ThemeDataWrapper themeDataWrapper);
+
+  /// Обертка над темой приложения, которая добавляет новые поля в уже существующую тему
+  ThemeDataWrapper get themeWrapper;
 
   /// Получить фабрику создания иконок
   IconsFactory get icons;
@@ -84,7 +90,7 @@ abstract class ThemeFactory {
   }) {
     if (this is Animated90sFactory) return animated90s(child);
     if (this is MaterialThemeFactory) return material(child);
-    if (this is ModernThemeData) return modern(child);
+    if (this is ModernThemeFactory) return modern(child);
     throw Exception('Unsupported type of factory - $runtimeType');
   }
 
