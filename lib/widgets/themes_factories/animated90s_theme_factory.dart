@@ -43,6 +43,7 @@ class Animated90sFactory extends ThemeFactory {
     return AnimatedCircleButton90s(
       key: key,
       onPressed: onPressed,
+      config: themeWrapper.paint90sConfig,
       child: child,
     );
   }
@@ -56,28 +57,29 @@ class Animated90sFactory extends ThemeFactory {
     return AnimatedButton90s(
       key: key,
       onPressed: onPressed,
+      config: themeWrapper.paint90sConfig,
       child: child,
     );
   }
 
   @override
   Widget commonItemBox({Key? key, required Widget child}) {
-    // TODO 30.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
     final theme = Get.theme;
+    final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return AnimatedPainterSquare90s(
       key: key,
-      config: Paint90sConfig(backgroundColor: theme.canvasColor),
+      config: config,
       child: child,
     );
   }
 
   @override
   Widget todoElementMsgInputBox({Key? key, required Widget child}) {
-    // TODO 30.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
     final theme = Get.theme;
+    final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return AnimatedPainterSquare90s(
       key: key,
-      config: Paint90sConfig(backgroundColor: theme.canvasColor),
+      config: config,
       borderPaint: const BorderPaint.top(),
       child: child,
     );
@@ -91,8 +93,7 @@ class Animated90sFactory extends ThemeFactory {
   }) {
     final theme = Get.theme;
     final textTheme = theme.textTheme;
-    // TODO 29.11.2021 использовать Paint90sConfig из Animated90sThemeWrapper
-    Paint90sConfig config = Paint90sConfig(backgroundColor: theme.canvasColor);
+    final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return SafeArea(
       // Отступы, чтобы SnackBar не выходил за границы экрана из-за AnimatedPainterSquare
       child: Padding(

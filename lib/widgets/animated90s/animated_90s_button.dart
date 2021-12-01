@@ -32,12 +32,8 @@ class AnimatedButton90s extends StatelessWidget {
       textTheme: theme.textTheme.apply(bodyColor: foregroundColor),
     );
 
-    final paintConfig = Paint90sConfig(
-      backgroundColor: config?.backgroundColor ?? colorScheme.secondary,
-      outLineColor: config?.outLineColor,
-      offset: config?.offset,
-      strokeWidth: config?.strokeWidth,
-    );
+    var paintConfig = config ?? const Paint90sConfig();
+    paintConfig = paintConfig.copyWith(backgroundColor: colorScheme.secondary);
 
     // Отступ, чтобы виджет корректно смотрелся в своих рамках и не вылезал из них.
     // Иначе он может налезать на другие виджеты из "рванных граней" создаваемых AnimatedPainter90s
