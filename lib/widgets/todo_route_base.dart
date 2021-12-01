@@ -1,7 +1,4 @@
 // ignore_for_file: invalid_use_of_protected_member
-
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -169,12 +166,6 @@ class _TileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final Color foregroundColor = theme.colorScheme.secondary;
-    final t = dragAnimation.value;
-    final color = Color.lerp(foregroundColor, foregroundColor.withOpacity(0.8), t);
-    final elevation = lerpDouble(0, 8, t);
-
     // Список элементов находящихся "за" элементом
     final actions = ActionPane(
       motion: const ScrollMotion(),
@@ -189,31 +180,20 @@ class _TileItem extends StatelessWidget {
       ],
     );
 
-    //TODO проработать установку цветов
     return SizeFadeTransition(
       sizeFraction: 0.7,
       curve: Curves.easeInOut,
       animation: animation,
-      child: Material(
-        elevation: elevation!,
-        color: color,
-        child: Slidable(
-          child: ListTile(
-            title: Text(
-              item.name,
-              style: const TextStyle(color: Colors.white),
-            ),
-            trailing: const Handle(
-              delay: Duration(milliseconds: 100),
-              child: Icon(
-                Icons.list,
-                color: Colors.white,
-              ),
-            ),
+      child: Slidable(
+        child: ListTile(
+          title: Text(item.name),
+          trailing: const Handle(
+            delay: Duration(milliseconds: 100),
+            child: Icon(Icons.list),
           ),
-          startActionPane: actions,
-          endActionPane: actions,
         ),
+        startActionPane: actions,
+        endActionPane: actions,
       ),
     );
   }
