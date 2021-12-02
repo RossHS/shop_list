@@ -101,6 +101,17 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       paint90sConfig: paint90sConfig ?? this.paint90sConfig,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is Animated90sThemeDataWrapper &&
+          runtimeType == other.runtimeType &&
+          paint90sConfig == other.paint90sConfig;
+
+  @override
+  int get hashCode => super.hashCode ^ paint90sConfig.hashCode;
 }
 
 //----------------------------MaterialThemeData--------------------------//
