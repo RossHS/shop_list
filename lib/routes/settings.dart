@@ -93,6 +93,8 @@ class _Body extends StatelessWidget {
         ),
         const _ButtonsRow(),
         const SizedBox(height: 20),
+        const _ColorPaletteBox(),
+        const SizedBox(height: 20),
         const _SpecificThemeSettings(),
       ],
     );
@@ -142,9 +144,82 @@ class _ButtonsRow extends StatelessWidget {
   }
 }
 
+/// Виджет содержащий в себе все варианты цветовых схем для каждой из тем [ThemeDataWrapper]
+/// TODO 02.12.2021 написать представление цветовых палитр для тем
+class _ColorPaletteBox extends StatelessWidget {
+  const _ColorPaletteBox({Key? key}) : super(key: key);
+  final paletteDiameter = 44.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Цветовые схемы дневных тем
+        Row(
+          children: [
+            _CircleContainer(
+              height: paletteDiameter,
+              width: paletteDiameter,
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.wb_sunny,
+                color: Colors.orange.shade600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Цветовые схемы ночных тем
+        Row(
+          children: [
+            _CircleContainer(
+              height: paletteDiameter,
+              width: paletteDiameter,
+              backgroundColor: const Color(0xFF303030),
+              child: const Icon(
+                Icons.mode_night,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _CircleContainer extends StatelessWidget {
+  const _CircleContainer({
+    Key? key,
+    this.child,
+    this.backgroundColor,
+    this.height,
+    this.width,
+  }) : super(key: key);
+  final Color? backgroundColor;
+  final Widget? child;
+  final double? height;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      width: width,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          shape: BoxShape.circle,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
 /// Панель с настройками для специфичных параметров тем, т.е. с каждой выбранной темой [ThemeDataWrapper],
 /// будет отображаться свой уникальный набор настроек
-/// TODO 02.12.2021 написать механизм настройки уникальных параметров тем!!!
 class _SpecificThemeSettings extends StatefulWidget {
   const _SpecificThemeSettings({Key? key}) : super(key: key);
 
@@ -191,67 +266,69 @@ class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
             // Т.к. эта проблема беспокоит только лишь на окне настройки, то первый вариант отпадает из своей
             // излишней сложности. 2.1. тоже можно отбросить по этой же причине, плюс понадобиться изменять уже существующий рабочий код,
             // ради уникальной проблемы. Таким образом остается вариант 2.2, который я и реализовал.
-            child: themeFactory.buildWidget(animated90s: (_, factory) {
-              final themeWrapper = factory.themeWrapper;
-              final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-              return Padding(
-                // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
-                key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                padding: const EdgeInsets.all(10.0),
-                child: AnimatedPainterSquare90s(
-                  config: config,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Настройки стиля',
-                        style: theme.textTheme.headline5,
-                      ),
-                      const SizedBox(height: 10),
-                      // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
-                      Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
-                      Slider(
-                        value: themeWrapper.paint90sConfig.strokeWidth,
-                        min: 1,
-                        max: 10,
-                        onChanged: (double value) {
-                          // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
-                          // мелкими методами на каждый параметр
-                          if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                          final wrapper = factory.themeWrapper;
-                          controller.appTheme.value = wrapper.copyWith(
-                            paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
-                          );
-                        },
-                      ),
-                      Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
-                      Slider(
-                        value: themeWrapper.paint90sConfig.offset.toDouble(),
-                        min: 5,
-                        max: 20,
-                        onChanged: (double value) {
-                          if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                          final wrapper = factory.themeWrapper;
-                          controller.appTheme.value = wrapper.copyWith(
-                            paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
-                          );
-                        },
-                      ),
-                    ],
+            child: themeFactory.buildWidget(
+              animated90s: (_, factory) {
+                final themeWrapper = factory.themeWrapper;
+                final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+                return Padding(
+                  // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
+                  key: ValueKey<String>(controller.appTheme.value.themePrefix),
+                  padding: const EdgeInsets.all(10.0),
+                  child: AnimatedPainterSquare90s(
+                    config: config,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Настройки стиля',
+                          style: theme.textTheme.headline5,
+                        ),
+                        const SizedBox(height: 10),
+                        // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
+                        Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
+                        Slider(
+                          value: themeWrapper.paint90sConfig.strokeWidth,
+                          min: 1,
+                          max: 10,
+                          onChanged: (double value) {
+                            // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
+                            // мелкими методами на каждый параметр
+                            if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                            final wrapper = factory.themeWrapper;
+                            controller.appTheme.value = wrapper.copyWith(
+                              paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
+                            );
+                          },
+                        ),
+                        Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
+                        Slider(
+                          value: themeWrapper.paint90sConfig.offset.toDouble(),
+                          min: 5,
+                          max: 20,
+                          onChanged: (double value) {
+                            if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                            final wrapper = factory.themeWrapper;
+                            controller.appTheme.value = wrapper.copyWith(
+                              paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }, material: (_, factory) {
-              final themeWrapper = factory.themeWrapper;
-              return Padding(
-                key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  color: Colors.red,
-                ),
-              );
-            }),
+                );
+              },
+              material: (_, factory) {
+                return Padding(
+                  key: ValueKey<String>(controller.appTheme.value.themePrefix),
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    color: Colors.red,
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

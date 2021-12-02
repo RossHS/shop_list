@@ -24,7 +24,6 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todosController = Get.find<TodosController>();
-    // TODO вставить отступы из animated90sConfig
     const padding = 24.0;
     return Obx(() => ListView(
           padding: const EdgeInsets.all(padding),
