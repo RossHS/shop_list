@@ -83,14 +83,14 @@ abstract class ThemeFactory {
   /// не загружая абстрактную фабрику гигантским числом мелких методов
   /// Метод выходящий за принципы паттерна "абстрактной фабрики" и отчасти нарушающий их и полиморфизм
   Widget buildWidget({
-    Widget Function(Widget? child) animated90s = _defaultBuildWidgetFunction,
-    Widget Function(Widget? child) material = _defaultBuildWidgetFunction,
-    Widget Function(Widget? child) modern = _defaultBuildWidgetFunction,
+    Widget Function(Widget? child, Animated90sFactory factory) animated90s = _defaultBuildWidgetFunction,
+    Widget Function(Widget? child, MaterialThemeFactory factory) material = _defaultBuildWidgetFunction,
+    Widget Function(Widget? child, ModernThemeFactory factory) modern = _defaultBuildWidgetFunction,
     Widget? child,
   }) {
-    if (this is Animated90sFactory) return animated90s(child);
-    if (this is MaterialThemeFactory) return material(child);
-    if (this is ModernThemeFactory) return modern(child);
+    if (this is Animated90sFactory) return animated90s(child, this as Animated90sFactory);
+    if (this is MaterialThemeFactory) return material(child, this as MaterialThemeFactory);
+    if (this is ModernThemeFactory) return modern(child, this as ModernThemeFactory);
     throw Exception('Unsupported type of factory - $runtimeType');
   }
 
@@ -99,7 +99,7 @@ abstract class ThemeFactory {
   /// и писать напрямую
   /// Widget Function(Widget? child) animated90s = const (child) => SizedBox(child: child),
   /// Приходится создавать приватную статическую функцию
-  static Widget _defaultBuildWidgetFunction(Widget? child) {
+  static Widget _defaultBuildWidgetFunction(Widget? child, ThemeFactory factory) {
     return SizedBox(
       child: child,
     );

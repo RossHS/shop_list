@@ -4,7 +4,6 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/avatar.dart';
-import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/image/image_capture.dart';
 import 'package:shop_list/widgets/image/image_selected_indicator.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
@@ -77,11 +76,12 @@ class _BodyState extends State<_Body> {
                         padding: const EdgeInsets.all(25.0),
                         // Виджет аватара
                         child: themeFactory.buildWidget(
-                          animated90s: (child) => AnimatedPainterCircleWithBorder90s(
+                          animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
+                            config: factory.themeWrapper.paint90sConfig,
                             boxColor: backgroundColor,
                             child: child!,
                           ),
-                          material: (child) => Material(
+                          material: (child, _) => Material(
                             elevation: 10,
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(300),
@@ -116,7 +116,7 @@ class _BodyState extends State<_Body> {
                   width: 400,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: CustomTextField(
+                    child: themeFactory.textField(
                       maxLines: 1,
                       controller: userUpdateController.nameController,
                       hint: 'User Name',

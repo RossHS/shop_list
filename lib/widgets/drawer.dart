@@ -74,11 +74,12 @@ class AppDrawer extends StatelessWidget {
                               // Аватар
                               () => authController.firestoreUser.value != null
                                   ? themeFactory.buildWidget(
-                                      animated90s: (child) => AnimatedPainterCircleWithBorder90s(
+                                      animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
+                                        config: factory.themeWrapper.paint90sConfig,
                                         boxColor: backgroundColor,
                                         child: child!,
                                       ),
-                                      material: (child) => Material(
+                                      material: (child, _) => Material(
                                         elevation: 20,
                                         color: Colors.transparent,
                                         borderRadius: BorderRadius.circular(300),

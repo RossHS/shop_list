@@ -191,8 +191,8 @@ class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
             // Т.к. эта проблема беспокоит только лишь на окне настройки, то первый вариант отпадает из своей
             // излишней сложности. 2.1. тоже можно отбросить по этой же причине, плюс понадобиться изменять уже существующий рабочий код,
             // ради уникальной проблемы. Таким образом остается вариант 2.2, который я и реализовал.
-            child: themeFactory.buildWidget(animated90s: (_) {
-              final themeWrapper = themeFactory.themeWrapper as Animated90sThemeDataWrapper;
+            child: themeFactory.buildWidget(animated90s: (_, factory) {
+              final themeWrapper = factory.themeWrapper;
               final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
               return Padding(
                 // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
@@ -216,7 +216,8 @@ class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
                         onChanged: (double value) {
                           // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
                           // мелкими методами на каждый параметр
-                          final wrapper = controller.appTheme.value as Animated90sThemeDataWrapper;
+                          if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                          final wrapper = factory.themeWrapper;
                           controller.appTheme.value = wrapper.copyWith(
                             paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
                           );
@@ -228,7 +229,8 @@ class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
                         min: 5,
                         max: 20,
                         onChanged: (double value) {
-                          final wrapper = controller.appTheme.value as Animated90sThemeDataWrapper;
+                          if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                          final wrapper = factory.themeWrapper;
                           controller.appTheme.value = wrapper.copyWith(
                             paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
                           );
@@ -238,8 +240,8 @@ class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
                   ),
                 ),
               );
-            }, material: (child) {
-              final themeWrapper = themeFactory.themeWrapper as MaterialThemeDataWrapper;
+            }, material: (_, factory) {
+              final themeWrapper = factory.themeWrapper;
               return Padding(
                 key: ValueKey<String>(controller.appTheme.value.themePrefix),
                 padding: const EdgeInsets.all(10.0),

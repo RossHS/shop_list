@@ -135,6 +135,7 @@ class Animated90sFactory extends ThemeFactory {
   }) {
     return CustomTextField(
       key: key,
+      config: themeWrapper.paint90sConfig,
       controller: controller,
       inputValidator: inputValidator,
       hint: hint,
