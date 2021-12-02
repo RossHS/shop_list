@@ -302,6 +302,7 @@ void main() async {
         authorValidation: AuthorValidation.all,
         completedValidation: CompletedValidation.all,
       );
+      todosController.sortFilteredList.value = SortFilteredList.dateDown;
 
       // Загрузка тестовых данных
       Future<FirestoreRefTodoModel> addTodo(TodoModel todoModel) async {
@@ -356,8 +357,8 @@ void main() async {
       );
       await Future.delayed(const Duration(milliseconds: 200));
       expect(todosController.filteredTodoList, [
-        cuNonCompleted,
         cuCompleted,
+        cuNonCompleted,
       ]);
 
       // Валидация только закрытых задач от текущего пользователя
@@ -377,8 +378,8 @@ void main() async {
       );
       await Future.delayed(const Duration(milliseconds: 200));
       expect(todosController.filteredTodoList, [
-        cuNonCompleted,
         duNonCompleted,
+        cuNonCompleted,
       ]);
 
       // Валидация только открытых задач ото всех других пользователей
