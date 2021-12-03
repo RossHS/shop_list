@@ -105,8 +105,25 @@ class ThemeController extends GetxController {
     }
   }
 
+  /// Установка стиля приложения
   void setAppTheme(String? themePrefix) {
     _log.fine('set AppTheme from GUI to $themePrefix');
     appTheme.value = _getThemeDataWrapperFromString(themePrefix);
+  }
+
+  /// Установка палитры светлой темы
+  void setLightColorScheme(ColorScheme? colorScheme) {
+    _log.fine('set light ColorScheme - $colorScheme');
+    appTheme.value = appTheme.value.copyWith(
+      lightColorScheme: colorScheme,
+    );
+  }
+
+  /// Установка палитры темной темы
+  void setDarkColorScheme(ColorScheme? colorScheme) {
+    _log.fine('set dark ColorScheme - $colorScheme');
+    appTheme.value = appTheme.value.copyWith(
+      darkColorScheme: colorScheme,
+    );
   }
 }

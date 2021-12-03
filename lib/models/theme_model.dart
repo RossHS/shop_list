@@ -2,53 +2,101 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 
+@immutable
 abstract class ThemeDataWrapper {
   /// Ключи для записи/чтения тем из хранилища
   static const appThemeStorageKey = 'app_theme_storage_key';
-  static const lightStorageKey = 'light';
-  static const darkStorageKey = 'dark';
 
-  ThemeDataWrapper({
+  const ThemeDataWrapper({
     required this.textTheme,
+    required this.lightColorScheme,
+    required this.darkColorScheme,
   });
 
   final TextTheme textTheme;
 
-  ThemeData get lightTheme;
+  /// Текущая темная цветовая схема
+  final ColorScheme lightColorScheme;
 
-  ThemeData get darkTheme;
+  /// Текущая светлая цветовая схема
+  final ColorScheme darkColorScheme;
+
+  /// Все допустимы цветовые схемы в светлой теме
+  Map<String, ColorScheme> get lightColorSchemesMap;
+
+  /// Все допустимы цветовые схемы в темной теме
+  Map<String, ColorScheme> get darkColorSchemesMap;
+
+  ThemeData get lightTheme => ThemeData(
+        scaffoldBackgroundColor: lightColorScheme.background,
+        colorScheme: lightColorScheme,
+        brightness: Brightness.light,
+        textTheme: textTheme,
+      );
+
+  ThemeData get darkTheme => ThemeData(
+        scaffoldBackgroundColor: darkColorScheme.background,
+        colorScheme: darkColorScheme,
+        brightness: Brightness.dark,
+        textTheme: textTheme,
+      );
 
   /// Наименование темы, а также префикс ключей по которым будет производится запись и чтение в хранилище
   String get themePrefix;
 
   /// Префикс ключа для сохранения значений в хранилище со светлой темой
-  String get _lightThemeStorageKey => '$themePrefix-$lightStorageKey';
+  String get _lightThemeStorageKey => '$themePrefix-light';
 
   /// Префикс ключа для сохранения значений в хранилище с темной темой
-  String get _darkThemeStorageKey => '$themePrefix-$darkStorageKey';
+  String get _darkThemeStorageKey => '$themePrefix-dark';
 
   /// Запись собранной темы в хранилище
-  void writeToGetStorage(GetStorage storage);
+  @mustCallSuper
+  void writeToGetStorage(GetStorage storage) {
+    // Запись названий текущих цветовых тем
+    storage.write(
+      _lightThemeStorageKey,
+      lightColorSchemesMap.entries.firstWhere((element) => element.value == lightColorScheme).key,
+    );
+    storage.write(
+      _darkThemeStorageKey,
+      darkColorSchemesMap.entries.firstWhere((element) => element.value == darkColorScheme).key,
+    );
+  }
 
-  ThemeDataWrapper copyWith({required TextTheme textTheme});
+  ThemeDataWrapper copyWith({
+    TextTheme? textTheme,
+    ColorScheme? lightColorScheme,
+    ColorScheme? darkColorScheme,
+  });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ThemeDataWrapper && runtimeType == other.runtimeType && textTheme == other.textTheme;
+      other is ThemeDataWrapper &&
+          runtimeType == other.runtimeType &&
+          textTheme == other.textTheme &&
+          lightColorScheme == other.lightColorScheme &&
+          darkColorScheme == other.darkColorScheme;
 
   @override
-  int get hashCode => textTheme.hashCode;
+  int get hashCode => textTheme.hashCode ^ lightColorScheme.hashCode ^ darkColorScheme.hashCode;
 }
 
 //----------------------------Animated90sThemeData------------------------//
 class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Animated90s';
 
-  Animated90sThemeDataWrapper({
+  const Animated90sThemeDataWrapper({
     required TextTheme textTheme,
     required this.paint90sConfig,
-  }) : super(textTheme: textTheme);
+    required ColorScheme lightColorScheme,
+    required ColorScheme darkColorScheme,
+  }) : super(
+          textTheme: textTheme,
+          lightColorScheme: lightColorScheme,
+          darkColorScheme: darkColorScheme,
+        );
 
   factory Animated90sThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
@@ -56,10 +104,44 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       offset: storage.read<int>('$appThemeStorageValue-paintConfig-offset'),
       strokeWidth: storage.read<double>('$appThemeStorageValue-paintConfig-strokeWidth'),
     );
+    // Вычитываем название сохраненной темы из хранилища
+    final String lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
+    final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     return Animated90sThemeDataWrapper(
       textTheme: textTheme,
       paint90sConfig: paint90sConfig,
+      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
+      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
+  }
+
+  /// Так как классы тем неизменяемые и нам следует динамически
+  /// загружать/менять цветовую схему на основании данных из коллекций.
+  /// Для соблюдений этих условий пришлось бы каждый раз создавать новые коллекции
+  /// и по новой их заполнять - что не очень оптимально, т.к. лишняя, бесполезная
+  /// работа процессора. Таким образом, вывел данные коллекции в
+  /// статическую область и заполняю их лишь при первом обращении.
+  /// Не использую единую мапу с ColorScheme, т.к. предполагается,
+  /// что каждая тема имеет свой уникальный набор цветов
+  static Map<String, ColorScheme>? _lightColorSchemesMap;
+  static Map<String, ColorScheme>? _darkColorSchemesMap;
+
+  static Map<String, ColorScheme> get _getLightColorSchemesMap {
+    _lightColorSchemesMap ??= {
+      'default light 1': _createLightColorScheme(Colors.green, Colors.red),
+      'default light 2': _createLightColorScheme(Colors.blue, Colors.white),
+    };
+    assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
+    return _lightColorSchemesMap!;
+  }
+
+  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
+    _darkColorSchemesMap ??= {
+      'default dark 1': _createDarkColorScheme(Colors.yellow, Colors.purple),
+      'default dark 2': _createDarkColorScheme(Colors.blueGrey, Colors.pink),
+    };
+    assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
+    return _darkColorSchemesMap!;
   }
 
   /// Стандартный кофиг для темы Animated90sThemeDataWrapper,
@@ -67,26 +149,17 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   final Paint90sConfig paint90sConfig;
 
   @override
-  ThemeData get lightTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.yellow,
-        primarySwatch: Colors.pink,
-        brightness: Brightness.light,
-        textTheme: textTheme,
-      );
+  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
 
   @override
-  ThemeData get darkTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.blueGrey,
-        primarySwatch: Colors.pink,
-        brightness: Brightness.dark,
-        textTheme: textTheme,
-      );
+  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
 
   @override
   String get themePrefix => Animated90sThemeDataWrapper.appThemeStorageValue;
 
   @override
   void writeToGetStorage(GetStorage storage) {
+    super.writeToGetStorage(storage);
     storage.write('$appThemeStorageValue-paintConfig-offset', paint90sConfig.offset);
     storage.write('$appThemeStorageValue-paintConfig-strokeWidth', paint90sConfig.strokeWidth);
   }
@@ -95,10 +168,14 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   Animated90sThemeDataWrapper copyWith({
     TextTheme? textTheme,
     Paint90sConfig? paint90sConfig,
+    ColorScheme? lightColorScheme,
+    ColorScheme? darkColorScheme,
   }) {
     return Animated90sThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
       paint90sConfig: paint90sConfig ?? this.paint90sConfig,
+      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
+      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
   }
 
@@ -118,45 +195,69 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
 class MaterialThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Material';
 
-  MaterialThemeDataWrapper({
+  const MaterialThemeDataWrapper({
     required TextTheme textTheme,
-  }) : super(textTheme: textTheme);
+    required ColorScheme lightColorScheme,
+    required ColorScheme darkColorScheme,
+  }) : super(
+          textTheme: textTheme,
+          lightColorScheme: lightColorScheme,
+          darkColorScheme: darkColorScheme,
+        );
 
   factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
+    // Вычитываем название сохраненной темы из хранилища
+    final String lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
+    final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     return MaterialThemeDataWrapper(
       textTheme: textTheme,
+      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
+      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
   }
 
-  @override
-  ThemeData get lightTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        primarySwatch: Colors.deepPurple,
-        brightness: Brightness.light,
-        textTheme: textTheme,
-      );
+  /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
+  static Map<String, ColorScheme>? _lightColorSchemesMap;
+  static Map<String, ColorScheme>? _darkColorSchemesMap;
+
+  static Map<String, ColorScheme> get _getLightColorSchemesMap {
+    _lightColorSchemesMap ??= {
+      'default light 1': _createLightColorScheme(Colors.green, Colors.red),
+      'default light 2': _createLightColorScheme(Colors.blue, Colors.white),
+    };
+    assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
+    return _lightColorSchemesMap!;
+  }
+
+  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
+    _darkColorSchemesMap ??= {
+      'default dark 1': _createDarkColorScheme(Colors.blueGrey, Colors.brown),
+      'default dark 2': _createDarkColorScheme(Colors.blueGrey, Colors.pink),
+    };
+    assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
+    return _darkColorSchemesMap!;
+  }
 
   @override
-  ThemeData get darkTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.grey,
-        primarySwatch: Colors.teal,
-        brightness: Brightness.dark,
-        textTheme: textTheme,
-      );
+  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
+
+  @override
+  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
 
   @override
   String get themePrefix => MaterialThemeDataWrapper.appThemeStorageValue;
 
   @override
-  void writeToGetStorage(GetStorage storage) {
-    // TODO: implement writeToGetStorage
-  }
-
-  @override
-  MaterialThemeDataWrapper copyWith({TextTheme? textTheme}) {
+  MaterialThemeDataWrapper copyWith({
+    TextTheme? textTheme,
+    ColorScheme? lightColorScheme,
+    ColorScheme? darkColorScheme,
+  }) {
     return MaterialThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
+      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
+      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
   }
 }
@@ -165,43 +266,68 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
 class ModernThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Modern';
 
-  ModernThemeDataWrapper({
+  const ModernThemeDataWrapper({
     required TextTheme textTheme,
-  }) : super(textTheme: textTheme);
+    required ColorScheme lightColorScheme,
+    required ColorScheme darkColorScheme,
+  }) : super(
+          textTheme: textTheme,
+          lightColorScheme: lightColorScheme,
+          darkColorScheme: darkColorScheme,
+        );
 
   factory ModernThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
+    final String lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
+    final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     return ModernThemeDataWrapper(
       textTheme: textTheme,
+      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
+      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
   }
 
-  @override
-  ThemeData get lightTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.green,
-        brightness: Brightness.light,
-        textTheme: textTheme,
-      );
+  /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
+  static Map<String, ColorScheme>? _lightColorSchemesMap;
+  static Map<String, ColorScheme>? _darkColorSchemesMap;
+
+  static Map<String, ColorScheme> get _getLightColorSchemesMap {
+    _lightColorSchemesMap ??= {
+      'default light 1': _createLightColorScheme(Colors.green, Colors.red),
+      'default light 2': _createLightColorScheme(Colors.blue, Colors.white),
+    };
+    assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
+    return _lightColorSchemesMap!;
+  }
+
+  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
+    _darkColorSchemesMap ??= {
+      'default dark 1': _createDarkColorScheme(Colors.redAccent, Colors.lightGreen),
+      'default dark 2': _createDarkColorScheme(Colors.blueGrey, Colors.pink),
+    };
+    assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
+    return _darkColorSchemesMap!;
+  }
 
   @override
-  ThemeData get darkTheme => ThemeData(
-        scaffoldBackgroundColor: Colors.red,
-        brightness: Brightness.dark,
-        textTheme: textTheme,
-      );
+  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
+
+  @override
+  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
 
   @override
   String get themePrefix => ModernThemeDataWrapper.appThemeStorageValue;
 
   @override
-  void writeToGetStorage(GetStorage storage) {
-    // TODO: implement writeToGetStorage
-  }
-
-  @override
-  ModernThemeDataWrapper copyWith({TextTheme? textTheme}) {
+  ModernThemeDataWrapper copyWith({
+    TextTheme? textTheme,
+    ColorScheme? lightColorScheme,
+    ColorScheme? darkColorScheme,
+  }) {
     return ModernThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
+      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
+      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
   }
 }
@@ -266,4 +392,28 @@ class TextThemeCollection {
 
   static const androidBlackTextThemeKey = 'AndroidBlack';
   static const androidBlackTextTheme = Typography.blackMountainView;
+}
+
+ColorScheme _createLightColorScheme(Color mainColor, Color backgroundColor) {
+  return ColorScheme.light(
+    primary: mainColor,
+    primaryVariant: mainColor,
+    secondary: mainColor,
+    secondaryVariant: mainColor,
+    background: backgroundColor,
+    surface: mainColor,
+    error: Colors.redAccent,
+  );
+}
+
+ColorScheme _createDarkColorScheme(Color mainColor, Color backgroundColor) {
+  return ColorScheme.dark(
+    primary: mainColor,
+    primaryVariant: mainColor,
+    secondary: mainColor,
+    secondaryVariant: mainColor,
+    background: backgroundColor,
+    surface: mainColor,
+    error: Colors.redAccent,
+  );
 }

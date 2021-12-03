@@ -13,7 +13,11 @@ abstract class ThemeFactory {
       return MaterialThemeFactory(themeDataWrapper);
     } else if (themeDataWrapper is ModernThemeDataWrapper) {
       // TODO 27.11.2021 пока возвращаем материал тему
-      return MaterialThemeFactory(MaterialThemeDataWrapper(textTheme: const TextTheme()));
+      return MaterialThemeFactory(const MaterialThemeDataWrapper(
+        textTheme: TextTheme(),
+        lightColorScheme: ColorScheme.light(),
+        darkColorScheme: ColorScheme.dark(),
+      ));
     }
     throw Exception('Unsupported type of ThemeDataWrapper - $themeDataWrapper');
   }

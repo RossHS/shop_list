@@ -93,6 +93,18 @@ class _Body extends StatelessWidget {
         ),
         const _ButtonsRow(),
         const SizedBox(height: 20),
+        //TODO 04.12.2021 тест смены цвета светлой темы
+        Obx(() => DropdownButton<ColorScheme>(
+              value: controller.appTheme.value.lightColorScheme,
+              items: controller.appTheme.value.lightColorSchemesMap.entries
+                  .map<DropdownMenuItem<ColorScheme>>((entry) => DropdownMenuItem(
+                        value: entry.value,
+                        child: Text(entry.key),
+                      ))
+                  .toList(),
+              onChanged: controller.setLightColorScheme,
+            )),
+
         const _ColorPaletteBox(),
         const SizedBox(height: 20),
         const _SpecificThemeSettings(),
@@ -220,14 +232,9 @@ class _CircleContainer extends StatelessWidget {
 
 /// Панель с настройками для специфичных параметров тем, т.е. с каждой выбранной темой [ThemeDataWrapper],
 /// будет отображаться свой уникальный набор настроек
-class _SpecificThemeSettings extends StatefulWidget {
+class _SpecificThemeSettings extends StatelessWidget {
   const _SpecificThemeSettings({Key? key}) : super(key: key);
 
-  @override
-  State<_SpecificThemeSettings> createState() => _SpecificThemeSettingsState();
-}
-
-class _SpecificThemeSettingsState extends State<_SpecificThemeSettings> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

@@ -121,7 +121,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
 
     var config = this.config ?? const Paint90sConfig();
     config = config.copyWith(
-      backgroundColor: appBarTheme.backgroundColor ?? theme.primaryColor,
+      backgroundColor: appBarTheme.backgroundColor ?? colorScheme.primary,
     );
 
     return AnimatedPainterSquare90s(
