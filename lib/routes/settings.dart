@@ -4,6 +4,8 @@ import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
+import 'package:shop_list/widgets/animated_decorated_box.dart';
+import 'package:shop_list/widgets/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Маршрут настройки тем приложения
@@ -93,17 +95,16 @@ class _Body extends StatelessWidget {
         ),
         const _ButtonsRow(),
         const SizedBox(height: 20),
-        //TODO 04.12.2021 тест смены цвета светлой темы
-        Obx(() => DropdownButton<ColorScheme>(
-              value: controller.appTheme.value.lightColorScheme,
-              items: controller.appTheme.value.lightColorSchemesMap.entries
-                  .map<DropdownMenuItem<ColorScheme>>((entry) => DropdownMenuItem(
-                        value: entry.value,
-                        child: Text(entry.key),
-                      ))
-                  .toList(),
-              onChanged: controller.setLightColorScheme,
-            )),
+        // Obx(() => DropdownButton<ColorScheme>(
+        //       value: controller.appTheme.value.lightColorScheme,
+        //       items: controller.appTheme.value.lightColorSchemesMap.entries
+        //           .map<DropdownMenuItem<ColorScheme>>((entry) => DropdownMenuItem(
+        //                 value: entry.value,
+        //                 child: Text(entry.key),
+        //               ))
+        //           .toList(),
+        //       onChanged: controller.setLightColorScheme,
+        //     )),
 
         const _ColorPaletteBox(),
         const SizedBox(height: 20),
@@ -168,34 +169,117 @@ class _ColorPaletteBox extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Цветовые схемы дневных тем
-        Row(
-          children: [
-            _CircleContainer(
-              height: paletteDiameter,
-              width: paletteDiameter,
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.wb_sunny,
-                color: Colors.orange.shade600,
-              ),
-            ),
-          ],
-        ),
+        Obx(() => Row(
+              children: [
+                _CircleContainer(
+                  height: paletteDiameter,
+                  width: paletteDiameter,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.wb_sunny,
+                    color: Colors.orange.shade600,
+                  ),
+                ),
+                ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+                    .map<Widget>((entry) => AnimatedDecoration(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: ThemeController.to.appTheme.value.lightColorScheme == entry.value
+                              ? BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 10,
+                                  ),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      spreadRadius: 2,
+                                      color: entry.value.primary,
+                                      offset: const Offset(0.0, 1.0), //(x,y)
+                                      blurRadius: 10.0,
+                                    ),
+                                  ],
+                                )
+                              : const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      spreadRadius: 0,
+                                      color: Colors.transparent,
+                                      offset: Offset(0.0, 1.0), //(x,y)
+                                      blurRadius: 0,
+                                    ),
+                                  ],
+                                ),
+                          child: PaletteColorSelector(
+                            onPressed: () {
+                              ThemeController.to.setLightColorScheme(entry.value);
+                            },
+                            paletteDiameter: paletteDiameter,
+                            mainColor: entry.value.background,
+                            additionColor: entry.value.primary,
+                          ),
+                        ))
+                    .toList(),
+              ],
+            )),
         const SizedBox(height: 10),
         // Цветовые схемы ночных тем
-        Row(
-          children: [
-            _CircleContainer(
-              height: paletteDiameter,
-              width: paletteDiameter,
-              backgroundColor: const Color(0xFF303030),
-              child: const Icon(
-                Icons.mode_night,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
+        Obx(() => Row(
+              children: [
+                _CircleContainer(
+                  height: paletteDiameter,
+                  width: paletteDiameter,
+                  backgroundColor: const Color(0xFF303030),
+                  child: const Icon(
+                    Icons.mode_night,
+                    color: Colors.white,
+                  ),
+                ),
+                ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+                    .map<TweenAnimationBuilder>(
+                      (entry) => TweenAnimationBuilder<Decoration>(
+                        duration: Duration(seconds: 3),
+                        tween: DecorationTween(
+                            begin: null,
+                            end: BoxDecoration(
+                              color: ThemeController.to.appTheme.value.darkColorScheme == entry.value
+                                  ? Colors.black
+                                  : null,
+                              shape: BoxShape.circle,
+                            )),
+                        builder: (context, value, child) {
+                          return DecoratedBox(
+                            decoration: value,
+                            child: child,
+                          );
+                        },
+                        child: IconButton(
+                          onPressed: () => ThemeController.to.setDarkColorScheme(entry.value),
+                          icon: const Icon(Icons.eleven_mp_outlined),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.lightGreen,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    color: Colors.redAccent,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Icon(Icons.add),
+                ),
+              ],
+            )),
       ],
     );
   }
