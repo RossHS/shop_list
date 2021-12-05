@@ -158,7 +158,6 @@ class _ButtonsRow extends StatelessWidget {
 }
 
 /// Виджет содержащий в себе все варианты цветовых схем для каждой из тем [ThemeDataWrapper]
-/// TODO 02.12.2021 написать представление цветовых палитр для тем
 class _ColorPaletteBox extends StatelessWidget {
   const _ColorPaletteBox({Key? key}) : super(key: key);
   final paletteDiameter = 44.0;
@@ -169,118 +168,129 @@ class _ColorPaletteBox extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Цветовые схемы дневных тем
-        Obx(() => Row(
-              children: [
-                _CircleContainer(
-                  height: paletteDiameter,
-                  width: paletteDiameter,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.wb_sunny,
-                    color: Colors.orange.shade600,
+        ConstrainedBox(
+          constraints: BoxConstraints.expand(width: double.infinity, height: paletteDiameter),
+          child: Obx(() => ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _CircleContainer(
+                    height: paletteDiameter,
+                    width: paletteDiameter,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.wb_sunny,
+                      color: Colors.orange.shade600,
+                    ),
                   ),
-                ),
-                ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
-                    .map<Widget>((entry) => AnimatedDecoration(
-                          duration: const Duration(milliseconds: 200),
-                          decoration: ThemeController.to.appTheme.value.lightColorScheme == entry.value
-                              ? BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 10,
-                                  ),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      spreadRadius: 2,
-                                      color: entry.value.primary,
-                                      offset: const Offset(0.0, 1.0), //(x,y)
-                                      blurRadius: 10.0,
-                                    ),
-                                  ],
-                                )
-                              : const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      spreadRadius: 0,
-                                      color: Colors.transparent,
-                                      offset: Offset(0.0, 1.0), //(x,y)
-                                      blurRadius: 0,
-                                    ),
-                                  ],
-                                ),
-                          child: PaletteColorSelector(
-                            onPressed: () {
-                              ThemeController.to.setLightColorScheme(entry.value);
-                            },
-                            paletteDiameter: paletteDiameter,
-                            mainColor: entry.value.background,
-                            additionColor: entry.value.primary,
-                          ),
-                        ))
-                    .toList(),
-              ],
-            )),
+                  ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+                      .map<Widget>((entry) => Padding(
+                            // Реализовал таким образом отступы между виджетами цветовых схем, конечно, логичнее
+                            // было бы использовать ListView.separated, но он не принимает
+                            // параметр children - <Widget>[], а я использую не одинаковые элементы.
+                            // Но можно просто создать переменную со списком виджетов
+                            // и билдером брать необходимый виджет. Скорее всего вернусь к этому варианту
+                            key: ValueKey<ColorScheme>(entry.value),
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: _ColorPaletteItem(
+                              colorScheme: entry.value,
+                              paletteDiameter: paletteDiameter,
+                              isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
+                              onPressed: ThemeController.to.setLightColorScheme,
+                            ),
+                          ))
+                      .toList(),
+                ],
+              )),
+        ),
         const SizedBox(height: 10),
         // Цветовые схемы ночных тем
-        Obx(() => Row(
-              children: [
-                _CircleContainer(
-                  height: paletteDiameter,
-                  width: paletteDiameter,
-                  backgroundColor: const Color(0xFF303030),
-                  child: const Icon(
-                    Icons.mode_night,
-                    color: Colors.white,
+        ConstrainedBox(
+          constraints: BoxConstraints.expand(width: double.infinity, height: paletteDiameter),
+          child: Obx(() => ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _CircleContainer(
+                    height: paletteDiameter,
+                    width: paletteDiameter,
+                    backgroundColor: const Color(0xFF303030),
+                    child: const Icon(
+                      Icons.mode_night,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
-                    .map<TweenAnimationBuilder>(
-                      (entry) => TweenAnimationBuilder<Decoration>(
-                        duration: Duration(seconds: 3),
-                        tween: DecorationTween(
-                            begin: null,
-                            end: BoxDecoration(
-                              color: ThemeController.to.appTheme.value.darkColorScheme == entry.value
-                                  ? Colors.black
-                                  : null,
-                              shape: BoxShape.circle,
-                            )),
-                        builder: (context, value, child) {
-                          return DecoratedBox(
-                            decoration: value,
-                            child: child,
-                          );
-                        },
-                        child: IconButton(
-                          onPressed: () => ThemeController.to.setDarkColorScheme(entry.value),
-                          icon: const Icon(Icons.eleven_mp_outlined),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.lightGreen,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    color: Colors.redAccent,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Icon(Icons.add),
+                  ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+                      .map<Widget>((entry) => Padding(
+                            key: ValueKey<ColorScheme>(entry.value),
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: _ColorPaletteItem(
+                              colorScheme: entry.value,
+                              paletteDiameter: paletteDiameter,
+                              isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
+                              onPressed: ThemeController.to.setDarkColorScheme,
+                            ),
+                          ))
+                      .toList(),
+                ],
+              )),
+        ),
+      ],
+    );
+  }
+}
+
+/// Виджет выбора цвета
+class _ColorPaletteItem extends StatelessWidget {
+  const _ColorPaletteItem(
+      {Key? key,
+      required this.colorScheme,
+      required this.paletteDiameter,
+      required this.onPressed,
+      required this.isSelected})
+      : super(key: key);
+  final ColorScheme colorScheme;
+  final double paletteDiameter;
+  final void Function(ColorScheme? colorScheme) onPressed;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedDecoration(
+      duration: const Duration(milliseconds: 200),
+      decoration: isSelected
+          ? BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+                width: 10,
+              ),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 2,
+                  color: colorScheme.primary,
+                  offset: const Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 10.0,
                 ),
               ],
-            )),
-      ],
+            )
+          : const BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 0,
+                  color: Colors.transparent,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 0,
+                ),
+              ],
+            ),
+      child: PaletteColorSelector(
+        onPressed: () {
+          onPressed(colorScheme);
+        },
+        paletteDiameter: paletteDiameter,
+        mainColor: colorScheme.background,
+        additionColor: colorScheme.primary,
+      ),
     );
   }
 }

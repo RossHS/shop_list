@@ -69,7 +69,7 @@ class _PaletteColorSelectorState extends State<PaletteColorSelector> with Single
           height: widget.paletteDiameter,
         ),
         child: CustomPaint(
-          painter: ColorPalettePainter(
+          painter: _ColorPalettePainter(
             mainColor: widget.mainColor,
             additionColor: widget.additionColor,
             innerCircleRadius: _animation,
@@ -91,8 +91,8 @@ class _PaletteColorSelectorState extends State<PaletteColorSelector> with Single
   }
 }
 
-class ColorPalettePainter extends CustomPainter {
-  const ColorPalettePainter({
+class _ColorPalettePainter extends CustomPainter {
+  const _ColorPalettePainter({
     required this.mainColor,
     required this.additionColor,
     required this.innerCircleRadius,
