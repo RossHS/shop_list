@@ -95,17 +95,6 @@ class _Body extends StatelessWidget {
         ),
         const _ButtonsRow(),
         const SizedBox(height: 20),
-        // Obx(() => DropdownButton<ColorScheme>(
-        //       value: controller.appTheme.value.lightColorScheme,
-        //       items: controller.appTheme.value.lightColorSchemesMap.entries
-        //           .map<DropdownMenuItem<ColorScheme>>((entry) => DropdownMenuItem(
-        //                 value: entry.value,
-        //                 child: Text(entry.key),
-        //               ))
-        //           .toList(),
-        //       onChanged: controller.setLightColorScheme,
-        //     )),
-
         const _ColorPaletteBox(),
         const SizedBox(height: 20),
         const _SpecificThemeSettings(),
@@ -170,68 +159,66 @@ class _ColorPaletteBox extends StatelessWidget {
         // Цветовые схемы дневных тем
         ConstrainedBox(
           constraints: BoxConstraints.expand(width: double.infinity, height: paletteDiameter),
-          child: Obx(() => ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _CircleContainer(
-                    height: paletteDiameter,
-                    width: paletteDiameter,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.wb_sunny,
-                      color: Colors.orange.shade600,
-                    ),
-                  ),
-                  ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
-                      .map<Widget>((entry) => Padding(
-                            // Реализовал таким образом отступы между виджетами цветовых схем, конечно, логичнее
-                            // было бы использовать ListView.separated, но он не принимает
-                            // параметр children - <Widget>[], а я использую не одинаковые элементы.
-                            // Но можно просто создать переменную со списком виджетов
-                            // и билдером брать необходимый виджет. Скорее всего вернусь к этому варианту
-                            key: ValueKey<ColorScheme>(entry.value),
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: _ColorPaletteItem(
-                              colorScheme: entry.value,
-                              paletteDiameter: paletteDiameter,
-                              isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
-                              onPressed: ThemeController.to.setLightColorScheme,
-                            ),
-                          ))
-                      .toList(),
-                ],
-              )),
+          child: Obx(() {
+            // Переписал код ListView с использованием Padding на ListView.separated
+            final widgets = <Widget>[
+              _CircleContainer(
+                diameter: paletteDiameter,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.wb_sunny,
+                  color: Colors.orange.shade600,
+                ),
+              ),
+              ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+                  .map<Widget>((entry) => _ColorPaletteItem(
+                        key: ValueKey<ColorScheme>(entry.value),
+                        colorScheme: entry.value,
+                        paletteDiameter: paletteDiameter,
+                        isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
+                        onPressed: ThemeController.to.setLightColorScheme,
+                      ))
+                  .toList(),
+            ];
+            return ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemCount: widgets.length,
+              itemBuilder: (context, index) => widgets[index],
+            );
+          }),
         ),
         const SizedBox(height: 10),
         // Цветовые схемы ночных тем
         ConstrainedBox(
           constraints: BoxConstraints.expand(width: double.infinity, height: paletteDiameter),
-          child: Obx(() => ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _CircleContainer(
-                    height: paletteDiameter,
-                    width: paletteDiameter,
-                    backgroundColor: const Color(0xFF303030),
-                    child: const Icon(
-                      Icons.mode_night,
-                      color: Colors.white,
-                    ),
-                  ),
-                  ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
-                      .map<Widget>((entry) => Padding(
-                            key: ValueKey<ColorScheme>(entry.value),
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: _ColorPaletteItem(
-                              colorScheme: entry.value,
-                              paletteDiameter: paletteDiameter,
-                              isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
-                              onPressed: ThemeController.to.setDarkColorScheme,
-                            ),
-                          ))
-                      .toList(),
-                ],
-              )),
+          child: Obx(() {
+            final widgets = <Widget>[
+              _CircleContainer(
+                diameter: paletteDiameter,
+                backgroundColor: const Color(0xFF303030),
+                child: const Icon(
+                  Icons.mode_night,
+                  color: Colors.white,
+                ),
+              ),
+              ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+                  .map<Widget>((entry) => _ColorPaletteItem(
+                        key: ValueKey<ColorScheme>(entry.value),
+                        colorScheme: entry.value,
+                        paletteDiameter: paletteDiameter,
+                        isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
+                        onPressed: ThemeController.to.setDarkColorScheme,
+                      ))
+                  .toList(),
+            ];
+            return ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemCount: widgets.length,
+              itemBuilder: (context, index) => widgets[index],
+            );
+          }),
         ),
       ],
     );
@@ -300,19 +287,17 @@ class _CircleContainer extends StatelessWidget {
     Key? key,
     this.child,
     this.backgroundColor,
-    this.height,
-    this.width,
+    this.diameter,
   }) : super(key: key);
   final Color? backgroundColor;
   final Widget? child;
-  final double? height;
-  final double? width;
+  final double? diameter;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
-      width: width,
+      height: diameter,
+      width: diameter,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: backgroundColor,

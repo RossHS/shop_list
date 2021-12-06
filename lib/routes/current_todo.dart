@@ -80,7 +80,7 @@ class CurrentTodo extends StatelessWidget {
                                       child: themeFactory.buildWidget(
                                         animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
                                           config: factory.themeWrapper.paint90sConfig,
-                                          boxColor: appBarTheme.backgroundColor ?? theme.primaryColor,
+                                          boxColor: appBarTheme.backgroundColor ?? theme.colorScheme.primary,
                                           child: child!,
                                         ),
                                         material: (child, _) => ConstrainedBox(
