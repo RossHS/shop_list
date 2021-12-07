@@ -170,9 +170,24 @@ class _ColorPaletteBox extends StatelessWidget {
                   color: Colors.orange.shade600,
                 ),
               ),
+              // Те, в которых можно настраивать цвета
               ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+                  .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
+                        key: ValueKey<String>(entry.key),
+                        colorScheme: entry.value,
+                        paletteDiameter: paletteDiameter,
+                        isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
+                        onPressed: (colorScheme) {
+                          _customizeLightColorSchemeAction(colorScheme, entry.key);
+                        },
+                        child: const Icon(Icons.settings_outlined),
+                      ))
+                  .toList(),
+              ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+                  .where((element) => element.key.contains('default'))
+                  .map<Widget>((entry) => _ColorPaletteItem(
+                        key: ValueKey<String>(entry.key),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
@@ -202,9 +217,25 @@ class _ColorPaletteBox extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
+              // Те, в которых можно настраивать цвета
               ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+                  .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
+                        key: ValueKey<String>(entry.key),
+                        colorScheme: entry.value,
+                        paletteDiameter: paletteDiameter,
+                        isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
+                        onPressed: (colorScheme) {
+                          _customizeDarkColorSchemeAction(colorScheme, entry.key);
+                        },
+                        child: const Icon(Icons.settings_outlined),
+                      ))
+                  .toList(),
+              // Обычные цветовые схемы
+              ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+                  .where((element) => element.key.contains('default'))
+                  .map<Widget>((entry) => _ColorPaletteItem(
+                        key: ValueKey<String>(entry.key),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
@@ -223,21 +254,34 @@ class _ColorPaletteBox extends StatelessWidget {
       ],
     );
   }
+
+  void _customizeDarkColorSchemeAction(ColorScheme? colorScheme, String key) {
+    if (colorScheme == null) return;
+    ThemeController.to.setDarkColorScheme(colorScheme, key: key);
+  }
+
+  void _customizeLightColorSchemeAction(ColorScheme? colorScheme, String key) {
+    if (colorScheme == null) return;
+    ThemeController.to.setLightColorScheme(colorScheme, key: key);
+  }
 }
 
 /// Виджет выбора цвета
 class _ColorPaletteItem extends StatelessWidget {
-  const _ColorPaletteItem(
-      {Key? key,
-      required this.colorScheme,
-      required this.paletteDiameter,
-      required this.onPressed,
-      required this.isSelected})
-      : super(key: key);
+  const _ColorPaletteItem({
+    Key? key,
+    required this.colorScheme,
+    required this.paletteDiameter,
+    required this.onPressed,
+    required this.isSelected,
+    this.child,
+  }) : super(key: key);
+
   final ColorScheme colorScheme;
   final double paletteDiameter;
   final void Function(ColorScheme? colorScheme) onPressed;
   final bool isSelected;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -252,9 +296,7 @@ class _ColorPaletteItem extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  spreadRadius: 2,
                   color: colorScheme.primary,
-                  offset: const Offset(0.0, 1.0), //(x,y)
                   blurRadius: 10.0,
                 ),
               ],
@@ -265,7 +307,6 @@ class _ColorPaletteItem extends StatelessWidget {
                 BoxShadow(
                   spreadRadius: 0,
                   color: Colors.transparent,
-                  offset: Offset(0.0, 1.0), //(x,y)
                   blurRadius: 0,
                 ),
               ],
@@ -277,6 +318,7 @@ class _ColorPaletteItem extends StatelessWidget {
         paletteDiameter: paletteDiameter,
         mainColor: colorScheme.background,
         additionColor: colorScheme.primary,
+        child: child,
       ),
     );
   }

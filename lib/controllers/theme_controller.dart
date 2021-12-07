@@ -112,16 +112,24 @@ class ThemeController extends GetxController {
   }
 
   /// Установка палитры светлой темы
-  void setLightColorScheme(ColorScheme? colorScheme) {
+  /// Параметр key необходим для обновления цвета в коллекции цветовых схем,
+  /// по сути нужен только для кастомных цветов, которые можно изменять,
+  /// в остальных случаях указывать не обязательно
+  void setLightColorScheme(ColorScheme? colorScheme, {String? key}) {
     _log.fine('set light ColorScheme - $colorScheme');
+    if (key != null && colorScheme != null) appTheme.value.lightColorSchemesMap[key] = colorScheme;
     appTheme.value = appTheme.value.copyWith(
       lightColorScheme: colorScheme,
     );
   }
 
   /// Установка палитры темной темы
-  void setDarkColorScheme(ColorScheme? colorScheme) {
+  /// Параметр key необходим для обновления цвета в коллекции цветовых схем,
+  /// по сути нужен только для кастомных цветов, которые можно изменять,
+  /// в остальных случаях указывать не обязательно
+  void setDarkColorScheme(ColorScheme? colorScheme, {String? key}) {
     _log.fine('set dark ColorScheme - $colorScheme');
+    if (key != null && colorScheme != null) appTheme.value.darkColorSchemesMap[key] = colorScheme;
     appTheme.value = appTheme.value.copyWith(
       darkColorScheme: colorScheme,
     );

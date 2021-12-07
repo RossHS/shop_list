@@ -130,6 +130,7 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     _lightColorSchemesMap ??= {
       'default light 1': _createLightColorScheme(Colors.green, Colors.red),
       'default light 2': _createLightColorScheme(Colors.blue, Colors.white),
+      'custom light': _loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
     };
     assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
     return _lightColorSchemesMap!;
@@ -139,6 +140,7 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     _darkColorSchemesMap ??= {
       'default dark 1': _createDarkColorScheme(Colors.yellow, Colors.purple),
       'default dark 2': _createDarkColorScheme(Colors.blueGrey, Colors.pink),
+      'custom dark': _loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
     };
     assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
     return _darkColorSchemesMap!;
@@ -162,6 +164,16 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     super.writeToGetStorage(storage);
     storage.write('$appThemeStorageValue-paintConfig-offset', paint90sConfig.offset);
     storage.write('$appThemeStorageValue-paintConfig-strokeWidth', paint90sConfig.strokeWidth);
+
+    // Запись кастомных цветов светлой темы и темной. Не очень нравится идея разбивать кастомную цветовую схему
+    // по строковым константам и отталкиваться от типа ключа при использовании в виджетах, как мне кажется,
+    // лучше было бы использовать систему классов с наследованием (полиморфизм), но пока оставлю как есть.
+    // TODO 07.12.2021 подумать об идеи с классами цветовых схем (обертками над ColorScheme)
+    storage.write('$appThemeStorageValue-custom-light-mainColor', lightColorSchemesMap['custom light']!.primary);
+    storage.write(
+        '$appThemeStorageValue-custom-light-backgroundColor', lightColorSchemesMap['custom light']!.background);
+    storage.write('$appThemeStorageValue-custom-dark-mainColor', darkColorSchemesMap['custom dark']!.primary);
+    storage.write('$appThemeStorageValue-custom-dark-backgroundColor', darkColorSchemesMap['custom dark']!.background);
   }
 
   @override
@@ -392,6 +404,17 @@ class TextThemeCollection {
 
   static const androidBlackTextThemeKey = 'AndroidBlack';
   static const androidBlackTextTheme = Typography.blackMountainView;
+}
+
+ColorScheme _loadCustomColorSchemeFromStorage(GetStorage storage, String key) {
+  final mainColor = storage.read<Color>('$key-mainColor') ?? Colors.blue;
+  final backgroundColor = storage.read<Color>('$key-backgroundColor') ?? Colors.pink;
+  if (key.contains('light')) {
+    return _createLightColorScheme(mainColor, backgroundColor);
+  } else if (key.contains('dark')) {
+    return _createDarkColorScheme(mainColor, backgroundColor);
+  }
+  throw ArgumentError('Incorrect storage key! $key');
 }
 
 ColorScheme _createLightColorScheme(Color mainColor, Color backgroundColor) {

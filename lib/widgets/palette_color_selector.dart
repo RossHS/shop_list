@@ -8,6 +8,7 @@ class PaletteColorSelector extends StatefulWidget {
     this.paletteDiameter = 44,
     this.mainColor = Colors.black,
     this.additionColor = Colors.white,
+    this.child,
   }) : super(key: key);
 
   /// Событие при нажатии на кнопку
@@ -21,6 +22,8 @@ class PaletteColorSelector extends StatefulWidget {
 
   /// Второстепенный цвет
   final Color additionColor;
+
+  final Widget? child;
 
   @override
   State<PaletteColorSelector> createState() => _PaletteColorSelectorState();
@@ -83,6 +86,7 @@ class _PaletteColorSelectorState extends State<PaletteColorSelector> with Single
                 // При нажатии на кнопку запускаем с 0 анимацию внутреннего круга
                 _animationController.forward(from: 0);
               },
+              child: widget.child,
             ),
           ),
         ),
