@@ -5,7 +5,8 @@ import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
-import 'package:shop_list/widgets/palette_color_selector.dart';
+import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
+import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
 /// Маршрут настройки тем приложения
@@ -257,12 +258,60 @@ class _ColorPaletteBox extends StatelessWidget {
 
   void _customizeDarkColorSchemeAction(ColorScheme? colorScheme, String key) {
     if (colorScheme == null) return;
-    ThemeController.to.setDarkColorScheme(colorScheme, key: key);
+    final themeWrapper = ThemeController.to.appTheme.value;
+    if (themeWrapper.darkColorScheme != colorScheme) {
+      ThemeController.to.setDarkColorScheme(colorScheme, key: key);
+    } else {
+      _changeColorDialog(
+        onColorSave: (newColorScheme) {
+          ThemeController.to.setDarkColorScheme(newColorScheme, key: key);
+        },
+        colorScheme: ThemeController.to.appTheme.value.darkColorScheme,
+      );
+    }
   }
 
   void _customizeLightColorSchemeAction(ColorScheme? colorScheme, String key) {
     if (colorScheme == null) return;
-    ThemeController.to.setLightColorScheme(colorScheme, key: key);
+    final themeWrapper = ThemeController.to.appTheme.value;
+    if (themeWrapper.lightColorScheme != colorScheme) {
+      ThemeController.to.setLightColorScheme(colorScheme, key: key);
+    } else {
+      ThemeController.to.appTheme.value.lightColorScheme;
+      _changeColorDialog(
+        onColorSave: (newColorScheme) {
+          ThemeController.to.setLightColorScheme(newColorScheme, key: key);
+        },
+        colorScheme: ThemeController.to.appTheme.value.lightColorScheme,
+      );
+    }
+  }
+
+  void _changeColorDialog({
+    required void Function(ColorScheme newColorScheme) onColorSave,
+    required ColorScheme colorScheme,
+  }) {
+    final colorController = ColorChangeController(colorScheme: colorScheme);
+    ThemeFactory.instance(ThemeController.to.appTheme.value).showDialog(
+      content: Material(
+        child: PaletteColorCustomizerPicker(
+          controller: colorController,
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              onColorSave(colorController.generateColor);
+              Get.back();
+            },
+            child: const Text('Сохранить')),
+        TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Отменить')),
+      ],
+    );
   }
 }
 

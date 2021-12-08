@@ -177,15 +177,11 @@ class Animated90sFactory extends ThemeFactory {
             children: actions,
           );
         }
-
         return DefaultTextStyle(
           style: Get.textTheme.bodyText2!,
           child: Center(
             child: AnimatedPainterSquare90s(
-              config: Paint90sConfig(
-                backgroundColor: theme.canvasColor,
-                offset: 20,
-              ),
+              config: themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor),
               child: Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
                 child: IntrinsicWidth(
