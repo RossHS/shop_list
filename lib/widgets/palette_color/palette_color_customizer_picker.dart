@@ -29,31 +29,37 @@ class _PaletteColorCustomizerPickerState extends State<PaletteColorCustomizerPic
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          leading: Container(
-            height: 100,
-            width: 100,
-            color: widget.controller.mainColor.color,
-          ),
+        RadioListTile<_ColorMutableWrapper>(
           title: const Text('Основной'),
-          onTap: () {
+          value: widget.controller.mainColor,
+          groupValue: selectedColor,
+          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: (_) {
             setState(() {
               selectedColor = widget.controller.mainColor;
             });
           },
-        ),
-        ListTile(
-          leading: Container(
+          secondary: Container(
             height: 100,
             width: 100,
-            color: widget.controller.backgroundColor.color,
+            color: widget.controller.mainColor.color,
           ),
+        ),
+        RadioListTile<_ColorMutableWrapper>(
           title: const Text('Фон'),
-          onTap: () {
+          value: widget.controller.backgroundColor,
+          groupValue: selectedColor,
+          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: (_) {
             setState(() {
               selectedColor = widget.controller.backgroundColor;
             });
           },
+          secondary: Container(
+            height: 100,
+            width: 100,
+            color: widget.controller.backgroundColor.color,
+          ),
         ),
         ColorPicker(
             enableAlpha: false,
