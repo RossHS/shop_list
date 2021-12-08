@@ -174,7 +174,7 @@ class _ColorPaletteBox extends StatelessWidget {
               ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
                   .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<String>(entry.key),
+                        key: ValueKey<ColorScheme>(entry.value),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
@@ -187,7 +187,7 @@ class _ColorPaletteBox extends StatelessWidget {
               ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
                   .where((element) => element.key.contains('default'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<String>(entry.key),
+                        key: ValueKey<ColorScheme>(entry.value),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
@@ -221,7 +221,7 @@ class _ColorPaletteBox extends StatelessWidget {
               ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
                   .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<String>(entry.key),
+                        key: ValueKey<ColorScheme>(entry.value),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
@@ -235,7 +235,7 @@ class _ColorPaletteBox extends StatelessWidget {
               ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
                   .where((element) => element.key.contains('default'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<String>(entry.key),
+                        key: ValueKey<ColorScheme>(entry.value),
                         colorScheme: entry.value,
                         paletteDiameter: paletteDiameter,
                         isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
