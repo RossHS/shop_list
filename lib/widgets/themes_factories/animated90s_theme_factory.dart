@@ -147,7 +147,11 @@ class Animated90sFactory extends ThemeFactory {
   }
 
   @override
-  void showDialog({String? text, List<Widget>? actions}) {
+  void showDialog({
+    String? text,
+    Widget? content,
+    List<Widget>? actions,
+  }) {
     showGeneralDialog(
       context: Get.context!,
       pageBuilder: (context, animation, secondaryAnimation) {
@@ -169,6 +173,7 @@ class Animated90sFactory extends ThemeFactory {
         if (actions != null) {
           actionsWidget = Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: actions,
           );
         }
@@ -183,13 +188,16 @@ class Animated90sFactory extends ThemeFactory {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    if (titleWidget != null) titleWidget,
-                    if (actionsWidget != null) actionsWidget,
-                  ],
+                child: IntrinsicWidth(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (titleWidget != null) titleWidget,
+                      if (content != null) content,
+                      if (actionsWidget != null) actionsWidget,
+                    ],
+                  ),
                 ),
               ),
             ),
