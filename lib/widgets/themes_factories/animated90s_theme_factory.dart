@@ -66,10 +66,15 @@ class Animated90sFactory extends ThemeFactory {
   Widget commonItemBox({Key? key, required Widget child}) {
     final theme = Get.theme;
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-    return AnimatedPainterSquare90s(
-      key: key,
-      config: config,
-      child: child,
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+      ),
+      child: AnimatedPainterSquare90s(
+        key: key,
+        config: config,
+        child: child,
+      ),
     );
   }
 
@@ -92,7 +97,8 @@ class Animated90sFactory extends ThemeFactory {
     Widget? child,
   }) {
     final theme = Get.theme;
-    final textTheme = theme.textTheme;
+    // Адаптация цвета текста к фону
+    final adaptedTextTheme = theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor);
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return SafeArea(
       // Отступы, чтобы SnackBar не выходил за границы экрана из-за AnimatedPainterSquare
@@ -110,9 +116,9 @@ class Animated90sFactory extends ThemeFactory {
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: textTheme.headline5,
+                    style: adaptedTextTheme.headline5,
                   ),
-                Text(msg, style: textTheme.bodyText1),
+                Text(msg, style: adaptedTextTheme.bodyText1),
                 if (child != null) child
               ],
             ),
@@ -156,7 +162,10 @@ class Animated90sFactory extends ThemeFactory {
       context: Get.context!,
       pageBuilder: (context, animation, secondaryAnimation) {
         final theme = Get.theme;
-        final textTheme = Get.textTheme;
+        // Адаптация цвета текста к фону
+        final adaptedTheme = theme.copyWith(
+          textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+        );
         Widget? titleWidget;
         Widget? actionsWidget;
 
@@ -165,7 +174,7 @@ class Animated90sFactory extends ThemeFactory {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Text(
               text,
-              style: textTheme.headline6,
+              style: adaptedTheme.textTheme.headline6,
             ),
           );
         }
@@ -177,8 +186,8 @@ class Animated90sFactory extends ThemeFactory {
             children: actions,
           );
         }
-        return DefaultTextStyle(
-          style: Get.textTheme.bodyText2!,
+        return Theme(
+          data: adaptedTheme,
           child: Center(
             child: AnimatedPainterSquare90s(
               config: themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor),

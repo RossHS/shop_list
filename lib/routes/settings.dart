@@ -37,6 +37,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final controller = ThemeController.to;
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -46,6 +47,7 @@ class _Body extends StatelessWidget {
           trailing: Obx(
             () => DropdownButton<String>(
               value: controller.appTheme.value.themePrefix,
+              dropdownColor: colorScheme.background,
               items: controller.appThemeList
                   .map<DropdownMenuItem<String>>((value) => DropdownMenuItem(
                         value: value,
@@ -61,6 +63,7 @@ class _Body extends StatelessWidget {
           trailing: Obx(
             () => DropdownButton<TextTheme>(
               value: controller.textTheme.value,
+              dropdownColor: colorScheme.background,
               items: TextThemeCollection.map.entries
                   .map<DropdownMenuItem<TextTheme>>((entry) => DropdownMenuItem(
                         value: entry.value,
@@ -80,6 +83,7 @@ class _Body extends StatelessWidget {
           trailing: Obx(
             () => DropdownButton<ThemeMode>(
               value: controller.themeMode.value,
+              dropdownColor: colorScheme.background,
               items: ThemeMode.values
                   .map<DropdownMenuItem<ThemeMode>>((themeMode) => DropdownMenuItem(
                         value: themeMode,
@@ -410,104 +414,111 @@ class _SpecificThemeSettings extends StatelessWidget {
     final theme = Theme.of(context);
     // Для анимирования размеров box, т.к. окна с настройками тем имеют различные размеры,
     // соответственно необходимо использовать анимацию, чтобы избежать "прыжок" в размере
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 200),
-      child: GetX<ThemeController>(
-        builder: (controller) {
-          final themeFactory = ThemeFactory.instance(controller.appTheme.value);
-          return AnimatedSwitcher(
-            duration: const Duration(seconds: 1),
-            switchInCurve: Curves.bounceOut,
-            switchOutCurve: Curves.easeOutQuint,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return ScaleTransition(child: child, scale: animation);
-            },
-            // Использую метод buildWidget, а не определяю отдельный метод построения виджетов "настройки стиля"
-            // в абстрактной фабрике, так как тесты показали, что Get.theme отдает не актуальный объект [ThemeData],
-            // т.е. выглядит это так, что все "опаздывает" на один фрейм, к примеру, при установки текста в черный цвет
-            // (когда изначально был белый), цвет в данных полях останется белым, а при изменении цвета темы со светлой на темную,
-            // текст станет черным, а тема останется светлой, а при изменении следующего поля тема станет темной и т.д.
-            // (hot reload обновляет тему до актуальной/верной)
-            // Причем данная проблема наблюдается только на окне настройки, где необходим максимально быстрый отклик на изменения темы.
-            // Мне кажется, что проблема кроется в том, что Get.theme где-то под капотом использует future
-            // и я таким образом пролетаю до обновления ThemeData в Get.theme.
-            //
-            // Варианты решения.
-            // 1) Глубоко разобраться с устройством внутреннего строения алгоритма Get.theme, возможно добавить callback,
-            //  когда тема 100% обновилась, потом перестраивать нужные мне виджеты
-            // 2) Использовать актуальный ThemeData из BuildContext.
-            // 2.1) Переписать все методы абстрактной фабрики и передавать в каждый context в качестве аргумента.
-            // 2.2) Использовать метод themeFactory.buildWidget и только тут использовать BuildContext.
-            //  Или же создать отдельный виджеты, и не пользоваться фабрикой вовсе.
-            //
-            // Т.к. эта проблема беспокоит только лишь на окне настройки, то первый вариант отпадает из своей
-            // излишней сложности. 2.1. тоже можно отбросить по этой же причине, плюс понадобиться изменять уже существующий рабочий код,
-            // ради уникальной проблемы. Таким образом остается вариант 2.2, который я и реализовал.
-            child: themeFactory.buildWidget(
-              animated90s: (_, factory) {
-                final themeWrapper = factory.themeWrapper;
-                final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-                return Padding(
-                  // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
-                  key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                  padding: const EdgeInsets.all(10.0),
-                  child: AnimatedPainterSquare90s(
-                    config: config,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Настройки стиля',
-                          style: theme.textTheme.headline5,
-                        ),
-                        const SizedBox(height: 10),
-                        // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
-                        Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
-                        Slider(
-                          value: themeWrapper.paint90sConfig.strokeWidth,
-                          min: 1,
-                          max: 10,
-                          onChanged: (double value) {
-                            // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
-                            // мелкими методами на каждый параметр
-                            if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                            final wrapper = factory.themeWrapper;
-                            controller.appTheme.value = wrapper.copyWith(
-                              paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
-                            );
-                          },
-                        ),
-                        Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
-                        Slider(
-                          value: themeWrapper.paint90sConfig.offset.toDouble(),
-                          min: 5,
-                          max: 20,
-                          onChanged: (double value) {
-                            if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                            final wrapper = factory.themeWrapper;
-                            controller.appTheme.value = wrapper.copyWith(
-                              paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
-                            );
-                          },
-                        ),
-                      ],
+    final textColor = theme.canvasColor.calcTextColor;
+    // На основании уже существующей стандартной темы формируем новую с учетом цвета фона родителя,
+    // так, чтобы текст не сливался с фоном
+    final adaptedTextTheme = theme.textTheme.apply(bodyColor: textColor);
+    return DefaultTextStyle(
+      style: adaptedTextTheme.bodyText2!,
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 200),
+        child: GetX<ThemeController>(
+          builder: (controller) {
+            final themeFactory = ThemeFactory.instance(controller.appTheme.value);
+            return AnimatedSwitcher(
+              duration: const Duration(seconds: 1),
+              switchInCurve: Curves.bounceOut,
+              switchOutCurve: Curves.easeOutQuint,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(child: child, scale: animation);
+              },
+              // Использую метод buildWidget, а не определяю отдельный метод построения виджетов "настройки стиля"
+              // в абстрактной фабрике, так как тесты показали, что Get.theme отдает не актуальный объект [ThemeData],
+              // т.е. выглядит это так, что все "опаздывает" на один фрейм, к примеру, при установки текста в черный цвет
+              // (когда изначально был белый), цвет в данных полях останется белым, а при изменении цвета темы со светлой на темную,
+              // текст станет черным, а тема останется светлой, а при изменении следующего поля тема станет темной и т.д.
+              // (hot reload обновляет тему до актуальной/верной)
+              // Причем данная проблема наблюдается только на окне настройки, где необходим максимально быстрый отклик на изменения темы.
+              // Мне кажется, что проблема кроется в том, что Get.theme где-то под капотом использует future
+              // и я таким образом пролетаю до обновления ThemeData в Get.theme.
+              //
+              // Варианты решения.
+              // 1) Глубоко разобраться с устройством внутреннего строения алгоритма Get.theme, возможно добавить callback,
+              //  когда тема 100% обновилась, потом перестраивать нужные мне виджеты
+              // 2) Использовать актуальный ThemeData из BuildContext.
+              // 2.1) Переписать все методы абстрактной фабрики и передавать в каждый context в качестве аргумента.
+              // 2.2) Использовать метод themeFactory.buildWidget и только тут использовать BuildContext.
+              //  Или же создать отдельный виджеты, и не пользоваться фабрикой вовсе.
+              //
+              // Т.к. эта проблема беспокоит только лишь на окне настройки, то первый вариант отпадает из своей
+              // излишней сложности. 2.1. тоже можно отбросить по этой же причине, плюс понадобиться изменять уже существующий рабочий код,
+              // ради уникальной проблемы. Таким образом остается вариант 2.2, который я и реализовал.
+              child: themeFactory.buildWidget(
+                animated90s: (_, factory) {
+                  final themeWrapper = factory.themeWrapper;
+                  final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+                  return Padding(
+                    // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
+                    key: ValueKey<String>(controller.appTheme.value.themePrefix),
+                    padding: const EdgeInsets.all(10.0),
+                    child: AnimatedPainterSquare90s(
+                      config: config,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Настройки стиля',
+                            style: adaptedTextTheme.headline5,
+                          ),
+                          const SizedBox(height: 10),
+                          // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
+                          Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
+                          Slider(
+                            value: themeWrapper.paint90sConfig.strokeWidth,
+                            min: 1,
+                            max: 10,
+                            onChanged: (double value) {
+                              // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
+                              // мелкими методами на каждый параметр
+                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                              final wrapper = factory.themeWrapper;
+                              controller.appTheme.value = wrapper.copyWith(
+                                paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
+                              );
+                            },
+                          ),
+                          Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
+                          Slider(
+                            value: themeWrapper.paint90sConfig.offset.toDouble(),
+                            min: 5,
+                            max: 20,
+                            onChanged: (double value) {
+                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                              final wrapper = factory.themeWrapper;
+                              controller.appTheme.value = wrapper.copyWith(
+                                paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-              material: (_, factory) {
-                return Padding(
-                  key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    color: Colors.red,
-                  ),
-                );
-              },
-            ),
-          );
-        },
+                  );
+                },
+                material: (_, factory) {
+                  return Padding(
+                    key: ValueKey<String>(controller.appTheme.value.themePrefix),
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      color: Colors.red,
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

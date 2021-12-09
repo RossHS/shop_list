@@ -60,20 +60,25 @@ class MaterialThemeFactory extends ThemeFactory {
   @override
   Widget commonItemBox({Key? key, required Widget child}) {
     final theme = Get.theme;
-    return Container(
-      key: key,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        color: theme.canvasColor,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black,
-            offset: Offset(0.0, 1.0), //(x,y)
-            blurRadius: 6.0,
-          ),
-        ],
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
       ),
-      child: child,
+      child: Container(
+        key: key,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          color: theme.canvasColor,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(0.0, 1.0), //(x,y)
+              blurRadius: 6.0,
+            ),
+          ],
+        ),
+        child: child,
+      ),
     );
   }
 
@@ -88,7 +93,8 @@ class MaterialThemeFactory extends ThemeFactory {
   @override
   Widget infoOverlay({String? title, required String msg, Widget? child}) {
     final theme = Get.theme;
-    final textTheme = theme.textTheme;
+    // Адаптация цвета текста к фону
+    final adaptedTextTheme = theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor);
     return SafeArea(
       // Отступы, чтобы SnackBar не выходил за границы экрана из-за AnimatedPainterSquare
       child: Padding(
@@ -115,9 +121,9 @@ class MaterialThemeFactory extends ThemeFactory {
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: textTheme.headline5,
+                  style: adaptedTextTheme.headline5,
                 ),
-              Text(msg, style: textTheme.bodyText1),
+              Text(msg, style: adaptedTextTheme.bodyText1),
               if (child != null) child
             ],
           ),
@@ -160,7 +166,10 @@ class MaterialThemeFactory extends ThemeFactory {
       context: Get.context!,
       pageBuilder: (context, animation, secondaryAnimation) {
         final theme = Get.theme;
-        final textTheme = Get.textTheme;
+        // Адаптация цвета текста к фону
+        final adaptedTheme = theme.copyWith(
+          textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+        );
         Widget? titleWidget;
         Widget? actionsWidget;
 
@@ -169,7 +178,7 @@ class MaterialThemeFactory extends ThemeFactory {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Text(
               text,
-              style: textTheme.headline6,
+              style: adaptedTheme.textTheme.headline6,
             ),
           );
         }
@@ -182,8 +191,8 @@ class MaterialThemeFactory extends ThemeFactory {
           );
         }
 
-        return DefaultTextStyle(
-          style: Get.textTheme.bodyText2!,
+        return Theme(
+          data: adaptedTheme,
           child: Center(
             child: Container(
               decoration: BoxDecoration(

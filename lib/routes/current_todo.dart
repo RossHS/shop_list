@@ -335,35 +335,40 @@ class _CompletedInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Get.textTheme;
     final todoViewController = Get.find<TodoViewController>();
     final userMapController = Get.find<UsersMapController>();
     assert(todoViewController.todoModel != null);
     final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+    final adaptedTextTheme = Get.textTheme.apply(bodyColor: Get.theme.canvasColor.calcTextColor);
+    // TODO 09.21.2021 - почему-то именно в этом виджете не корректно работает динамическая смена цвета текста на canvasColor в commonItemBox, хотя во всех остальных частях кода все ок
+    // Подставил костыль для закрытия проблемы явным заданием цвета текста
     return themeFactory.commonItemBox(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'ЗАКРЫТО!',
-              style: Get.textTheme.headline5,
-            ),
-            const SizedBox(height: 10),
-            Text(completedAuthor?.name ?? ''),
-            Text(
-              formatterDate.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
-            ),
-            Text(
-              formatterTime.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
-            ),
-          ],
+      child: DefaultTextStyle(
+        style: adaptedTextTheme.bodyText2!,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'ЗАКРЫТО!',
+                style: adaptedTextTheme.headline5,
+              ),
+              const SizedBox(height: 10),
+              Text(completedAuthor?.name ?? ''),
+              Text(
+                formatterDate.format(completedDateTime),
+                style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
+              ),
+              Text(
+                formatterTime.format(completedDateTime),
+                style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
+              ),
+            ],
+          ),
         ),
       ),
     );

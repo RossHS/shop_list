@@ -27,19 +27,27 @@ abstract class ThemeDataWrapper {
   /// Все допустимы цветовые схемы в темной теме
   Map<String, ColorScheme> get darkColorSchemesMap;
 
-  ThemeData get lightTheme => ThemeData(
-        scaffoldBackgroundColor: lightColorScheme.background,
-        colorScheme: lightColorScheme,
-        brightness: Brightness.light,
-        textTheme: textTheme,
-      );
+  ThemeData get lightTheme => _generateColorScheme(lightColorScheme);
 
-  ThemeData get darkTheme => ThemeData(
-        scaffoldBackgroundColor: darkColorScheme.background,
-        colorScheme: darkColorScheme,
-        brightness: Brightness.dark,
-        textTheme: textTheme,
-      );
+  ThemeData get darkTheme => _generateColorScheme(darkColorScheme);
+
+  ThemeData _generateColorScheme(ColorScheme colorScheme) {
+    final mainTextColor = colorScheme.primary.calcTextColor;
+    final backgroundTextColor = colorScheme.background.calcTextColor;
+    return ThemeData(
+      scaffoldBackgroundColor: colorScheme.background,
+      colorScheme: colorScheme.copyWith(
+        onPrimary: mainTextColor,
+        onSecondary: mainTextColor,
+        onSurface: mainTextColor,
+        onBackground: backgroundTextColor,
+      ),
+      brightness: colorScheme.brightness,
+      textTheme: textTheme.apply(
+        bodyColor: backgroundTextColor,
+      ),
+    );
+  }
 
   /// Наименование темы, а также префикс ключей по которым будет производится запись и чтение в хранилище
   String get themePrefix;
@@ -353,8 +361,6 @@ class TextThemeCollection {
   static final Map<String, TextTheme> map = {
     rossTextThemeKey: rossTextTheme,
     androidTextThemeKey: androidTextTheme,
-    androidWhiteTextThemeKey: androidWhiteTextTheme,
-    androidBlackTextThemeKey: androidBlackTextTheme,
   };
 
   static TextTheme fromString(String? val) {
@@ -401,12 +407,6 @@ class TextThemeCollection {
     button: TextStyle(debugLabel: 'mountainView button', fontFamily: 'Roboto', decoration: TextDecoration.none),
     overline: TextStyle(debugLabel: 'mountainView overline', fontFamily: 'Roboto', decoration: TextDecoration.none),
   );
-
-  static const androidWhiteTextThemeKey = 'AndroidWhite';
-  static const androidWhiteTextTheme = Typography.whiteMountainView;
-
-  static const androidBlackTextThemeKey = 'AndroidBlack';
-  static const androidBlackTextTheme = Typography.blackMountainView;
 }
 
 ColorScheme _loadCustomColorSchemeFromStorage(GetStorage storage, String key) {
@@ -442,4 +442,10 @@ ColorScheme _createDarkColorScheme(Color mainColor, Color backgroundColor) {
     surface: mainColor,
     error: Colors.redAccent,
   );
+}
+
+/// Используется для определения цвета текста в зависимости от цвета фона,
+/// TODO 09.21.2021 метод весьма затратный для расчета, используется в основном для определения цвета текста на поверхности canvasColor. Возможно вынести его в отдельное поле, чтобы убрать постоянный перерасчет в методе build()
+extension CalculateTextColor on Color {
+  Color get calcTextColor => computeLuminance() > .5 ? Colors.black : Colors.white;
 }
