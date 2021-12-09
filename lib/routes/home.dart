@@ -189,10 +189,7 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: _onPointerDown,
@@ -200,69 +197,84 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: _animation,
         child: themeFactory.commonItemBox(
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Text(
-                        _todoModel.title,
-                        style: textTheme.bodyText1,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    for (var element in _todoModel.elements.take(5))
-                      Text(
-                        ' ${element.name}',
-                        style: textTheme.bodyText2?.copyWith(
-                          fontSize: 18,
-                          decoration: element.completed ? TextDecoration.lineThrough : null,
+          // Так как в фабрике commonItemBox определяется своя Theme, то для получения
+          // ссылки на нее использую виджет Builder, который может вернуть ближайший context
+          child: Builder(builder: (context) {
+            final theme = Theme.of(context);
+            final textTheme = theme.textTheme;
+            // Стиль для дополнительной информации
+            final textStyleAdditionsInfo = TextStyle(
+              fontSize: 15,
+              color: textTheme.bodyText2?.color?.withOpacity(0.3),
+            );
+            return Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          _todoModel.title,
+                          style: textTheme.bodyText1,
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    if (_todoModel.elements.length > 5) const Center(child: Text('...')),
-                    const SizedBox(height: 15),
-                    Text(
-                      formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
-                      style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
-                    ),
-                    Obx(() => Text(
-                          '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
-                          style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
-                        )),
-                    if (!_todoModel.isPublic) const Text('Приватный', style: TextStyle(fontSize: 15)),
-                  ],
-                ),
-              ),
-              // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
-              if (_todoModel.completed)
-                Positioned.fill(
-                  child: RepaintBoundary(
-                    child: CustomPaint(
-                      painter: _CrossLinePainter(),
-                    ),
+                      const SizedBox(height: 10),
+                      for (var element in _todoModel.elements.take(5))
+                        Text(
+                          ' ${element.name}',
+                          style: textTheme.bodyText2?.copyWith(
+                            fontSize: 18,
+                            decoration: element.completed ? TextDecoration.lineThrough : null,
+                          ),
+                        ),
+                      if (_todoModel.elements.length > 5) const Center(child: Text('...')),
+                      const SizedBox(height: 15),
+                      Text(
+                        formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                        style: textStyleAdditionsInfo,
+                      ),
+                      Obx(() => Text(
+                            '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
+                            style: textStyleAdditionsInfo,
+                          )),
+                      if (!_todoModel.isPublic)
+                        Text(
+                          'Приватный',
+                          style: textStyleAdditionsInfo,
+                        ),
+                    ],
                   ),
                 ),
-              // Вынес "наверх" виджет обработки нажатий, чтобы виджет
-              // индикации завершенности работы не загораживал нажатия
-              Positioned.fill(
-                child: RawMaterialButton(
-                  onLongPress: _longPressed,
-                  onPressed: _onPressed,
+                // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
+                if (_todoModel.completed)
+                  Positioned.fill(
+                    child: RepaintBoundary(
+                      child: CustomPaint(
+                        painter: _CrossLinePainter(),
+                      ),
+                    ),
+                  ),
+                // Вынес "наверх" виджет обработки нажатий, чтобы виджет
+                // индикации завершенности работы не загораживал нажатия
+                Positioned.fill(
+                  child: RawMaterialButton(
+                    onLongPress: _longPressed,
+                    onPressed: _onPressed,
+                  ),
                 ),
-              ),
-              // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
-              if (_isControlPanelInserted)
-                _ItemControlPanel(
-                  refModel: widget.refModel,
-                  opacityController: _opacityController,
-                  todoModel: _todoModel,
-                ),
-            ],
-          ),
+                // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
+                if (_isControlPanelInserted)
+                  _ItemControlPanel(
+                    refModel: widget.refModel,
+                    opacityController: _opacityController,
+                    todoModel: _todoModel,
+                  ),
+              ],
+            );
+          }),
         ),
       ),
     );
