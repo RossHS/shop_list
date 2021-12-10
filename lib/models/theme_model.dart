@@ -36,6 +36,9 @@ abstract class ThemeDataWrapper {
     final backgroundTextColor = colorScheme.background.calcTextColor;
     return ThemeData(
       scaffoldBackgroundColor: colorScheme.background,
+      // Не формирую ColorScheme заранее, т.к. при инициализации
+      // пришлось бы рассчитывать дорогостоящий метод Color.computeLuminance
+      // для каждой доступной ColorsScheme. Т.е. "пожертвовал" чистотой кода в угоду оптимизации
       colorScheme: colorScheme.copyWith(
         onPrimary: mainTextColor,
         onSecondary: mainTextColor,
@@ -445,7 +448,10 @@ ColorScheme _createDarkColorScheme(Color mainColor, Color backgroundColor) {
 }
 
 /// Используется для определения цвета текста в зависимости от цвета фона,
-/// TODO 09.21.2021 метод весьма затратный для расчета, используется в основном для определения цвета текста на поверхности. Возможно, вынести в отдельное поле переменную onCanvasColor, чтобы убрать постоянный перерасчет в методе build() при определении цвета на поверхности canvasColor
 extension CalculateTextColor on Color {
-  Color get calcTextColor => computeLuminance() > .5 ? Colors.black : Colors.white;
+  /// Для оптимизации кеширую уже рассчитанные цвета текста
+  static final _cache = <Color, Color>{};
+
+  /// Расчет цвета, который бы не сливался с текущим
+  Color get calcTextColor => _cache.putIfAbsent(this, () => computeLuminance() > .5 ? Colors.black : Colors.white);
 }
