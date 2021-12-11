@@ -462,6 +462,7 @@ class _SpecificThemeSettings extends StatelessWidget {
                     key: ValueKey<String>(controller.appTheme.value.themePrefix),
                     padding: const EdgeInsets.all(10.0),
                     child: AnimatedPainterSquare90s(
+                      duration: themeWrapper.animationDuration,
                       config: config,
                       child: Column(
                         children: [
@@ -496,6 +497,19 @@ class _SpecificThemeSettings extends StatelessWidget {
                               final wrapper = factory.themeWrapper;
                               controller.appTheme.value = wrapper.copyWith(
                                 paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
+                              );
+                            },
+                          ),
+                          Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
+                          Slider(
+                            value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
+                            min: 40,
+                            max: 300,
+                            onChanged: (double value) {
+                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
+                              final wrapper = factory.themeWrapper;
+                              controller.appTheme.value = wrapper.copyWith(
+                                animationDuration: Duration(milliseconds: value.toInt()),
                               );
                             },
                           ),

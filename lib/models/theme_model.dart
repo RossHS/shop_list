@@ -110,6 +110,7 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   const Animated90sThemeDataWrapper({
     required TextTheme textTheme,
     required this.paint90sConfig,
+    this.animationDuration = const Duration(milliseconds: 80),
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
   }) : super(
@@ -124,12 +125,14 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       offset: storage.read<int>('$appThemeStorageValue-paintConfig-offset'),
       strokeWidth: storage.read<double>('$appThemeStorageValue-paintConfig-strokeWidth'),
     );
-    // Вычитываем название сохраненной темы из хранилища
+    final animationDurationMillis = storage.read<int>('$appThemeStorageValue-animation-duration-millis');
+    // Вычитываем название сохраненной цветовой темы из хранилища
     final String lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
     final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     return Animated90sThemeDataWrapper(
       textTheme: textTheme,
       paint90sConfig: paint90sConfig,
+      animationDuration: Duration(milliseconds: animationDurationMillis ?? 80),
       lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
@@ -170,6 +173,9 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   /// на его основе абстрактная фабрика [Animated90sFactory] создает виджеты
   final Paint90sConfig paint90sConfig;
 
+  /// Задержка между перерисовыванием Animated90sWidgets
+  final Duration animationDuration;
+
   @override
   Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
 
@@ -184,18 +190,21 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     super.writeToGetStorage(storage);
     storage.write('$appThemeStorageValue-paintConfig-offset', paint90sConfig.offset);
     storage.write('$appThemeStorageValue-paintConfig-strokeWidth', paint90sConfig.strokeWidth);
+    storage.write('$appThemeStorageValue-animation-duration-millis', animationDuration.inMilliseconds);
   }
 
   @override
   Animated90sThemeDataWrapper copyWith({
     TextTheme? textTheme,
     Paint90sConfig? paint90sConfig,
+    Duration? animationDuration,
     ColorScheme? lightColorScheme,
     ColorScheme? darkColorScheme,
   }) {
     return Animated90sThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
       paint90sConfig: paint90sConfig ?? this.paint90sConfig,
+      animationDuration: animationDuration ?? this.animationDuration,
       lightColorScheme: lightColorScheme ?? this.lightColorScheme,
       darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
@@ -207,10 +216,11 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       super == other &&
           other is Animated90sThemeDataWrapper &&
           runtimeType == other.runtimeType &&
-          paint90sConfig == other.paint90sConfig;
+          paint90sConfig == other.paint90sConfig &&
+          animationDuration == other.animationDuration;
 
   @override
-  int get hashCode => super.hashCode ^ paint90sConfig.hashCode;
+  int get hashCode => super.hashCode ^ paint90sConfig.hashCode ^ animationDuration.hashCode;
 }
 
 //----------------------------MaterialThemeData--------------------------//

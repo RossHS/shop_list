@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 class AnimatedIcon90s extends StatefulWidget {
   const AnimatedIcon90s({
     required List<IconData> iconsList,
-    Duration duration = const Duration(milliseconds: 80),
+    Duration? duration,
     this.color,
     Key? key,
   })  : _iconsList = iconsList,
-        _duration = duration,
+        _duration = duration ?? const Duration(milliseconds: 80),
         super(key: key);
 
   /// Список допустимых иконок
@@ -27,8 +27,7 @@ class AnimatedIcon90s extends StatefulWidget {
   _AnimatedIcon90sState createState() => _AnimatedIcon90sState();
 }
 
-class _AnimatedIcon90sState extends State<AnimatedIcon90s>
-    with SingleTickerProviderStateMixin {
+class _AnimatedIcon90sState extends State<AnimatedIcon90s> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   final _rnd = Random();

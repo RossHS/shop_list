@@ -18,7 +18,7 @@ abstract class AnimatedPainter90s extends StatefulWidget {
 
 abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends State<T>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+  late AnimationController _controller;
   final _random = Random();
 
   /// Содержит в себе значение для сида Random(), чтобы управлять случайной
@@ -32,6 +32,14 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
   /// элемента на экране по отдельности.
   /// Находится в диапазоне 0 < delay < widget.duration
   late final Timer preDelay;
+
+  @override
+  void didUpdateWidget(T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _controller.duration = widget.duration;
+    }
+  }
 
   @override
   void initState() {

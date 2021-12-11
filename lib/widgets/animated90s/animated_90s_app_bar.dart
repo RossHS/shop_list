@@ -11,6 +11,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.bottom,
     this.config,
+    this.duration,
     Key? key,
   }) : super(key: key);
 
@@ -26,6 +27,8 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
 
   final Paint90sConfig? config;
+
+  final Duration? duration;
 
   static const toolBarHeight = 56.0;
 
@@ -56,7 +59,8 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     var leading = this.leading ??
         IconButton(
           onPressed: Get.back,
-          icon: const AnimatedIcon90s(
+          icon: AnimatedIcon90s(
+            duration: duration,
             iconsList: CustomIcons.arrow,
           ),
         );
@@ -127,6 +131,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     return AnimatedPainterSquare90s(
       config: config,
       borderPaint: const BorderPaint.bottom(),
+      duration: duration,
       child: SafeArea(
         bottom: false,
         // Чтобы Ink эффект был над AnimatedPainterSquare90s, а не под ним

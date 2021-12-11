@@ -21,6 +21,7 @@ class CustomTextField extends StatefulWidget {
     this.minLines,
     this.drawUnderLine = true,
     this.decoration,
+    this.duration,
     this.config,
   }) : super(key: key);
 
@@ -35,6 +36,7 @@ class CustomTextField extends StatefulWidget {
   final bool Function(String)? inputValidator;
   final int? maxLines;
   final int? minLines;
+  final Duration? duration;
   final Paint90sConfig? config;
 
   /// Отображать ли нижнюю волнистую линию
@@ -73,6 +75,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             bottom: 10,
             child: AnimatedPainterLine90s(
               paintSide: PaintSide.bottom,
+              duration: widget.duration,
               config: config.copyWith(outLineColor: _currentColor),
               child: const SizedBox(),
             ),

@@ -30,6 +30,7 @@ class Animated90sFactory extends ThemeFactory {
       title: title,
       actions: actions,
       bottom: bottom,
+      duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
     );
   }
@@ -43,6 +44,7 @@ class Animated90sFactory extends ThemeFactory {
     return AnimatedCircleButton90s(
       key: key,
       onPressed: onPressed,
+      duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
       child: child,
     );
@@ -57,6 +59,7 @@ class Animated90sFactory extends ThemeFactory {
     return AnimatedButton90s(
       key: key,
       onPressed: onPressed,
+      duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
       child: child,
     );
@@ -72,6 +75,7 @@ class Animated90sFactory extends ThemeFactory {
       ),
       child: AnimatedPainterSquare90s(
         key: key,
+        duration: themeWrapper.animationDuration,
         config: config,
         child: child,
       ),
@@ -84,6 +88,7 @@ class Animated90sFactory extends ThemeFactory {
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return AnimatedPainterSquare90s(
       key: key,
+      duration: themeWrapper.animationDuration,
       config: config,
       borderPaint: const BorderPaint.top(),
       child: child,
@@ -105,6 +110,7 @@ class Animated90sFactory extends ThemeFactory {
       child: Padding(
         padding: EdgeInsets.all(10.0 + config.offset),
         child: AnimatedPainterSquare90s(
+          duration: themeWrapper.animationDuration,
           config: config,
           child: SizedBox(
             width: double.infinity,
@@ -141,6 +147,7 @@ class Animated90sFactory extends ThemeFactory {
   }) {
     return CustomTextField(
       key: key,
+      duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
       controller: controller,
       inputValidator: inputValidator,
@@ -190,6 +197,7 @@ class Animated90sFactory extends ThemeFactory {
           data: adaptedTheme,
           child: Center(
             child: AnimatedPainterSquare90s(
+              duration: themeWrapper.animationDuration,
               config: themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor),
               child: Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
