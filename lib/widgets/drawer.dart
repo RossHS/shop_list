@@ -75,6 +75,7 @@ class AppDrawer extends StatelessWidget {
                               () => authController.firestoreUser.value != null
                                   ? themeFactory.buildWidget(
                                       animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
+                                        duration: factory.themeWrapper.animationDuration,
                                         config: factory.themeWrapper.paint90sConfig,
                                         boxColor: backgroundColor,
                                         child: child!,

@@ -79,6 +79,7 @@ class CurrentTodo extends StatelessWidget {
                                       padding: const EdgeInsets.all(5.0),
                                       child: themeFactory.buildWidget(
                                         animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
+                                          duration: factory.themeWrapper.animationDuration,
                                           config: factory.themeWrapper.paint90sConfig,
                                           boxColor: appBarTheme.backgroundColor ?? theme.colorScheme.primary,
                                           child: child!,

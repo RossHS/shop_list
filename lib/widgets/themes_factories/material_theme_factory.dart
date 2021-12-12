@@ -84,9 +84,15 @@ class MaterialThemeFactory extends ThemeFactory {
 
   @override
   Widget todoElementMsgInputBox({Key? key, required Widget child}) {
-    return Container(
-      color: Get.theme.canvasColor,
-      child: child,
+    final theme = Get.theme;
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+      ),
+      child: Container(
+        color: theme.canvasColor,
+        child: child,
+      ),
     );
   }
 

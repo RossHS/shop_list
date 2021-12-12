@@ -77,6 +77,7 @@ class _BodyState extends State<_Body> {
                         // Виджет аватара
                         child: themeFactory.buildWidget(
                           animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
+                            duration: factory.themeWrapper.animationDuration,
                             config: factory.themeWrapper.paint90sConfig,
                             boxColor: backgroundColor,
                             child: child!,

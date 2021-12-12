@@ -86,12 +86,17 @@ class Animated90sFactory extends ThemeFactory {
   Widget todoElementMsgInputBox({Key? key, required Widget child}) {
     final theme = Get.theme;
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-    return AnimatedPainterSquare90s(
-      key: key,
-      duration: themeWrapper.animationDuration,
-      config: config,
-      borderPaint: const BorderPaint.top(),
-      child: child,
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+      ),
+      child: AnimatedPainterSquare90s(
+        key: key,
+        duration: themeWrapper.animationDuration,
+        config: config,
+        borderPaint: const BorderPaint.top(),
+        child: child,
+      ),
     );
   }
 

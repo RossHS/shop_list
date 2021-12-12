@@ -50,11 +50,12 @@ class _AnimatedIconWrapper extends StatelessWidget {
     const width = 42.0;
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return themeFactory.buildWidget(
-      animated90s: (child, _) {
+      animated90s: (child, factory) {
         final paintConfig = Paint90sConfig(
           backgroundColor: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
         );
         return AnimatedPainterCircle90s(
+          duration: factory.themeWrapper.animationDuration,
           config: paintConfig,
           child: SizedBox(
             height: height,
