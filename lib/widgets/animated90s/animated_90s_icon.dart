@@ -78,12 +78,31 @@ class _AnimatedIcon90sState extends State<AnimatedIcon90s> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: ValueListenableBuilder<IconData>(
-        valueListenable: _notifier,
-        builder: (_, value, __) => Icon(
-          value,
-          color: widget.color,
+    final iconTheme = IconTheme.of(context);
+    final iconSize = iconTheme.size;
+    final iconColor = iconTheme.color!;
+
+    return SizedBox(
+      height: iconSize,
+      width: iconSize,
+      child: Center(
+        child: RepaintBoundary(
+          child: ValueListenableBuilder<IconData>(
+            valueListenable: _notifier,
+            builder: (_, icon, child) => RichText(
+              overflow: TextOverflow.visible, // Never clip.
+              text: TextSpan(
+                text: String.fromCharCode(icon.codePoint),
+                style: TextStyle(
+                  inherit: false,
+                  color: iconColor,
+                  fontSize: iconSize,
+                  fontFamily: icon.fontFamily,
+                  package: icon.fontPackage,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
