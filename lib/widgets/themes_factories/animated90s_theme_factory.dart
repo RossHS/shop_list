@@ -15,7 +15,7 @@ class Animated90sFactory extends ThemeFactory {
   Animated90sThemeDataWrapper get themeWrapper => _themeDataWrapper;
 
   @override
-  Animated90IconsFactory get icons => const Animated90IconsFactory();
+  Animated90IconsFactory get icons => Animated90IconsFactory(themeWrapper);
 
   @override
   PreferredSizeWidget appBar({
@@ -236,14 +236,25 @@ class Animated90sFactory extends ThemeFactory {
 }
 
 class Animated90IconsFactory extends IconsFactory {
-  const Animated90IconsFactory();
+  const Animated90IconsFactory(this.themeWrapper);
+
+  final Animated90sThemeDataWrapper themeWrapper;
 
   @override
-  Widget get create => const AnimatedIcon90s(iconsList: CustomIcons.create);
+  Widget get create => AnimatedIcon90s(
+        iconsList: CustomIcons.create,
+        duration: themeWrapper.animationDuration,
+      );
 
   @override
-  Widget get user => const AnimatedIcon90s(iconsList: CustomIcons.user);
+  Widget get user => AnimatedIcon90s(
+        iconsList: CustomIcons.user,
+        duration: themeWrapper.animationDuration,
+      );
 
   @override
-  Widget get lock => const AnimatedIcon90s(iconsList: CustomIcons.lock);
+  Widget get lock => AnimatedIcon90s(
+        iconsList: CustomIcons.lock,
+        duration: themeWrapper.animationDuration,
+      );
 }

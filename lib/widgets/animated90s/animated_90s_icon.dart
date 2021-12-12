@@ -50,6 +50,14 @@ class _AnimatedIcon90sState extends State<AnimatedIcon90s> with SingleTickerProv
   }
 
   @override
+  void didUpdateWidget(AnimatedIcon90s oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget._duration != widget._duration) {
+      _controller.duration = widget._duration;
+    }
+  }
+
+  @override
   void dispose() {
     _controller
       ..stop()

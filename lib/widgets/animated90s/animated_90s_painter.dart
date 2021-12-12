@@ -34,14 +34,6 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
   late final Timer preDelay;
 
   @override
-  void didUpdateWidget(T oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.duration != widget.duration) {
-      _controller.duration = widget.duration;
-    }
-  }
-
-  @override
   void initState() {
     notifier = ValueNotifier(_random.nextInt(1000000));
     super.initState();
@@ -54,6 +46,14 @@ abstract class AnimatedPainter90sState<T extends AnimatedPainter90s> extends Sta
       Duration(microseconds: _random.nextInt(widget.duration.inMicroseconds)),
       _repeater,
     );
+  }
+
+  @override
+  void didUpdateWidget(T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _controller.duration = widget.duration;
+    }
   }
 
   @override
