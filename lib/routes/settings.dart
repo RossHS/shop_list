@@ -477,14 +477,8 @@ class _SpecificThemeSettings extends StatelessWidget {
                             value: themeWrapper.paint90sConfig.strokeWidth,
                             min: 1,
                             max: 10,
-                            onChanged: (double value) {
-                              // По-хорошему следует вынести данную логику в [ThemeController], но не хочется его раздувать
-                              // мелкими методами на каждый параметр
-                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                              final wrapper = factory.themeWrapper;
-                              controller.appTheme.value = wrapper.copyWith(
-                                paint90sConfig: wrapper.paint90sConfig.copyWith(strokeWidth: value),
-                              );
+                            onChanged: (double strokeWidth) {
+                              controller.updateAnimated90sThemeData(strokeWidth: strokeWidth);
                             },
                           ),
                           Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
@@ -492,12 +486,8 @@ class _SpecificThemeSettings extends StatelessWidget {
                             value: themeWrapper.paint90sConfig.offset.toDouble(),
                             min: 5,
                             max: 20,
-                            onChanged: (double value) {
-                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                              final wrapper = factory.themeWrapper;
-                              controller.appTheme.value = wrapper.copyWith(
-                                paint90sConfig: wrapper.paint90sConfig.copyWith(offset: value.toInt()),
-                              );
+                            onChanged: (double offset) {
+                              controller.updateAnimated90sThemeData(offset: offset.toInt());
                             },
                           ),
                           Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
@@ -505,11 +495,9 @@ class _SpecificThemeSettings extends StatelessWidget {
                             value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
                             min: 40,
                             max: 300,
-                            onChanged: (double value) {
-                              if (controller.appTheme.value is! Animated90sThemeDataWrapper) return;
-                              final wrapper = factory.themeWrapper;
-                              controller.appTheme.value = wrapper.copyWith(
-                                animationDuration: Duration(milliseconds: value.toInt()),
+                            onChanged: (double millisDuration) {
+                              controller.updateAnimated90sThemeData(
+                                animationDuration: Duration(milliseconds: millisDuration.toInt()),
                               );
                             },
                           ),

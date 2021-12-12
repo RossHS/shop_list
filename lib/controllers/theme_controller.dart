@@ -134,4 +134,21 @@ class ThemeController extends GetxController {
       darkColorScheme: colorScheme,
     );
   }
+
+  /// Обновление параметров темы [Animated90sThemeDataWrapper]
+  void updateAnimated90sThemeData({
+    Duration? animationDuration,
+    double? strokeWidth,
+    int? offset,
+  }) {
+    if (appTheme.value is! Animated90sThemeDataWrapper) return;
+    final wrapper = appTheme.value as Animated90sThemeDataWrapper;
+    appTheme.value = wrapper.copyWith(
+      animationDuration: animationDuration,
+      paint90sConfig: wrapper.paint90sConfig.copyWith(
+        strokeWidth: strokeWidth,
+        offset: offset,
+      ),
+    );
+  }
 }
