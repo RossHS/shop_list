@@ -227,10 +227,12 @@ Path _generatePath({
   var random = math.Random(notifier.value);
 
   var rotateAngle = 0.0;
-  path.moveTo(radius + random.nextInt(config.offset), center.height + radius + random.nextInt(config.offset));
+  var startX = radius + random.nextInt(config.offset);
+  var startY = center.height + radius + random.nextInt(config.offset);
+  path.moveTo(startX, startY);
   do {
     rotateAngle += random.nextInt(config.offset) + config.offset;
-    if (rotateAngle > 360) rotateAngle = 360;
+    if (rotateAngle > 360) break;
 
     var radian = rotateAngle * math.pi / 180;
     var rndX = random.nextInt(config.offset);
@@ -238,7 +240,10 @@ Path _generatePath({
     var x = center.width + radius * math.sin(radian);
     var y = center.height + radius * math.cos(radian);
 
-    // корректное "увеличение" круга в зависимости от квадранта
+    // Дополнительная проверка, чтобы избежать "хвостика запятой" при смыкании круга
+    if (x > startX && rotateAngle >= 270 && rotateAngle <= 360) break;
+
+    // Корректное "увеличение" круга в зависимости от квадранта
     if (rotateAngle >= 0 && rotateAngle <= 90) {
       x += rndX;
       y += rndY;
