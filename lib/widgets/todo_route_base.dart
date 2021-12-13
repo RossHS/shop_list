@@ -230,7 +230,7 @@ class _TodoElementsMsgInput extends StatelessWidget {
             ),
             IconButton(
               onPressed: controller.addTodoElementToList,
-              icon: const Icon(Icons.send),
+              icon: themeFactory.icons.send,
             ),
           ],
         ),

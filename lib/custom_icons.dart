@@ -13,6 +13,8 @@
 ///
 ///
 ///
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/widgets.dart';
 
 class CustomIcons {
@@ -60,4 +62,64 @@ class CustomIcons {
   static const IconData lock_7 = IconData(0xe81a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData lock_8 = IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const List<IconData> lock = [lock_1, lock_2, lock_3, lock_4, lock_5, lock_6, lock_7, lock_8];
+
+  static const IconData sort_1 = IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_2 = IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_3 = IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_4 = IconData(0xe824, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_5 = IconData(0xe823, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_6 = IconData(0xe822, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_7 = IconData(0xe821, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sort_8 = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> sort = [sort_1, sort_2, sort_3, sort_4, sort_5, sort_6, sort_7, sort_8];
+
+  static const IconData close_1 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_2 = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_3 = IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_4 = IconData(0xe82b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_5 = IconData(0xe82c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_6 = IconData(0xe82d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_7 = IconData(0xe82e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close_8 = IconData(0xe82f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> close = [close_1, close_2, close_3, close_4, close_5, close_6, close_7, close_8];
+
+  static const IconData dehaze_1 = IconData(0xe835, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_2 = IconData(0xe836, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_3 = IconData(0xe837, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_4 = IconData(0xe830, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_5 = IconData(0xe831, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_6 = IconData(0xe832, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_7 = IconData(0xe833, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dehaze_8 = IconData(0xe834, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> dehaze = [dehaze_1, dehaze_2, dehaze_3, dehaze_4, dehaze_5, dehaze_6, dehaze_7, dehaze_8];
+
+  static const IconData settings_1 = IconData(0xe83b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_2 = IconData(0xe83c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_3 = IconData(0xe83d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_4 = IconData(0xe83e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_5 = IconData(0xe83f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_6 = IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_7 = IconData(0xe839, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_8 = IconData(0xe83a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> settings = [settings_1, settings_2, settings_3, settings_4, settings_5, settings_6, settings_7, settings_8];
+
+  static const IconData file_upload_1 = IconData(0xe840, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_2 = IconData(0xe841, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_3 = IconData(0xe842, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_4 = IconData(0xe843, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_5 = IconData(0xe844, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_6 = IconData(0xe845, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_7 = IconData(0xe846, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData file_upload_8 = IconData(0xe847, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> file_upload = [file_upload_1, file_upload_2, file_upload_3, file_upload_4, file_upload_5, file_upload_6, file_upload_7, file_upload_8];
+
+  static const IconData send_1 = IconData(0xe84f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_2 = IconData(0xe848, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_3 = IconData(0xe849, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_4 = IconData(0xe84a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_5 = IconData(0xe84b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_6 = IconData(0xe84c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_7 = IconData(0xe84d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData send_8 = IconData(0xe84e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> send = [send_1, send_2, send_3, send_4, send_5, send_6, send_7, send_8];
 }

@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
                 icon: ValueListenableBuilder<AdvancedDrawerValue>(
                   valueListenable: _advancedDrawerController,
                   builder: (_, value, __) {
-                    return value.visible ? themeFactory.icons.create : themeFactory.icons.user;
+                    return value.visible ? themeFactory.icons.close : themeFactory.icons.dehaze;
                   },
                 ),
               ),
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
                   message: 'Отображение списков',
                   child: IconButton(
                     onPressed: () => Get.toNamed('/todosOrder'),
-                    icon: const Icon(Icons.sort),
+                    icon: themeFactory.icons.sort,
                   ),
                 ),
               ],

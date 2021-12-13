@@ -240,21 +240,39 @@ class Animated90IconsFactory extends IconsFactory {
 
   final Animated90sThemeDataWrapper themeWrapper;
 
-  @override
-  Widget get create => AnimatedIcon90s(
-        iconsList: CustomIcons.create,
-        duration: themeWrapper.animationDuration,
-      );
+  /// Просто вспомогательный метод для упрощения вызова
+  AnimatedIcon90s _createIcon(List<IconData> iconsData) {
+    return AnimatedIcon90s(
+      iconsList: iconsData,
+      duration: themeWrapper.animationDuration,
+    );
+  }
 
   @override
-  Widget get user => AnimatedIcon90s(
-        iconsList: CustomIcons.user,
-        duration: themeWrapper.animationDuration,
-      );
+  Widget get create => _createIcon(CustomIcons.create);
 
   @override
-  Widget get lock => AnimatedIcon90s(
-        iconsList: CustomIcons.lock,
-        duration: themeWrapper.animationDuration,
-      );
+  Widget get user => _createIcon(CustomIcons.user);
+
+  @override
+  Widget get lock => _createIcon(CustomIcons.lock);
+
+  @override
+  Widget get sort => _createIcon(CustomIcons.sort);
+
+  @override
+  Widget get close => _createIcon(CustomIcons.close);
+
+  @override
+  Widget get dehaze => _createIcon(CustomIcons.dehaze);
+
+  @override
+  // ignore: non_constant_identifier_names
+  Widget get file_upload => _createIcon(CustomIcons.file_upload);
+
+  @override
+  Widget get send => _createIcon(CustomIcons.send);
+
+  @override
+  Widget get settings => _createIcon(CustomIcons.settings);
 }

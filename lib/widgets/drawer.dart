@@ -106,7 +106,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           ListTile(
                             onTap: () => Get.toNamed('/settings'),
-                            leading: themeFactory.icons.user,
+                            leading: themeFactory.icons.settings,
                             title: const Text('Settings'),
                           ),
                           const Spacer(),

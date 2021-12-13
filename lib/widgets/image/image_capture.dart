@@ -18,7 +18,7 @@ class ImageCapture extends StatelessWidget {
     final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return themeFactory.floatingActionButton(
       onPressed: () => userInfoUpdateController.pickImage(ImageSource.gallery),
-      child: const Icon(Icons.file_upload),
+      child: themeFactory.icons.file_upload,
     );
   }
 }

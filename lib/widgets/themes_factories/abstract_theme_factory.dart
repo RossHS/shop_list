@@ -132,4 +132,17 @@ abstract class IconsFactory {
   Widget get user;
 
   Widget get lock;
+
+  Widget get sort;
+
+  Widget get close;
+
+  Widget get dehaze;
+
+  Widget get settings;
+
+  // ignore: non_constant_identifier_names
+  Widget get file_upload;
+
+  Widget get send;
 }

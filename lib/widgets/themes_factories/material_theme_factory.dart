@@ -247,4 +247,23 @@ class Material90IconsFactory extends IconsFactory {
 
   @override
   Widget get lock => const Icon(Icons.lock);
+
+  @override
+  Widget get sort => const Icon(Icons.sort);
+
+  @override
+  Widget get close => const Icon(Icons.close);
+
+  @override
+  Widget get dehaze => const Icon(Icons.dehaze);
+
+  @override
+  // ignore: non_constant_identifier_names
+  Widget get file_upload => const Icon(Icons.file_upload);
+
+  @override
+  Widget get send => const Icon(Icons.send);
+
+  @override
+  Widget get settings => const Icon(Icons.settings);
 }
