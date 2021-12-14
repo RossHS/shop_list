@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/routes/get_routes.dart';
 import 'package:shop_list/utils/firebase_messaging_service.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 
 void main() async {
   _setUpLogging();
@@ -26,6 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       initialRoute: '/',
+      transitionDuration: const Duration(milliseconds: 700),
+      customTransition: CustomCircleTransition(),
       getPages: GetRoutes.routes,
       themeMode: ThemeController.to.themeMode.value,
       theme: ThemeController.to.appTheme.value.lightTheme,

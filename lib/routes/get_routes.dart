@@ -1,3 +1,4 @@
+
 import 'package:get/get.dart';
 import 'package:shop_list/routes/account.dart';
 import 'package:shop_list/routes/create_todo.dart';
@@ -13,7 +14,7 @@ import 'package:shop_list/routes/todos_sort.dart';
 class GetRoutes {
   GetRoutes._();
 
-  static final routes = [
+  static final routes = <GetPage>[
     GetPage(name: '/', page: () => const Splash()),
     GetPage(name: '/home', page: () => const Home()),
     GetPage(name: '/signIn', page: () => const SignIn()),
