@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/controllers/todo/todo_service.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 
 /// Сервис обработки приходящих оповещений
 class FirebaseMessagingService {
@@ -35,9 +36,11 @@ class FirebaseMessagingService {
         CustomInfoOverlay.show(
           title: 'Пользователь ${message.data['username']} создал новый список',
           msg: todoModel.title,
-          child: TextButton(
-            onPressed: () => Get.toNamed('/todo/${message.data['todoIdRef']}/view'),
-            child: const Text('Показать!'),
+          child: TouchGetterProvider(
+            child: TextButton(
+              onPressed: () => Get.toNamed('/todo/${message.data['todoIdRef']}/view'),
+              child: const Text('Показать!'),
+            ),
           ),
         );
       } else {

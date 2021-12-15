@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/drawer.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
@@ -39,11 +40,13 @@ class _HomeState extends State<Home> {
                 ),
               ),
               actions: <Widget>[
-                Tooltip(
-                  message: 'Отображение списков',
-                  child: IconButton(
-                    onPressed: () => Get.toNamed('/todosOrder'),
-                    icon: themeFactory.icons.sort,
+                TouchGetterProvider(
+                  child: Tooltip(
+                    message: 'Отображение списков',
+                    child: IconButton(
+                      onPressed: () => Get.toNamed('/todosOrder'),
+                      icon: themeFactory.icons.sort,
+                    ),
                   ),
                 ),
               ],
@@ -53,9 +56,11 @@ class _HomeState extends State<Home> {
               final auth = Get.find<AuthenticationController>();
               return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
             }),
-            floatingActionButton: themeFactory.floatingActionButton(
-              onPressed: _openCreateTodo,
-              child: themeFactory.icons.create,
+            floatingActionButton: TouchGetterProvider(
+              child: themeFactory.floatingActionButton(
+                onPressed: _openCreateTodo,
+                child: themeFactory.icons.create,
+              ),
             ),
           ),
         );
@@ -260,9 +265,11 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                 // Вынес "наверх" виджет обработки нажатий, чтобы виджет
                 // индикации завершенности работы не загораживал нажатия
                 Positioned.fill(
-                  child: RawMaterialButton(
-                    onLongPress: _longPressed,
-                    onPressed: _onPressed,
+                  child: TouchGetterProvider(
+                    child: RawMaterialButton(
+                      onLongPress: _longPressed,
+                      onPressed: _onPressed,
+                    ),
                   ),
                 ),
                 // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
@@ -394,9 +401,11 @@ class _ItemControlPanel extends StatelessWidget {
                   // Только автор списка может его менять или удалять
                   if (authController.firestoreUser.value?.uid == _todoModel.authorId)
                     Expanded(
-                      child: RawMaterialButton(
-                        onPressed: () => Get.toNamed('/todo/${_refModel.idRef}/edit'),
-                        child: const Icon(Icons.edit),
+                      child: TouchGetterProvider(
+                        child: RawMaterialButton(
+                          onPressed: () => Get.toNamed('/todo/${_refModel.idRef}/edit'),
+                          child: const Icon(Icons.edit),
+                        ),
                       ),
                     ),
                   if (authController.firestoreUser.value?.uid == _todoModel.authorId)

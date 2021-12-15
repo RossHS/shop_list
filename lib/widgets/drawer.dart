@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
@@ -99,15 +100,19 @@ class AppDrawer extends StatelessWidget {
                                 style: titleTextStyle,
                               )),
                           const SizedBox(height: 50),
-                          ListTile(
-                            onTap: () => Get.toNamed('/account'),
-                            leading: themeFactory.icons.user,
-                            title: const Text('Account'),
+                          TouchGetterProvider(
+                            child: ListTile(
+                              onTap: () => Get.toNamed('/account'),
+                              leading: themeFactory.icons.user,
+                              title: const Text('Account'),
+                            ),
                           ),
-                          ListTile(
-                            onTap: () => Get.toNamed('/settings'),
-                            leading: themeFactory.icons.settings,
-                            title: const Text('Settings'),
+                          TouchGetterProvider(
+                            child: ListTile(
+                              onTap: () => Get.toNamed('/settings'),
+                              leading: themeFactory.icons.settings,
+                              title: const Text('Settings'),
+                            ),
                           ),
                           const Spacer(),
                           TextButton(
