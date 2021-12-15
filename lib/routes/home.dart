@@ -194,95 +194,101 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: _onPointerDown,
       onPointerUp: _onPointerUp,
-      child: ScaleTransition(
-        scale: _animation,
-        child: themeFactory.commonItemBox(
-          // Так как в фабрике commonItemBox определяется своя Theme, то для получения
-          // ссылки на нее использую виджет Builder, который может вернуть ближайший context
-          child: Builder(builder: (context) {
-            final theme = Theme.of(context);
-            final textTheme = theme.textTheme;
-            // Стиль для дополнительной информации
-            final textStyleAdditionsInfo = TextStyle(
-              fontSize: 15,
-              color: textTheme.bodyText2?.color?.withOpacity(0.3),
-            );
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      child: Obx(
+        () {
+          final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
+          return ScaleTransition(
+            scale: _animation,
+            child: themeFactory.commonItemBox(
+              // Так как в фабрике commonItemBox определяется своя Theme, то для получения
+              // ссылки на нее использую виджет Builder, который может вернуть ближайший context
+              child: Builder(
+                builder: (context) {
+                  final theme = Theme.of(context);
+                  final textTheme = theme.textTheme;
+                  // Стиль для дополнительной информации
+                  final textStyleAdditionsInfo = TextStyle(
+                    fontSize: 15,
+                    color: textTheme.bodyText2?.color?.withOpacity(0.3),
+                  );
+                  return Stack(
                     children: [
-                      Center(
-                        child: Text(
-                          _todoModel.title,
-                          style: textTheme.bodyText1,
-                          textAlign: TextAlign.center,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Text(
+                                _todoModel.title,
+                                style: textTheme.bodyText1,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            for (var element in _todoModel.elements.take(5))
+                              Text(
+                                ' ${element.name}',
+                                style: textTheme.bodyText2?.copyWith(
+                                  fontSize: 18,
+                                  decoration: element.completed ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                            if (_todoModel.elements.length > 5) const Center(child: Text('...')),
+                            const SizedBox(height: 15),
+                            Text(
+                              formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                              style: textStyleAdditionsInfo,
+                            ),
+                            Obx(() => Text(
+                                  '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
+                                  style: textStyleAdditionsInfo,
+                                )),
+                            if (!_todoModel.isPublic)
+                              Text(
+                                'Приватный',
+                                style: textStyleAdditionsInfo,
+                              ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      for (var element in _todoModel.elements.take(5))
-                        Text(
-                          ' ${element.name}',
-                          style: textTheme.bodyText2?.copyWith(
-                            fontSize: 18,
-                            decoration: element.completed ? TextDecoration.lineThrough : null,
+                      // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
+                      if (_todoModel.completed)
+                        Positioned.fill(
+                          child: RepaintBoundary(
+                            child: CustomPaint(
+                              painter: _CrossLinePainter(),
+                            ),
                           ),
                         ),
-                      if (_todoModel.elements.length > 5) const Center(child: Text('...')),
-                      const SizedBox(height: 15),
-                      Text(
-                        formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
-                        style: textStyleAdditionsInfo,
+                      // Вынес "наверх" виджет обработки нажатий, чтобы виджет
+                      // индикации завершенности работы не загораживал нажатия
+                      Positioned.fill(
+                        child: TouchGetterProvider(
+                          child: RawMaterialButton(
+                            onLongPress: _longPressed,
+                            onPressed: _onPressed,
+                          ),
+                        ),
                       ),
-                      Obx(() => Text(
-                            '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
-                            style: textStyleAdditionsInfo,
-                          )),
-                      if (!_todoModel.isPublic)
-                        Text(
-                          'Приватный',
-                          style: textStyleAdditionsInfo,
+                      // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
+                      if (_isControlPanelInserted)
+                        _ItemControlPanel(
+                          refModel: widget.refModel,
+                          opacityController: _opacityController,
+                          todoModel: _todoModel,
                         ),
                     ],
-                  ),
-                ),
-                // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
-                if (_todoModel.completed)
-                  Positioned.fill(
-                    child: RepaintBoundary(
-                      child: CustomPaint(
-                        painter: _CrossLinePainter(),
-                      ),
-                    ),
-                  ),
-                // Вынес "наверх" виджет обработки нажатий, чтобы виджет
-                // индикации завершенности работы не загораживал нажатия
-                Positioned.fill(
-                  child: TouchGetterProvider(
-                    child: RawMaterialButton(
-                      onLongPress: _longPressed,
-                      onPressed: _onPressed,
-                    ),
-                  ),
-                ),
-                // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
-                if (_isControlPanelInserted)
-                  _ItemControlPanel(
-                    refModel: widget.refModel,
-                    opacityController: _opacityController,
-                    todoModel: _todoModel,
-                  ),
-              ],
-            );
-          }),
-        ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
