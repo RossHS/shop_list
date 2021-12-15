@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
@@ -26,7 +27,17 @@ class Animated90sFactory extends ThemeFactory {
     PreferredSizeWidget? bottom,
   }) {
     return AnimatedAppBar90s(
-      leading: leading,
+      leading: leading ??
+          // Обеспечение начальной точки обратной анимации круга [CustomCircleTransition]
+          TouchGetterProvider(
+            child: IconButton(
+              onPressed: Get.back,
+              icon: AnimatedIcon90s(
+                duration: themeWrapper.animationDuration,
+                iconsList: CustomIcons.arrow,
+              ),
+            ),
+          ),
       title: title,
       actions: actions,
       bottom: bottom,

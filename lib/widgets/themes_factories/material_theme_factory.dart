@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/models/theme_model.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 
@@ -24,7 +25,11 @@ class MaterialThemeFactory extends ThemeFactory {
     PreferredSizeWidget? bottom,
   }) {
     return AppBar(
-      leading: leading,
+      leading: leading ??
+          // Обеспечение начальной точки обратной анимации круга [CustomCircleTransition]
+          const TouchGetterProvider(
+            child: BackButton(),
+          ),
       title: title,
       actions: actions,
       bottom: bottom,
