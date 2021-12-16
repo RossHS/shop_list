@@ -8,6 +8,7 @@ import 'package:shop_list/widgets/animated_decorated_box.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Маршрут настройки тем приложения
 class Settings extends StatelessWidget {
@@ -114,39 +115,34 @@ class _ButtonsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ThemeController>(
-      builder: (controller) {
-        final themeFactory = ThemeFactory.instance(controller.appTheme.value);
-        return Row(
-          children: [
-            Expanded(
-              child: themeFactory.button(
-                  onPressed: () {
-                    CustomInfoOverlay.show(
-                      title: 'Заголовок',
-                      msg: 'Текст Сообщения',
-                      child: TextButton(onPressed: () {}, child: const Text('Кнопка')),
-                    );
-                  },
-                  child: const Text('Оповещение')),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: themeFactory.button(
-                  onPressed: () {
-                    themeFactory.showDialog(
-                      text: 'Заголовок диалога',
-                      actions: [
-                        TextButton(onPressed: () {}, child: const Text('OK')),
-                        TextButton(onPressed: () {}, child: const Text('Отменить')),
-                      ],
-                    );
-                  },
-                  child: const Text('Диалог')),
-            ),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        Expanded(
+          child: ThemeDepButton(
+              onPressed: () {
+                CustomInfoOverlay.show(
+                  title: 'Заголовок',
+                  msg: 'Текст Сообщения',
+                  child: TextButton(onPressed: () {}, child: const Text('Кнопка')),
+                );
+              },
+              child: const Text('Оповещение')),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: ThemeDepButton(
+              onPressed: () {
+                ThemeDepDialog(
+                  text: 'Заголовок диалога',
+                  actions: [
+                    TextButton(onPressed: () {}, child: const Text('OK')),
+                    TextButton(onPressed: () {}, child: const Text('Отменить')),
+                  ],
+                );
+              },
+              child: const Text('Диалог')),
+        ),
+      ],
     );
   }
 }
