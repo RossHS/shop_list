@@ -4,20 +4,12 @@ import 'package:shop_list/widgets/themes_factories/animated90s_theme_factory.dar
 import 'package:shop_list/widgets/themes_factories/material_theme_factory.dart';
 import 'package:shop_list/widgets/themes_factories/modern_theme_factory.dart';
 
-/// Абстрактная фабрика, которая отображает интерфейс в зависимости от установленной темы
-/// TODO 11.12.2021 Давно знал, что лучше не использовать helpers method, а создавать отдельные классы виджетов - из книги
-/// TODO https://www.amazon.com/Flutter-Complete-Reference-Create-beautiful-ebook/dp/B08KHKK8TR и статьи
-/// TODO https://blog.codemagic.io/how-to-improve-the-performance-of-your-flutter-app./#dont-split-your-widgets-into-methods,
-/// TODO но все равно решил использовать helper methods в реализации абстрактной фабрики (т.к. это просто удобней,
-/// TODO к тому же, сами создатели Flutter используют helper method в реализации [Slider]).
-/// TODO Но из-за этого подхода наткнулся на пару проблем в использовании (Context/Theme), странных багов и отсутствие механизмов оптимизации со стороны фреймворка
-/// TODO то есть какой был бы смысл в StatelessWidget, если все можно просто раскидать по методам (helper methods).
-/// TODO К этой же теме меня вернул ролик с ютюб канала flutter https://www.youtube.com/watch?v=IOyq-eTRhvo
-/// TODO и развернутый ответ Rémi Rousselet (создатель Provider), который объяснил как это работает и почему именно так
-/// TODO https://stackoverflow.com/questions/53234825/what-is-the-difference-between-functions-and-classes-to-create-reusable-widgets/53234826#53234826
-/// TODO https://github.com/flutter/flutter/issues/19269
-///
-/// TODO Написал все в todo, т.к. планирую большой рефакторинг всей фабрики
+/// Устаревшая абстрактная фабрика, которая отображает интерфейс в зависимости от установленной темы.
+/// Оставил код НА ПАМЯТЬ 🤠
+@Deprecated(
+  'с 16.12.2021 не рекомендуется к применению - по причинам описанным в комментариях к [ThemeWidgetBase]'
+  'Следует пользоваться виджетами из семейства ThemeDep',
+)
 abstract class ThemeFactory {
   static ThemeFactory instance(ThemeDataWrapper themeDataWrapper) {
     if (themeDataWrapper is Animated90sThemeDataWrapper) {
