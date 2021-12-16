@@ -436,9 +436,9 @@ ColorScheme _loadCustomColorSchemeFromStorage(GetStorage storage, String key) {
 ColorScheme _createLightColorScheme(Color mainColor, Color backgroundColor) {
   return ColorScheme.light(
     primary: mainColor,
-    primaryVariant: mainColor,
+    primaryContainer: mainColor,
     secondary: mainColor,
-    secondaryVariant: mainColor,
+    secondaryContainer: mainColor,
     background: backgroundColor,
     surface: mainColor,
     error: Colors.redAccent,
@@ -448,9 +448,9 @@ ColorScheme _createLightColorScheme(Color mainColor, Color backgroundColor) {
 ColorScheme _createDarkColorScheme(Color mainColor, Color backgroundColor) {
   return ColorScheme.dark(
     primary: mainColor,
-    primaryVariant: mainColor,
+    primaryContainer: mainColor,
     secondary: mainColor,
-    secondaryVariant: mainColor,
+    secondaryContainer: mainColor,
     background: backgroundColor,
     surface: mainColor,
     error: Colors.redAccent,
