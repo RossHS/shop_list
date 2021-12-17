@@ -16,19 +16,11 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ThemeController>(
-      builder: (controller) {
-        // Obx - для перестроения темы маршрута. Нужен только здесь,
-        // так как в других частях приложения не будет динамически изменяться тема
-        return Obx(() {
-          return Scaffold(
-            appBar: ThemeFactory.instance(controller.appTheme.value).appBar(
-              title: const Text('Настройка темы'),
-            ),
-            body: const _Body(),
-          );
-        });
-      },
+    return Scaffold(
+      appBar: ThemeDepAppBar(
+        title: const Text('Настройка темы'),
+      ),
+      body: const _Body(),
     );
   }
 }
@@ -292,7 +284,7 @@ class _ColorPaletteBox extends StatelessWidget {
     required ColorScheme colorScheme,
   }) {
     final colorController = ColorChangeController(colorScheme: colorScheme);
-    ThemeFactory.instance(ThemeController.to.appTheme.value).showDialog(
+    ThemeDepDialog(
       content: Material(
         child: PaletteColorCustomizerPicker(
           controller: colorController,

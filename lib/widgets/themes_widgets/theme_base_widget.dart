@@ -28,7 +28,7 @@ import 'package:shop_list/models/theme_model.dart';
 ///
 /// 3) Нет необходимости оборачивать каждую абстрактную фабрику в Obx/GetX<ThemeController> в вызывающем коде,
 ///   дабы StreamBuilder корректно реагировал на изменения темы и перестраивал виджеты с учетом изменений,
-///   теперь же обертка в GetX<ThemeController> происходит внутри абстрактного [ThemeWidgetBase],
+///   теперь же обертка в GetX<ThemeController> происходит внутри абстрактного [ThemeDepWidgetBase],
 ///   что должно лучше сказаться на производительности (т.к. GetX<ThemeController> находится максимально близко к зависимому виджету)
 ///   и улучшить вызывающий код (т.к. нет необходимости при каждом использовании абстрактной фабрики использовать GetX<ThemeController>)
 ///
@@ -37,8 +37,8 @@ import 'package:shop_list/models/theme_model.dart';
 ///   (т.к. это сразу несколько максимально похожих файлов с кучей одинаковых методов).
 ///   Теперь же (условно) каждый старый метод фабрики - это отдельный класс, все находится максимально
 ///   близко друг к другу и запутаться/что-то забыть гораздо сложнее
-abstract class ThemeWidgetBase extends StatelessWidget {
-  const ThemeWidgetBase({Key? key}) : super(key: key);
+abstract class ThemeDepWidgetBase extends StatelessWidget {
+  const ThemeDepWidgetBase({Key? key}) : super(key: key);
 
   @mustCallSuper
   @override

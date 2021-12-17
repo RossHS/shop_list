@@ -4,7 +4,7 @@ import 'package:shop_list/widgets/animated90s/animated_90s_button.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 /// Самая распространенная кнопка
-class ThemeDepButton extends ThemeWidgetBase {
+class ThemeDepButton extends ThemeDepWidgetBase {
   const ThemeDepButton({
     Key? key,
     required this.onPressed,
