@@ -7,7 +7,6 @@ import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Маршрут настройки тем приложения
@@ -406,110 +405,81 @@ class _SpecificThemeSettings extends StatelessWidget {
     // На основании уже существующей стандартной темы формируем новую с учетом цвета фона родителя,
     // так, чтобы текст не сливался с фоном
     final adaptedTextTheme = theme.textTheme.apply(bodyColor: textColor);
+    final controller = ThemeController.to;
     return DefaultTextStyle(
       style: adaptedTextTheme.bodyText2!,
       child: AnimatedSize(
-        duration: const Duration(milliseconds: 200),
-        child: GetX<ThemeController>(
-          builder: (controller) {
-            final themeFactory = ThemeFactory.instance(controller.appTheme.value);
-            return AnimatedSwitcher(
-              duration: const Duration(seconds: 1),
-              switchInCurve: Curves.bounceOut,
-              switchOutCurve: Curves.easeOutQuint,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return ScaleTransition(child: child, scale: animation);
-              },
-              // Использую метод buildWidget, а не определяю отдельный метод построения виджетов "настройки стиля"
-              // в абстрактной фабрике, так как тесты показали, что Get.theme отдает не актуальный объект [ThemeData],
-              // т.е. выглядит это так, что все "опаздывает" на один фрейм, к примеру, при установки текста в черный цвет
-              // (когда изначально был белый), цвет в данных полях останется белым, а при изменении цвета темы со светлой на темную,
-              // текст станет черным, а тема останется светлой, а при изменении следующего поля тема станет темной и т.д.
-              // (hot reload обновляет тему до актуальной/верной)
-              // Причем данная проблема наблюдается только на окне настройки, где необходим максимально быстрый отклик на изменения темы.
-              // Мне кажется, что проблема кроется в том, что Get.theme где-то под капотом использует future
-              // и я таким образом пролетаю до обновления ThemeData в Get.theme.
-              //
-              // Варианты решения.
-              // 1) Глубоко разобраться с устройством внутреннего строения алгоритма Get.theme, возможно добавить callback,
-              //  когда тема 100% обновилась, потом перестраивать нужные мне виджеты
-              // 2) Использовать актуальный ThemeData из BuildContext.
-              // 2.1) Переписать все методы абстрактной фабрики и передавать в каждый context в качестве аргумента.
-              // 2.2) Использовать метод themeFactory.buildWidget и только тут использовать BuildContext.
-              //  Или же создать отдельный виджеты, и не пользоваться фабрикой вовсе.
-              //
-              // Т.к. эта проблема беспокоит только лишь на окне настройки, то первый вариант отпадает из своей
-              // излишней сложности. 2.1. тоже можно отбросить по этой же причине, плюс понадобиться изменять уже существующий рабочий код,
-              // ради уникальной проблемы. Таким образом остается вариант 2.2, который я и реализовал.
-              child: themeFactory.buildWidget(
-                animated90s: (_, factory) {
-                  final themeWrapper = factory.themeWrapper;
-                  final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-                  return Padding(
-                    // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
-                    key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                    padding: const EdgeInsets.all(10.0),
-                    child: AnimatedPainterSquare90s(
-                      duration: themeWrapper.animationDuration,
-                      config: config,
-                      child: Column(
-                        children: [
-                          Text(
-                            'Настройки стиля',
-                            style: adaptedTextTheme.headline5,
-                          ),
-                          const SizedBox(height: 10),
-                          // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
-                          Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
-                          Slider(
-                            value: themeWrapper.paint90sConfig.strokeWidth,
-                            min: 1,
-                            max: 10,
-                            onChanged: (double strokeWidth) {
-                              controller.updateAnimated90sThemeData(strokeWidth: strokeWidth);
-                            },
-                          ),
-                          Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
-                          Slider(
-                            value: themeWrapper.paint90sConfig.offset.toDouble(),
-                            min: 5,
-                            max: 20,
-                            onChanged: (double offset) {
-                              controller.updateAnimated90sThemeData(offset: offset.toInt());
-                            },
-                          ),
-                          Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
-                          Slider(
-                            value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
-                            min: 40,
-                            max: 300,
-                            onChanged: (double millisDuration) {
-                              controller.updateAnimated90sThemeData(
-                                animationDuration: Duration(milliseconds: millisDuration.toInt()),
-                              );
-                            },
-                          ),
-                        ],
+          duration: const Duration(milliseconds: 200),
+          child: ThemeDepAnimatedSwitcher(
+            duration: const Duration(seconds: 1),
+            switchInCurve: Curves.bounceOut,
+            switchOutCurve: Curves.easeOutQuint,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(child: child, scale: animation);
+            },
+            animated90s: (_, themeWrapper) {
+              final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+              return Padding(
+                // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
+                key: ValueKey<String>(themeWrapper.themePrefix),
+                padding: const EdgeInsets.all(10.0),
+                child: AnimatedPainterSquare90s(
+                  duration: themeWrapper.animationDuration,
+                  config: config,
+                  child: Column(
+                    children: [
+                      Text(
+                        'Настройки стиля',
+                        style: adaptedTextTheme.headline5,
                       ),
-                    ),
-                  );
-                },
-                material: (_, factory) {
-                  return Padding(
-                    key: ValueKey<String>(controller.appTheme.value.themePrefix),
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      color: Colors.red,
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      ),
+                      const SizedBox(height: 10),
+                      // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
+                      Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
+                      Slider(
+                        value: themeWrapper.paint90sConfig.strokeWidth,
+                        min: 1,
+                        max: 10,
+                        onChanged: (double strokeWidth) {
+                          controller.updateAnimated90sThemeData(strokeWidth: strokeWidth);
+                        },
+                      ),
+                      Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
+                      Slider(
+                        value: themeWrapper.paint90sConfig.offset.toDouble(),
+                        min: 5,
+                        max: 20,
+                        onChanged: (double offset) {
+                          controller.updateAnimated90sThemeData(offset: offset.toInt());
+                        },
+                      ),
+                      Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
+                      Slider(
+                        value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
+                        min: 40,
+                        max: 300,
+                        onChanged: (double millisDuration) {
+                          controller.updateAnimated90sThemeData(
+                            animationDuration: Duration(milliseconds: millisDuration.toInt()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            material: (_, themeWrapper) {
+              return Padding(
+                key: ValueKey<String>(themeWrapper.themePrefix),
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  color: Colors.red,
+                ),
+              );
+            },
+          )),
     );
   }
 }
