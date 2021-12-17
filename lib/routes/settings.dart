@@ -417,7 +417,7 @@ class _SpecificThemeSettings extends StatelessWidget {
             transitionBuilder: (Widget child, Animation<double> animation) {
               return ScaleTransition(child: child, scale: animation);
             },
-            animated90s: (_, themeWrapper) {
+            animated90s: (_, themeWrapper, __) {
               final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
               return Padding(
                 // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
@@ -468,7 +468,7 @@ class _SpecificThemeSettings extends StatelessWidget {
                 ),
               );
             },
-            material: (_, themeWrapper) {
+            material: (_, themeWrapper, __) {
               return Padding(
                 key: ValueKey<String>(themeWrapper.themePrefix),
                 padding: const EdgeInsets.all(10.0),

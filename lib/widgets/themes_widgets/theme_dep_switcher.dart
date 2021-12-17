@@ -15,24 +15,36 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
     this.switchInCurve = Curves.linear,
     this.switchOutCurve = Curves.linear,
     this.transitionBuilder = AnimatedSwitcher.defaultTransitionBuilder,
-    this.animated90s = _defaultBuildWidgetFunction,
-    this.material = _defaultBuildWidgetFunction,
+    this.animated90s = defaultBuilderFun,
+    this.material = defaultBuilderFun,
+    this.modern = defaultBuilderFun,
+    this.child,
   }) : super(key: key);
   final Duration duration;
   final Curve switchInCurve;
   final Curve switchOutCurve;
   final AnimatedSwitcherTransitionBuilder transitionBuilder;
-  final Widget? Function(BuildContext context, Animated90sThemeDataWrapper themeWrapper) animated90s;
-  final Widget? Function(BuildContext context, MaterialThemeDataWrapper themeWrapper) material;
+  final Animated90sFun animated90s;
+  final MaterialFun material;
+  final ModernFun modern;
+  final Widget? child;
 
   @override
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
-    return _animatedSwitcher(animated90s(context, themeWrapper));
+    return _animatedSwitcher(animated90s(
+      context,
+      themeWrapper,
+      child,
+    ));
   }
 
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
-    return _animatedSwitcher(material(context, themeWrapper));
+    return _animatedSwitcher(material(
+      context,
+      themeWrapper,
+      child,
+    ));
   }
 
   AnimatedSwitcher _animatedSwitcher(Widget? child) {
@@ -43,9 +55,5 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
       transitionBuilder: transitionBuilder,
       child: child,
     );
-  }
-
-  static Widget _defaultBuildWidgetFunction(BuildContext context, ThemeDataWrapper dataWrapper) {
-    return const SizedBox();
   }
 }

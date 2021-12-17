@@ -3,6 +3,34 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/theme_model.dart';
 
+typedef Animated90sFun = Widget Function(
+  BuildContext context,
+  Animated90sThemeDataWrapper themeWrapper,
+  Widget? child,
+);
+
+typedef MaterialFun = Widget Function(
+  BuildContext context,
+  MaterialThemeDataWrapper themeWrapper,
+  Widget? child,
+);
+
+typedef ModernFun = Widget Function(
+  BuildContext context,
+  ModernThemeDataWrapper themeWrapper,
+  Widget? child,
+);
+
+Widget defaultBuilderFun(
+  BuildContext context,
+  ThemeDataWrapper themeWrapper,
+  Widget? child,
+) {
+  return SizedBox(
+    child: child,
+  );
+}
+
 /// Создание виджета на основе темы приложения [ThemeDataWrapper]
 /// Является переделкой абстрактной фабрики, которая использовалась в проекте раньше.
 ///
