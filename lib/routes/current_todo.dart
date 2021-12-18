@@ -7,7 +7,7 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/avatar.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 final dateTimeFormatter = DateFormat('dd MM yyyy HH:mm:ss');
 
@@ -62,63 +62,58 @@ class CurrentTodo extends StatelessWidget {
               if (controller.todoModel != null) {
                 authorModel = userMapController.getUserModel(controller.todoModel!.authorId);
               }
-              return GetX<ThemeController>(
-                builder: (themeController) {
-                  final themeFactory = ThemeFactory.instance(themeController.appTheme.value);
-                  return Scaffold(
-                    appBar: themeFactory.appBar(
-                      title: Text(appBarTitle),
-                      bottom: controller.todoModel != null && authorModel != null
-                          ? PreferredSize(
-                              preferredSize: const Size.fromHeight(75),
-                              child: SizedBox(
-                                height: 80,
-                                child: Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: themeFactory.buildWidget(
-                                        animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
-                                          duration: factory.themeWrapper.animationDuration,
-                                          config: factory.themeWrapper.paint90sConfig,
-                                          boxColor: appBarTheme.backgroundColor ?? theme.colorScheme.primary,
-                                          child: child!,
-                                        ),
-                                        material: (child, _) => ConstrainedBox(
-                                          constraints: const BoxConstraints.expand(height: 50, width: 50),
-                                          child: ClipOval(
-                                            child: child,
-                                          ),
-                                        ),
-                                        child: Avatar(diameter: 70, user: authorModel),
+              return Scaffold(
+                appBar: ThemeDepAppBar(
+                  title: Text(appBarTitle),
+                  bottom: controller.todoModel != null && authorModel != null
+                      ? PreferredSize(
+                          preferredSize: const Size.fromHeight(75),
+                          child: SizedBox(
+                            height: 80,
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: ThemeDepBuilder(
+                                    animated90s: (_, themeWrapper, child) => AnimatedPainterCircleWithBorder90s(
+                                      duration: themeWrapper.animationDuration,
+                                      config: themeWrapper.paint90sConfig,
+                                      boxColor: appBarTheme.backgroundColor ?? theme.colorScheme.primary,
+                                      child: child!,
+                                    ),
+                                    material: (_, __, child) => ConstrainedBox(
+                                      constraints: const BoxConstraints.expand(height: 50, width: 50),
+                                      child: ClipOval(
+                                        child: child,
                                       ),
                                     ),
-                                    DefaultTextStyle(
-                                      style: theme.textTheme.apply(bodyColor: additionInfoAppBarTextColor).bodyText1!,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(authorModel.name),
-                                          Text(
-                                            dateTimeFormatter.format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                controller.todoModel!.createdTimestamp,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    child: Avatar(diameter: 70, user: authorModel),
+                                  ),
                                 ),
-                              ),
-                            )
-                          : null,
-                    ),
-                    body: body,
-                  );
-                },
+                                DefaultTextStyle(
+                                  style: theme.textTheme.apply(bodyColor: additionInfoAppBarTextColor).bodyText1!,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(authorModel.name),
+                                      Text(
+                                        dateTimeFormatter.format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                            controller.todoModel!.createdTimestamp,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : null,
+                ),
+                body: body,
               );
             }));
   }
@@ -177,7 +172,6 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return GetBuilder<TodoViewController>(
       builder: (controller) {
         if (!controller.isTodoCompleted) {
@@ -225,8 +219,8 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
                   padding: const EdgeInsets.all(24.0),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: double.infinity),
-                    child: themeFactory.button(
-                      onPressed: () => themeFactory.showDialog(
+                    child: ThemeDepButton(
+                      onPressed: () => ThemeDepDialog(
                         text: 'Завершить задачу?',
                         actions: [
                           TextButton(
@@ -341,35 +335,31 @@ class _CompletedInformation extends StatelessWidget {
     assert(todoViewController.todoModel != null);
     final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     final adaptedTextTheme = Get.textTheme.apply(bodyColor: Get.theme.canvasColor.calcTextColor);
     // TODO 09.21.2021 - почему-то именно в этом виджете не корректно работает динамическая смена цвета текста на canvasColor в commonItemBox, хотя во всех остальных частях кода все ок
     // Подставил костыль для закрытия проблемы явным заданием цвета текста
-    return themeFactory.commonItemBox(
-      child: DefaultTextStyle(
-        style: adaptedTextTheme.bodyText2!,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'ЗАКРЫТО!',
-                style: adaptedTextTheme.headline5,
-              ),
-              const SizedBox(height: 10),
-              Text(completedAuthor?.name ?? ''),
-              Text(
-                formatterDate.format(completedDateTime),
-                style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
-              ),
-              Text(
-                formatterTime.format(completedDateTime),
-                style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
-              ),
-            ],
-          ),
+    return ThemeDepCommonItemBox(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'ЗАКРЫТО!',
+              style: adaptedTextTheme.headline5,
+            ),
+            const SizedBox(height: 10),
+            Text(completedAuthor?.name ?? ''),
+            Text(
+              formatterDate.format(completedDateTime),
+              style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
+            ),
+            Text(
+              formatterTime.format(completedDateTime),
+              style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
+            ),
+          ],
         ),
       ),
     );

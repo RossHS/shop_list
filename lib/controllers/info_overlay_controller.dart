@@ -1,8 +1,7 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Класс для вызова оверлея на подобии SnackBar библиотеки GetX.
 class CustomInfoOverlay {
@@ -50,7 +49,7 @@ class CustomInfoOverlay {
       builder: (context) {
         return _CustomOverlay(
           overlayToRemoveNotifier: overlayToRemove,
-          child: ThemeFactory.instance(ThemeController.to.appTheme.value).infoOverlay(
+          child: ThemeDepInfoOverlay(
             title: title,
             msg: msg,
             child: child,
