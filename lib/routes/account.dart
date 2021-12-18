@@ -6,7 +6,7 @@ import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/image/image_capture.dart';
 import 'package:shop_list/widgets/image/image_selected_indicator.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class Account extends StatelessWidget {
   const Account({Key? key}) : super(key: key);
@@ -16,17 +16,15 @@ class Account extends StatelessWidget {
     final authController = AuthenticationController.instance;
     Get.put(UserInfoUpdateController());
     Get.put(FirebaseStorageUploaderController());
-    return GetX<ThemeController>(
-      builder: (themeController) => Scaffold(
-        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
-          title: const Text('Аккаунт'),
-        ),
-        body: Center(
-          child: Obx(() {
-            final userModel = authController.firestoreUser.value;
-            return userModel == null ? const CircularProgressIndicator() : _Body(userModel: userModel);
-          }),
-        ),
+    return Scaffold(
+      appBar: ThemeDepAppBar(
+        title: const Text('Аккаунт'),
+      ),
+      body: Center(
+        child: Obx(() {
+          final userModel = authController.firestoreUser.value;
+          return userModel == null ? const CircularProgressIndicator() : _Body(userModel: userModel);
+        }),
       ),
     );
   }
@@ -46,7 +44,6 @@ class _Body extends StatefulWidget {
 
 class _BodyState extends State<_Body> {
   final userUpdateController = Get.find<UserInfoUpdateController>();
-  final ThemeFactory themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
 
   @override
   void initState() {
@@ -75,14 +72,14 @@ class _BodyState extends State<_Body> {
                       Padding(
                         padding: const EdgeInsets.all(25.0),
                         // Виджет аватара
-                        child: themeFactory.buildWidget(
-                          animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
-                            duration: factory.themeWrapper.animationDuration,
-                            config: factory.themeWrapper.paint90sConfig,
+                        child: ThemeDepBuilder(
+                          animated90s: (_, themeWrapper, child) => AnimatedPainterCircleWithBorder90s(
+                            duration: themeWrapper.animationDuration,
+                            config: themeWrapper.paint90sConfig,
                             boxColor: backgroundColor,
                             child: child!,
                           ),
-                          material: (child, _) => Material(
+                          material: (_, __, child) => Material(
                             elevation: 10,
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(300),
@@ -117,11 +114,11 @@ class _BodyState extends State<_Body> {
                   width: 400,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: themeFactory.textField(
+                    child: ThemeDepTextField(
                       maxLines: 1,
                       controller: userUpdateController.nameController,
                       hint: 'User Name',
-                      prefixIcon: themeFactory.icons.user,
+                      prefixIcon: ThemeDepIcon.user,
                     ),
                   ),
                 ),
@@ -139,7 +136,7 @@ class _BodyState extends State<_Body> {
                   padding: const EdgeInsets.all(24.0),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: double.infinity),
-                    child: themeFactory.button(
+                    child: ThemeDepButton(
                       onPressed: _updateUserInfo,
                       child: const Text('Save'),
                     ),
