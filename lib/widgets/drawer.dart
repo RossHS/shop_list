@@ -5,7 +5,7 @@ import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.da
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Drawer в отдельном файле для лучшей читаемости и гибкости кода
 class AppDrawer extends StatelessWidget {
@@ -35,100 +35,96 @@ class AppDrawer extends StatelessWidget {
     final titleTextStyle = theme.textTheme.headline6?.copyWith(color: foregroundColor);
 
     final authController = AuthenticationController.instance;
-    return GetX<ThemeController>(
-      builder: (themeController) {
-        final themeFactory = ThemeFactory.instance(themeController.appTheme.value);
-        return AdvancedDrawer(
-          backdropColor: backgroundColor,
-          controller: advancedDrawerController,
-          animationCurve: Curves.easeInOut,
-          animationDuration: const Duration(milliseconds: 300),
-          animateChildDecoration: true,
-          rtlOpening: false,
-          disabledGestures: false,
-          childDecoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(32)),
-          ),
-          child: child,
-          drawer: SafeArea(
-            child: ListTileTheme(
-              textColor: Colors.white,
-              iconColor: Colors.white,
-              // Для обеспечения корректной работы Flex/Spacer элемента использовал пример из документации
-              // https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
-              // где задается ограничение по высоте из аргумента LayoutBuilder [constrains.maxHeight]
-              child: LayoutBuilder(
-                builder: (context, constraints) => SingleChildScrollView(
-                  controller: _scrollController,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: 200,
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 34, bottom: 20),
-                            child: Obx(
-                              // Аватар
-                              () => authController.firestoreUser.value != null
-                                  ? themeFactory.buildWidget(
-                                      animated90s: (child, factory) => AnimatedPainterCircleWithBorder90s(
-                                        duration: factory.themeWrapper.animationDuration,
-                                        config: factory.themeWrapper.paint90sConfig,
-                                        boxColor: backgroundColor,
-                                        child: child!,
-                                      ),
-                                      material: (child, _) => Material(
-                                        elevation: 20,
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(300),
-                                        // shape: ,
-                                        child: ClipOval(
-                                          child: Container(child: child),
-                                        ),
-                                      ),
-                                      child: Avatar(user: authController.firestoreUser.value!),
-                                    )
-                                  : const SizedBox(),
-                            ),
-                          ),
-                          Obx(() => Text(
-                                '${authController.firestoreUser.value?.name}',
-                                style: titleTextStyle,
-                              )),
-                          const SizedBox(height: 50),
-                          TouchGetterProvider(
-                            child: ListTile(
-                              onTap: () => Get.toNamed('/account'),
-                              leading: themeFactory.icons.user,
-                              title: const Text('Account'),
-                            ),
-                          ),
-                          TouchGetterProvider(
-                            child: ListTile(
-                              onTap: () => Get.toNamed('/settings'),
-                              leading: themeFactory.icons.settings,
-                              title: const Text('Settings'),
-                            ),
-                          ),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: authController.signOut,
-                            child: const Text('Sign out'),
-                          ),
-                        ],
+
+    return AdvancedDrawer(
+      backdropColor: backgroundColor,
+      controller: advancedDrawerController,
+      animationCurve: Curves.easeInOut,
+      animationDuration: const Duration(milliseconds: 300),
+      animateChildDecoration: true,
+      rtlOpening: false,
+      disabledGestures: false,
+      childDecoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(32)),
+      ),
+      child: child,
+      drawer: SafeArea(
+        child: ListTileTheme(
+          textColor: Colors.white,
+          iconColor: Colors.white,
+          // Для обеспечения корректной работы Flex/Spacer элемента использовал пример из документации
+          // https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
+          // где задается ограничение по высоте из аргумента LayoutBuilder [constrains.maxHeight]
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              controller: _scrollController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 200,
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 34, bottom: 20),
+                        child: Obx(
+                          // Аватар
+                          () => authController.firestoreUser.value != null
+                              ? ThemeDepBuilder(
+                                  animated90s: (_, themeWrapper, child) => AnimatedPainterCircleWithBorder90s(
+                                    duration: themeWrapper.animationDuration,
+                                    config: themeWrapper.paint90sConfig,
+                                    boxColor: backgroundColor,
+                                    child: child!,
+                                  ),
+                                  material: (_, __, child) => Material(
+                                    elevation: 20,
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(300),
+                                    // shape: ,
+                                    child: ClipOval(
+                                      child: Container(child: child),
+                                    ),
+                                  ),
+                                  child: Avatar(user: authController.firestoreUser.value!),
+                                )
+                              : const SizedBox(),
+                        ),
                       ),
-                    ),
+                      Obx(() => Text(
+                            '${authController.firestoreUser.value?.name}',
+                            style: titleTextStyle,
+                          )),
+                      const SizedBox(height: 50),
+                      TouchGetterProvider(
+                        child: ListTile(
+                          onTap: () => Get.toNamed('/account'),
+                          leading: ThemeDepIcon.user,
+                          title: const Text('Account'),
+                        ),
+                      ),
+                      TouchGetterProvider(
+                        child: ListTile(
+                          onTap: () => Get.toNamed('/settings'),
+                          leading: ThemeDepIcon.settings,
+                          title: const Text('Settings'),
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: authController.signOut,
+                        child: const Text('Sign out'),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

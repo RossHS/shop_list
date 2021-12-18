@@ -7,7 +7,7 @@ import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.da
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/drawer.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Главный экран пользователя, где отображаются все актуальные списки покупок
 class Home extends StatefulWidget {
@@ -22,49 +22,44 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ThemeController>(
-      builder: (themeController) {
-        final themeFactory = ThemeFactory.instance(themeController.appTheme.value);
-        return AppDrawer(
-          advancedDrawerController: _advancedDrawerController,
-          child: Scaffold(
-            appBar: themeFactory.appBar(
-              title: const Text('Список дел'),
-              leading: IconButton(
-                onPressed: _advancedDrawerController.showDrawer,
-                icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                  valueListenable: _advancedDrawerController,
-                  builder: (_, value, __) {
-                    return value.visible ? themeFactory.icons.close : themeFactory.icons.dehaze;
-                  },
-                ),
-              ),
-              actions: <Widget>[
-                TouchGetterProvider(
-                  child: Tooltip(
-                    message: 'Отображение списков',
-                    child: IconButton(
-                      onPressed: () => Get.toNamed('/todosOrder'),
-                      icon: themeFactory.icons.sort,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            // Проверка, что основное тело маршрута будет работать при наличии авторизированного пользователя
-            body: Obx(() {
-              final auth = Get.find<AuthenticationController>();
-              return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
-            }),
-            floatingActionButton: TouchGetterProvider(
-              child: themeFactory.floatingActionButton(
-                onPressed: _openCreateTodo,
-                child: themeFactory.icons.create,
-              ),
+    return AppDrawer(
+      advancedDrawerController: _advancedDrawerController,
+      child: Scaffold(
+        appBar: ThemeDepAppBar(
+          title: const Text('Список дел'),
+          leading: IconButton(
+            onPressed: _advancedDrawerController.showDrawer,
+            icon: ValueListenableBuilder<AdvancedDrawerValue>(
+              valueListenable: _advancedDrawerController,
+              builder: (_, value, __) {
+                return value.visible ? ThemeDepIcon.close : ThemeDepIcon.dehaze;
+              },
             ),
           ),
-        );
-      },
+          actions: <Widget>[
+            TouchGetterProvider(
+              child: Tooltip(
+                message: 'Отображение списков',
+                child: IconButton(
+                  onPressed: () => Get.toNamed('/todosOrder'),
+                  icon: ThemeDepIcon.sort,
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Проверка, что основное тело маршрута будет работать при наличии авторизированного пользователя
+        body: Obx(() {
+          final auth = Get.find<AuthenticationController>();
+          return auth.firestoreUser.value == null ? const CircularProgressIndicator() : const _Body();
+        }),
+        floatingActionButton: TouchGetterProvider(
+          child: ThemeDepFloatingActionButton(
+            onPressed: _openCreateTodo,
+            child: ThemeDepIcon.create,
+          ),
+        ),
+      ),
     );
   }
 
@@ -198,97 +193,92 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
       behavior: HitTestBehavior.opaque,
       onPointerDown: _onPointerDown,
       onPointerUp: _onPointerUp,
-      child: Obx(
-        () {
-          final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-          return ScaleTransition(
-            scale: _animation,
-            child: themeFactory.commonItemBox(
-              // Так как в фабрике commonItemBox определяется своя Theme, то для получения
-              // ссылки на нее использую виджет Builder, который может вернуть ближайший context
-              child: Builder(
-                builder: (context) {
-                  final theme = Theme.of(context);
-                  final textTheme = theme.textTheme;
-                  // Стиль для дополнительной информации
-                  final textStyleAdditionsInfo = TextStyle(
-                    fontSize: 15,
-                    color: textTheme.bodyText2?.color?.withOpacity(0.3),
-                  );
-                  return Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                _todoModel.title,
-                                style: textTheme.bodyText1,
-                                textAlign: TextAlign.center,
-                              ),
+      child: ScaleTransition(
+        scale: _animation,
+        child: ThemeDepCommonItemBox(
+          // Так как в фабрике commonItemBox определяется своя Theme, то для получения
+          // ссылки на нее использую виджет Builder, который может вернуть ближайший context
+          child: Builder(
+            builder: (context) {
+              final theme = Theme.of(context);
+              final textTheme = theme.textTheme;
+              // Стиль для дополнительной информации
+              final textStyleAdditionsInfo = TextStyle(
+                fontSize: 15,
+                color: textTheme.bodyText2?.color?.withOpacity(0.3),
+              );
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            _todoModel.title,
+                            style: textTheme.bodyText1,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        for (var element in _todoModel.elements.take(5))
+                          Text(
+                            ' ${element.name}',
+                            style: textTheme.bodyText2?.copyWith(
+                              fontSize: 18,
+                              decoration: element.completed ? TextDecoration.lineThrough : null,
                             ),
-                            const SizedBox(height: 10),
-                            for (var element in _todoModel.elements.take(5))
-                              Text(
-                                ' ${element.name}',
-                                style: textTheme.bodyText2?.copyWith(
-                                  fontSize: 18,
-                                  decoration: element.completed ? TextDecoration.lineThrough : null,
-                                ),
-                              ),
-                            if (_todoModel.elements.length > 5) const Center(child: Text('...')),
-                            const SizedBox(height: 15),
-                            Text(
-                              formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                          ),
+                        if (_todoModel.elements.length > 5) const Center(child: Text('...')),
+                        const SizedBox(height: 15),
+                        Text(
+                          formatter.format(DateTime.fromMillisecondsSinceEpoch(_todoModel.createdTimestamp)),
+                          style: textStyleAdditionsInfo,
+                        ),
+                        Obx(() => Text(
+                              '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
                               style: textStyleAdditionsInfo,
-                            ),
-                            Obx(() => Text(
-                                  '${Get.find<UsersMapController>().getUserModel(_todoModel.authorId)?.name}',
-                                  style: textStyleAdditionsInfo,
-                                )),
-                            if (!_todoModel.isPublic)
-                              Text(
-                                'Приватный',
-                                style: textStyleAdditionsInfo,
-                              ),
-                          ],
+                            )),
+                        if (!_todoModel.isPublic)
+                          Text(
+                            'Приватный',
+                            style: textStyleAdditionsInfo,
+                          ),
+                      ],
+                    ),
+                  ),
+                  // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
+                  if (_todoModel.completed)
+                    Positioned.fill(
+                      child: RepaintBoundary(
+                        child: CustomPaint(
+                          painter: _CrossLinePainter(),
                         ),
                       ),
-                      // Если задание завершено, то поверх будет отображаться индикация закрытия задачи
-                      if (_todoModel.completed)
-                        Positioned.fill(
-                          child: RepaintBoundary(
-                            child: CustomPaint(
-                              painter: _CrossLinePainter(),
-                            ),
-                          ),
-                        ),
-                      // Вынес "наверх" виджет обработки нажатий, чтобы виджет
-                      // индикации завершенности работы не загораживал нажатия
-                      Positioned.fill(
-                        child: TouchGetterProvider(
-                          child: RawMaterialButton(
-                            onLongPress: _longPressed,
-                            onPressed: _onPressed,
-                          ),
-                        ),
+                    ),
+                  // Вынес "наверх" виджет обработки нажатий, чтобы виджет
+                  // индикации завершенности работы не загораживал нажатия
+                  Positioned.fill(
+                    child: TouchGetterProvider(
+                      child: RawMaterialButton(
+                        onLongPress: _longPressed,
+                        onPressed: _onPressed,
                       ),
-                      // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
-                      if (_isControlPanelInserted)
-                        _ItemControlPanel(
-                          refModel: widget.refModel,
-                          opacityController: _opacityController,
-                          todoModel: _todoModel,
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          );
-        },
+                    ),
+                  ),
+                  // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
+                  if (_isControlPanelInserted)
+                    _ItemControlPanel(
+                      refModel: widget.refModel,
+                      opacityController: _opacityController,
+                      todoModel: _todoModel,
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -360,7 +350,6 @@ class _ItemControlPanel extends StatelessWidget {
     final foregroundColor = theme.floatingActionButtonTheme.foregroundColor ?? theme.colorScheme.onSecondary;
     final todosController = Get.find<TodosController>();
     final authController = Get.find<AuthenticationController>();
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return Positioned.fill(
       key: ValueKey(_refModel),
       child: FadeTransition(
@@ -382,7 +371,7 @@ class _ItemControlPanel extends StatelessWidget {
                   if (!_todoModel.completed)
                     Expanded(
                       child: RawMaterialButton(
-                        onPressed: () => themeFactory.showDialog(
+                        onPressed: () => ThemeDepDialog(
                           text: 'Завершить задачу?',
                           actions: [
                             TextButton(
@@ -417,7 +406,7 @@ class _ItemControlPanel extends StatelessWidget {
                   if (authController.firestoreUser.value?.uid == _todoModel.authorId)
                     Expanded(
                       child: RawMaterialButton(
-                        onPressed: () => themeFactory.showDialog(
+                        onPressed: () => ThemeDepDialog(
                           text: 'Удалить задачу?',
                           actions: [
                             TextButton(

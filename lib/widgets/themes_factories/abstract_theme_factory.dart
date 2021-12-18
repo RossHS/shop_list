@@ -116,6 +116,8 @@ abstract class ThemeFactory {
 }
 
 /// Фабрика для получения иконок в зависимости от установленной темы
+@Deprecated('с 18.12.2021 не рекомендуется к применению - по причинам описанным в комментариях к [ThemeWidgetBase]'
+    'Следует пользоваться виджетами [ThemeDepIcon]')
 abstract class IconsFactory {
   const IconsFactory();
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Отображение списков дел по различным параметрам
 class TodosOrder extends StatelessWidget {
@@ -9,13 +9,11 @@ class TodosOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ThemeController>(
-      builder: (themeController) => Scaffold(
-        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
-          title: const Text('Отображение списков'),
-        ),
-        body: _Body(),
+    return Scaffold(
+      appBar: ThemeDepAppBar(
+        title: const Text('Отображение списков'),
       ),
+      body: _Body(),
     );
   }
 }
@@ -120,8 +118,7 @@ class _BoxItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.commonItemBox(
+    return ThemeDepCommonItemBox(
       child: Material(
         type: MaterialType.transparency,
         child: Column(

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Индикация того, выбрал ли пользователь фотографию для загрузки
 class ImageSelectedIndicator extends StatelessWidget {
@@ -48,14 +48,13 @@ class _AnimatedIconWrapper extends StatelessWidget {
 
     const height = 42.0;
     const width = 42.0;
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.buildWidget(
-      animated90s: (child, factory) {
+    return ThemeDepBuilder(
+      animated90s: (_, themeWrapper, child) {
         final paintConfig = Paint90sConfig(
           backgroundColor: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
         );
         return AnimatedPainterCircle90s(
-          duration: factory.themeWrapper.animationDuration,
+          duration: themeWrapper.animationDuration,
           config: paintConfig,
           child: SizedBox(
             height: height,
@@ -67,7 +66,7 @@ class _AnimatedIconWrapper extends StatelessWidget {
           ),
         );
       },
-      material: (child, _) => Container(
+      material: (_, __, child) => Container(
         height: height,
         width: width,
         decoration: BoxDecoration(
@@ -79,7 +78,7 @@ class _AnimatedIconWrapper extends StatelessWidget {
           child: child!,
         ),
       ),
-      modern: (child, _) => Container(
+      modern: (_, __, child) => Container(
         height: height,
         width: width,
         decoration: const BoxDecoration(shape: BoxShape.circle),

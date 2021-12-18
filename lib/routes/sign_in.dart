@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/utils/text_validators.dart' as validators;
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
@@ -34,12 +34,11 @@ class _CustomFormState extends State<_CustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
     return RepaintBoundary(
       child: Form(
         key: _formStateKey,
         child: Center(
-          child: themeFactory.commonItemBox(
+          child: ThemeDepCommonItemBox(
             child: SizedBox(
               width: 400,
               child: Padding(
@@ -47,19 +46,19 @@ class _CustomFormState extends State<_CustomForm> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      themeFactory.textField(
+                      ThemeDepTextField(
                         controller: _authController.emailController,
                         hint: 'email',
                         inputValidator: validators.email,
                         maxLines: 1,
-                        prefixIcon: themeFactory.icons.user,
+                        prefixIcon: ThemeDepIcon.user,
                       ),
-                      themeFactory.textField(
+                      ThemeDepTextField(
                         controller: _authController.passwordController,
                         hint: 'password',
                         inputValidator: validators.password,
                         maxLines: 1,
-                        prefixIcon: themeFactory.icons.lock,
+                        prefixIcon: ThemeDepIcon.lock,
                         obscureText: true,
                       ),
                       const SizedBox(height: 15),

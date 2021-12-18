@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop_list/controllers/controllers.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Виджет для загрузки фотографии пользователя
 /// Данный виджет следует обязательно использовать в поддереве,
@@ -15,10 +15,9 @@ class ImageCapture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.floatingActionButton(
+    return ThemeDepFloatingActionButton(
       onPressed: () => userInfoUpdateController.pickImage(ImageSource.gallery),
-      child: themeFactory.icons.file_upload,
+      child: ThemeDepIcon.file_upload,
     );
   }
 }

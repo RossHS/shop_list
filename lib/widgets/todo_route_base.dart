@@ -7,7 +7,7 @@ import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
-import 'package:shop_list/widgets/themes_factories/abstract_theme_factory.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Так как маршруты изменения и формирования маршрутов отличаются одной лишь кнопкой,
 /// то имеет смысл выделить единую часть в отдельный виджет, дабы не дублировать код
@@ -33,34 +33,32 @@ class TodoRouteBase extends StatelessWidget {
     );
     final todoEditController = Get.find<TodoEditCreateController>();
     // Гарантированная инициализация контроллера TodoEditCreatorController
-    return GetX<ThemeController>(
-      builder: (themeController) => Scaffold(
-        appBar: ThemeFactory.instance(themeController.appTheme.value).appBar(
-          title: SizedBox(
-            width: _Body._width,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Theme(
-                data: appBarTheme,
-                child: CustomTextField(
-                  controller: todoEditController.todoTitleTextController,
-                  drawUnderLine: false,
-                  maxLines: 1,
-                  decoration: const InputDecoration(
-                    labelText: 'Название списка...',
-                    isCollapsed: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(8),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                  ),
+    return Scaffold(
+      appBar: ThemeDepAppBar(
+        title: SizedBox(
+          width: _Body._width,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Theme(
+              data: appBarTheme,
+              child: CustomTextField(
+                controller: todoEditController.todoTitleTextController,
+                drawUnderLine: false,
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  labelText: 'Название списка...',
+                  isCollapsed: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(8),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
                 ),
               ),
             ),
           ),
         ),
-        body: _Body(
-          buttonWidget: widgetButton,
-        ),
+      ),
+      body: _Body(
+        buttonWidget: widgetButton,
       ),
     );
   }
@@ -206,8 +204,7 @@ class _TodoElementsMsgInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<TodoEditCreateController>();
-    final themeFactory = ThemeFactory.instance(ThemeController.to.appTheme.value);
-    return themeFactory.todoElementMsgInputBox(
+    return ThemeDepTodoElementMsgInputBox(
       child: Material(
         color: Colors.transparent,
         child: Row(
@@ -230,7 +227,7 @@ class _TodoElementsMsgInput extends StatelessWidget {
             ),
             IconButton(
               onPressed: controller.addTodoElementToList,
-              icon: themeFactory.icons.send,
+              icon: ThemeDepIcon.send,
             ),
           ],
         ),
