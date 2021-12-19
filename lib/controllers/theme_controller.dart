@@ -152,11 +152,15 @@ class ThemeController extends GetxController {
     );
   }
 
-  void updateMaterialThemeData({double? rounded}) {
+  void updateMaterialThemeData({
+    double? rounded,
+    double? shadowBlurRadius,
+  }) {
     if (appTheme.value is! MaterialThemeDataWrapper) return;
     final wrapper = appTheme.value as MaterialThemeDataWrapper;
     appTheme.value = wrapper.copyWith(
       rounded: rounded,
+      shadowBlurRadius: shadowBlurRadius,
     );
   }
 }

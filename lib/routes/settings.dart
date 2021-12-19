@@ -487,6 +487,15 @@ class _SpecificThemeSettings extends StatelessWidget {
                           controller.updateMaterialThemeData(rounded: rounded);
                         },
                       ),
+                      Text('Радиус тени - ${themeWrapper.shadowBlurRadius.toStringAsFixed(2)}'),
+                      Slider(
+                        value: themeWrapper.shadowBlurRadius,
+                        min: 0,
+                        max: 20,
+                        onChanged: (double shadowBlurRadius) {
+                          controller.updateMaterialThemeData(shadowBlurRadius: shadowBlurRadius);
+                        },
+                      ),
                     ],
                   ),
                 );
