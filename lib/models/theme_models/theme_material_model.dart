@@ -9,10 +9,12 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     required TextTheme textTheme,
     double? rounded,
     double? shadowBlurRadius,
+    Color? shadowColor,
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
   })  : rounded = rounded ?? 10,
         shadowBlurRadius = shadowBlurRadius ?? 6,
+        shadowColor = shadowColor ?? Colors.grey,
         super(
           textTheme: textTheme,
           lightColorScheme: lightColorScheme,
@@ -26,10 +28,12 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     final rounded = storage.read<double>('$appThemeStorageValue-rounded');
     final shadowBlurRadius = storage.read<double>('$appThemeStorageValue-shadowBlurRadius');
+    final shadowColor = Color(storage.read<int>('$appThemeStorageValue-shadowColor') ?? Colors.grey.value);
     return MaterialThemeDataWrapper(
       textTheme: textTheme,
       rounded: rounded,
       shadowBlurRadius: shadowBlurRadius,
+      shadowColor: shadowColor,
       lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
@@ -41,6 +45,9 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
   /// Радиус тени в [BoxShadow]
   final double shadowBlurRadius;
 
+  /// Цвет тени в [BoxShadow]
+  final Color shadowColor;
+
   /// Генерация стандартного объекта [BoxDecoration]
   BoxDecoration buildDefaultBoxDecoration(BuildContext context) {
     return BoxDecoration(
@@ -48,7 +55,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       color: Theme.of(context).canvasColor,
       boxShadow: [
         BoxShadow(
-          color: Colors.black,
+          color: shadowColor,
           offset: const Offset(0.0, 1.0), //(x,y)
           blurRadius: shadowBlurRadius,
         ),
@@ -96,6 +103,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     super.writeToGetStorage(storage);
     storage.write('$appThemeStorageValue-rounded', rounded);
     storage.write('$appThemeStorageValue-shadowBlurRadius', shadowBlurRadius);
+    storage.write('$appThemeStorageValue-shadowColor', shadowColor.value);
   }
 
   @override
@@ -103,6 +111,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     TextTheme? textTheme,
     double? rounded,
     double? shadowBlurRadius,
+    Color? shadowColor,
     ColorScheme? lightColorScheme,
     ColorScheme? darkColorScheme,
   }) {
@@ -110,6 +119,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       textTheme: textTheme ?? this.textTheme,
       rounded: rounded ?? this.rounded,
       shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
+      shadowColor: shadowColor ?? this.shadowColor,
       lightColorScheme: lightColorScheme ?? this.lightColorScheme,
       darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
@@ -122,8 +132,9 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
           other is MaterialThemeDataWrapper &&
           runtimeType == other.runtimeType &&
           rounded == other.rounded &&
-          shadowBlurRadius == other.shadowBlurRadius;
+          shadowBlurRadius == other.shadowBlurRadius &&
+          shadowColor == other.shadowColor;
 
   @override
-  int get hashCode => super.hashCode ^ rounded.hashCode ^ shadowBlurRadius.hashCode;
+  int get hashCode => super.hashCode ^ rounded.hashCode ^ shadowBlurRadius.hashCode ^ shadowColor.hashCode;
 }

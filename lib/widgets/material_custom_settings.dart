@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
@@ -26,6 +27,19 @@ class MaterialCustomSettings extends StatelessWidget {
               decoration: themeWrapper.buildDefaultBoxDecoration(context),
             ),
             const SizedBox(height: 20),
+            ColorPicker(
+              enableAlpha: false,
+              displayThumbColor: false,
+              colorPickerWidth: 300,
+              paletteType: PaletteType.hueWheel,
+              labelTypes: const [],
+              pickerColor: themeWrapper.shadowColor,
+              onColorChanged: (color) {
+                controller.proxyDataWrapper.value = controller.proxyDataWrapper.value.copyWith(
+                  shadowColor: color,
+                );
+              },
+            ),
             Text('Радиус тени - ${themeWrapper.shadowBlurRadius.toStringAsFixed(2)}'),
             Slider(
               value: themeWrapper.shadowBlurRadius,
@@ -58,6 +72,7 @@ class MaterialCustomSettingsController extends GetxController {
     final proxy = proxyDataWrapper.value;
     themeController.updateMaterialThemeData(
       shadowBlurRadius: proxy.shadowBlurRadius,
+      shadowColor: proxy.shadowColor,
     );
   }
 }
