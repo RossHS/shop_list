@@ -120,7 +120,7 @@ class ThemeDepDialog extends ThemeBaseClass {
           child: Center(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(themeWrapper.rounded),
                 color: theme.canvasColor,
               ),
               child: Padding(

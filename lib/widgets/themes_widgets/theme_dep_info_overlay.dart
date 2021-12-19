@@ -62,7 +62,7 @@ class ThemeDepInfoOverlay extends ThemeDepWidgetBase {
           width: double.infinity,
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(themeWrapper.rounded),
             color: theme.canvasColor,
             boxShadow: [
               BoxShadow(

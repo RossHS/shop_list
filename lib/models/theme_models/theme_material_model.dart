@@ -7,25 +7,34 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
 
   const MaterialThemeDataWrapper({
     required TextTheme textTheme,
+    double? rounded,
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
-  }) : super(
-    textTheme: textTheme,
-    lightColorScheme: lightColorScheme,
-    darkColorScheme: darkColorScheme,
-  );
+  })
+      : rounded = rounded ?? 10,
+        super(
+        textTheme: textTheme,
+        lightColorScheme: lightColorScheme,
+        darkColorScheme: darkColorScheme,
+      );
 
   factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
     // Вычитываем название сохраненной темы из хранилища
     final String lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
     final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
+    final rounded = storage.read<double>('$appThemeStorageValue-rounded');
     return MaterialThemeDataWrapper(
       textTheme: textTheme,
+      rounded: rounded,
       lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
   }
+
+  /// Скругление основных виджетов material
+  /// TODO 19.12.2021 - подумать о формировании стиля BoxContainer в классе, чтобы не дублировать код по 100 раз
+  final double rounded;
 
   /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
   static Map<String, ColorScheme>? _lightColorSchemesMap;
@@ -35,7 +44,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     _lightColorSchemesMap ??= {
       'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
       'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
-      'custom light': ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
+      'custom light':
+      ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
     };
     assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
     return _lightColorSchemesMap!;
@@ -45,7 +55,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     _darkColorSchemesMap ??= {
       'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.brown),
       'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
-      'custom dark': ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+      'custom dark':
+      ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
     };
     assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
     return _darkColorSchemesMap!;
@@ -61,15 +72,34 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
   String get themePrefix => MaterialThemeDataWrapper.appThemeStorageValue;
 
   @override
+  void writeToGetStorage(GetStorage storage) {
+    super.writeToGetStorage(storage);
+    storage.write('$appThemeStorageValue-rounded', rounded);
+  }
+
+  @override
   MaterialThemeDataWrapper copyWith({
     TextTheme? textTheme,
+    double? rounded,
     ColorScheme? lightColorScheme,
     ColorScheme? darkColorScheme,
   }) {
     return MaterialThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
+      rounded: rounded ?? this.rounded,
       lightColorScheme: lightColorScheme ?? this.lightColorScheme,
       darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          super == other &&
+              other is MaterialThemeDataWrapper &&
+              runtimeType == other.runtimeType &&
+              rounded == other.rounded;
+
+  @override
+  int get hashCode => super.hashCode ^ rounded.hashCode;
 }

@@ -37,7 +37,7 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
       child: Container(
         key: key,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(themeWrapper.rounded),
           color: theme.canvasColor,
           boxShadow: const [
             BoxShadow(

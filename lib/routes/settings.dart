@@ -410,20 +410,21 @@ class _SpecificThemeSettings extends StatelessWidget {
       style: adaptedTextTheme.bodyText2!,
       child: AnimatedSize(
           duration: const Duration(milliseconds: 200),
-          child: ThemeDepAnimatedSwitcher(
-            duration: const Duration(seconds: 1),
-            switchInCurve: Curves.bounceOut,
-            switchOutCurve: Curves.easeOutQuint,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return ScaleTransition(child: child, scale: animation);
-            },
-            animated90s: (_, themeWrapper, __) {
-              final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-              return Padding(
-                // Ключ, чтобы виджет AnimatedSwitcher понимал, когда запускать анимацию
-                key: ValueKey<String>(themeWrapper.themePrefix),
-                padding: const EdgeInsets.all(10.0),
-                child: AnimatedPainterSquare90s(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ThemeDepAnimatedSwitcher(
+              duration: const Duration(seconds: 1),
+              switchInCurve: Curves.bounceOut,
+              switchOutCurve: Curves.easeOutQuint,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(child: child, scale: animation);
+              },
+              animated90s: (_, themeWrapper, __) {
+                // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,
+                // т.к. он внутри имеет GetX<ThemeController>, который сменит отображение внешнего
+                // контейнера до окончания анимации
+                final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+                return AnimatedPainterSquare90s(
                   duration: themeWrapper.animationDuration,
                   config: config,
                   child: Column(
@@ -465,20 +466,42 @@ class _SpecificThemeSettings extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              );
-            },
-            material: (_, themeWrapper, __) {
-              return Padding(
-                key: ValueKey<String>(themeWrapper.themePrefix),
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  color: Colors.red,
-                ),
-              );
-            },
+                );
+              },
+              material: (_, themeWrapper, __) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(themeWrapper.rounded),
+                    color: theme.canvasColor,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black,
+                        offset: Offset(0.0, 1.0), //(x,y)
+                        blurRadius: 6.0,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Настройки стиля',
+                        style: adaptedTextTheme.headline5,
+                      ),
+                      const SizedBox(height: 10),
+                      Text('Скругление - ${themeWrapper.rounded.toStringAsFixed(2)}'),
+                      Slider(
+                        value: themeWrapper.rounded,
+                        min: 0,
+                        max: 30,
+                        onChanged: (double rounded) {
+                          controller.updateMaterialThemeData(rounded: rounded);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           )),
     );
   }
