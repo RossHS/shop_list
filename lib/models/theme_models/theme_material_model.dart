@@ -10,13 +10,12 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     double? rounded,
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
-  })
-      : rounded = rounded ?? 10,
+  })  : rounded = rounded ?? 10,
         super(
-        textTheme: textTheme,
-        lightColorScheme: lightColorScheme,
-        darkColorScheme: darkColorScheme,
-      );
+          textTheme: textTheme,
+          lightColorScheme: lightColorScheme,
+          darkColorScheme: darkColorScheme,
+        );
 
   factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
@@ -33,8 +32,22 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
   }
 
   /// Скругление основных виджетов material
-  /// TODO 19.12.2021 - подумать о формировании стиля BoxContainer в классе, чтобы не дублировать код по 100 раз
   final double rounded;
+
+  /// Генерация стандартного объекта [BoxDecoration]
+  BoxDecoration buildDefaultBoxDecoration(BuildContext context) {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(rounded),
+      color: Theme.of(context).canvasColor,
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black,
+          offset: Offset(0.0, 1.0), //(x,y)
+          blurRadius: 6.0,
+        ),
+      ],
+    );
+  }
 
   /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
   static Map<String, ColorScheme>? _lightColorSchemesMap;
@@ -45,7 +58,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
       'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
       'custom light':
-      ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
+          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
     };
     assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
     return _lightColorSchemesMap!;
@@ -56,7 +69,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.brown),
       'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
       'custom dark':
-      ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
     };
     assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
     return _darkColorSchemesMap!;
@@ -95,10 +108,10 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          super == other &&
-              other is MaterialThemeDataWrapper &&
-              runtimeType == other.runtimeType &&
-              rounded == other.rounded;
+      super == other &&
+          other is MaterialThemeDataWrapper &&
+          runtimeType == other.runtimeType &&
+          rounded == other.rounded;
 
   @override
   int get hashCode => super.hashCode ^ rounded.hashCode;

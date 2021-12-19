@@ -468,19 +468,9 @@ class _SpecificThemeSettings extends StatelessWidget {
                   ),
                 );
               },
-              material: (_, themeWrapper, __) {
+              material: (context, themeWrapper, __) {
                 return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(themeWrapper.rounded),
-                    color: theme.canvasColor,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black,
-                        offset: Offset(0.0, 1.0), //(x,y)
-                        blurRadius: 6.0,
-                      ),
-                    ],
-                  ),
+                  decoration: themeWrapper.buildDefaultBoxDecoration(context),
                   child: Column(
                     children: [
                       Text(

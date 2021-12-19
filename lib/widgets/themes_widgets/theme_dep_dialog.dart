@@ -119,10 +119,7 @@ class ThemeDepDialog extends ThemeBaseClass {
           data: adaptedTheme,
           child: Center(
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(themeWrapper.rounded),
-                color: theme.canvasColor,
-              ),
+              decoration: themeWrapper.buildDefaultBoxDecoration(context),
               child: Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0, bottom: 8.0),
                 child: IntrinsicWidth(
