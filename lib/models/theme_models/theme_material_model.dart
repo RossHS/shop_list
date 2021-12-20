@@ -130,6 +130,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     double? rounded,
     double? shadowBlurRadius,
     Color? shadowColor,
+    Offset? shadowOffset,
     ColorScheme? lightColorScheme,
     ColorScheme? darkColorScheme,
   }) {
@@ -138,6 +139,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       rounded: rounded ?? this.rounded,
       shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
       shadowColor: shadowColor ?? this.shadowColor,
+      shadowOffset: shadowOffset ?? this.shadowOffset,
       lightColorScheme: lightColorScheme ?? this.lightColorScheme,
       darkColorScheme: darkColorScheme ?? this.darkColorScheme,
     );

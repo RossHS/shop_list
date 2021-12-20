@@ -156,6 +156,7 @@ class ThemeController extends GetxController {
     double? rounded,
     double? shadowBlurRadius,
     Color? shadowColor,
+    Offset? shadowOffset,
   }) {
     if (appTheme.value is! MaterialThemeDataWrapper) return;
     final wrapper = appTheme.value as MaterialThemeDataWrapper;
@@ -163,6 +164,7 @@ class ThemeController extends GetxController {
       rounded: rounded,
       shadowBlurRadius: shadowBlurRadius,
       shadowColor: shadowColor,
+      shadowOffset: shadowOffset,
     );
   }
 }

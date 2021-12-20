@@ -21,7 +21,12 @@ class MaterialCustomSettings extends StatelessWidget {
         return Column(
           children: [
             // Виджет для демонстрации настроек
-            _OffsetSelector(themeWrapper: themeWrapper),
+            _OffsetSelector(
+              themeWrapper: themeWrapper,
+              onPositionChange: (offset) {
+                controller.proxyDataWrapper.value = controller.proxyDataWrapper.value.copyWith(shadowOffset: offset);
+              },
+            ),
             const SizedBox(height: 20),
             ColorPicker(
               enableAlpha: false,
@@ -55,33 +60,98 @@ class MaterialCustomSettings extends StatelessWidget {
 }
 
 /// Виджет настройки позиции тени
-class _OffsetSelector extends StatelessWidget {
+class _OffsetSelector extends StatefulWidget {
   const _OffsetSelector({
     Key? key,
     required this.themeWrapper,
+    required this.onPositionChange,
     this.offset = 15,
+    this.width = 200,
+    this.height = 200,
   }) : super(key: key);
   final MaterialThemeDataWrapper themeWrapper;
 
   /// Минимальное и максимальное значение отступа тени
   final double offset;
 
+  /// Размеры виджета
+  final double width;
+  final double height;
+
+  /// Обратный вызов на изменение координат
+  final void Function(Offset offset) onPositionChange;
+
+  @override
+  State<_OffsetSelector> createState() => _OffsetSelectorState();
+}
+
+class _OffsetSelectorState extends State<_OffsetSelector> {
+  /// Коэффициенты преобразования локальной координаты нажатия
+  /// на экран из (0; width/height) в абстрактный диапазон (-offset; +offset)
+  late double _factorX;
+  late double _factorY;
+
+  @override
+  void initState() {
+    super.initState();
+    _factorX = _calcFactor(widget.width, widget.offset);
+    _factorY = _calcFactor(widget.height, widget.offset);
+  }
+
+  @override
+  void didUpdateWidget(_OffsetSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.width != widget.width) {
+      _factorX = _calcFactor(widget.width, widget.offset);
+    }
+    if (oldWidget.height != widget.height) {
+      _factorY = _calcFactor(widget.height, widget.offset);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 200,
-      decoration: themeWrapper.buildDefaultBoxDecoration(context),
-      child: Align(
-        alignment: Alignment(
-          -themeWrapper.shadowOffset.dx / offset,
-          -themeWrapper.shadowOffset.dy / offset,
-        ),
-        child: _OffsetIndicator(
-          indicatorColor: themeWrapper.shadowColor,
+    return GestureDetector(
+      onPanDown: (details) {
+        _gestureCallback(details.localPosition);
+      },
+      onPanUpdate: (details) {
+        _gestureCallback(details.localPosition);
+      },
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: widget.themeWrapper.buildDefaultBoxDecoration(context),
+        child: Align(
+          alignment: Alignment(
+            -widget.themeWrapper.shadowOffset.dx / widget.offset,
+            -widget.themeWrapper.shadowOffset.dy / widget.offset,
+          ),
+          child: _OffsetIndicator(
+            indicatorColor: widget.themeWrapper.shadowColor,
+          ),
         ),
       ),
     );
+  }
+
+  void _gestureCallback(Offset localPosition) {
+    widget.onPositionChange(
+      Offset(
+        _lerpCoordinate(widget.width, localPosition.dx, _factorX),
+        (_lerpCoordinate(widget.height, localPosition.dy, _factorY)),
+      ),
+    );
+  }
+
+  double _calcFactor(double side, double offset) => (side / 2) / offset;
+
+  /// Преобразование из локальных координат в значения, с которыми может работать пользователь
+  double _lerpCoordinate(double side, double localCoordinate, double ratio) {
+    // Защита, чтобы не выходить на границы допустимые величиной offset
+    if (localCoordinate < 0) localCoordinate = 0;
+    if (localCoordinate > side) localCoordinate = side;
+    return ((side / 2) - localCoordinate) / ratio;
   }
 }
 
@@ -127,6 +197,7 @@ class MaterialCustomSettingsController extends GetxController {
     themeController.updateMaterialThemeData(
       shadowBlurRadius: proxy.shadowBlurRadius,
       shadowColor: proxy.shadowColor,
+      shadowOffset: proxy.shadowOffset,
     );
   }
 }
