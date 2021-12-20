@@ -21,11 +21,7 @@ class MaterialCustomSettings extends StatelessWidget {
         return Column(
           children: [
             // Виджет для демонстрации настроек
-            Container(
-              width: 200,
-              height: 200,
-              decoration: themeWrapper.buildDefaultBoxDecoration(context),
-            ),
+            _OffsetSelector(themeWrapper: themeWrapper),
             const SizedBox(height: 20),
             ColorPicker(
               enableAlpha: false,
@@ -54,6 +50,64 @@ class MaterialCustomSettings extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Виджет настройки позиции тени
+class _OffsetSelector extends StatelessWidget {
+  const _OffsetSelector({
+    Key? key,
+    required this.themeWrapper,
+    this.offset = 15,
+  }) : super(key: key);
+  final MaterialThemeDataWrapper themeWrapper;
+
+  /// Минимальное и максимальное значение отступа тени
+  final double offset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 200,
+      decoration: themeWrapper.buildDefaultBoxDecoration(context),
+      child: Align(
+        alignment: Alignment(
+          -themeWrapper.shadowOffset.dx / offset,
+          -themeWrapper.shadowOffset.dy / offset,
+        ),
+        child: _OffsetIndicator(
+          indicatorColor: themeWrapper.shadowColor,
+        ),
+      ),
+    );
+  }
+}
+
+/// Индикатор смещения тени
+class _OffsetIndicator extends StatelessWidget {
+  const _OffsetIndicator({Key? key, this.indicatorColor = Colors.black}) : super(key: key);
+  final Color indicatorColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: theme.canvasColor.calcTextColor,
+          width: 2,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Icon(
+          Icons.lightbulb,
+          color: indicatorColor,
+        ),
+      ),
     );
   }
 }

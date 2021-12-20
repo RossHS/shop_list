@@ -10,11 +10,15 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     double? rounded,
     double? shadowBlurRadius,
     Color? shadowColor,
+    Offset? shadowOffset,
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
-  })  : rounded = rounded ?? 10,
+  })  : assert(rounded == null || (rounded >= 0 && rounded <= 30)),
+        assert(shadowBlurRadius == null || (shadowBlurRadius >= 0 && shadowBlurRadius <= 20)),
+        rounded = rounded ?? 10,
         shadowBlurRadius = shadowBlurRadius ?? 6,
         shadowColor = shadowColor ?? Colors.grey,
+        shadowOffset = shadowOffset ?? const Offset(0, 1),
         super(
           textTheme: textTheme,
           lightColorScheme: lightColorScheme,
@@ -29,11 +33,20 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     final rounded = storage.read<double>('$appThemeStorageValue-rounded');
     final shadowBlurRadius = storage.read<double>('$appThemeStorageValue-shadowBlurRadius');
     final shadowColor = Color(storage.read<int>('$appThemeStorageValue-shadowColor') ?? Colors.grey.value);
+    final offsetX = storage.read<double>('$appThemeStorageValue-shadowOffsetX');
+    final offsetY = storage.read<double>('$appThemeStorageValue-shadowOffsetY');
+
+    Offset? offset;
+    if (offsetX != null && offsetY != null) {
+      offset = Offset(offsetX, offsetY);
+    }
+
     return MaterialThemeDataWrapper(
       textTheme: textTheme,
       rounded: rounded,
       shadowBlurRadius: shadowBlurRadius,
       shadowColor: shadowColor,
+      shadowOffset: offset,
       lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
@@ -48,6 +61,9 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
   /// Цвет тени в [BoxShadow]
   final Color shadowColor;
 
+  /// Отступ тени
+  final Offset shadowOffset;
+
   /// Генерация стандартного объекта [BoxDecoration]
   BoxDecoration buildDefaultBoxDecoration(BuildContext context) {
     return BoxDecoration(
@@ -56,7 +72,7 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       boxShadow: [
         BoxShadow(
           color: shadowColor,
-          offset: const Offset(0.0, 1.0), //(x,y)
+          offset: shadowOffset, //(x,y)
           blurRadius: shadowBlurRadius,
         ),
       ],
@@ -104,6 +120,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     storage.write('$appThemeStorageValue-rounded', rounded);
     storage.write('$appThemeStorageValue-shadowBlurRadius', shadowBlurRadius);
     storage.write('$appThemeStorageValue-shadowColor', shadowColor.value);
+    storage.write('$appThemeStorageValue-shadowOffsetX', shadowOffset.dx);
+    storage.write('$appThemeStorageValue-shadowOffsetY', shadowOffset.dy);
   }
 
   @override
@@ -133,8 +151,10 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
           runtimeType == other.runtimeType &&
           rounded == other.rounded &&
           shadowBlurRadius == other.shadowBlurRadius &&
-          shadowColor == other.shadowColor;
+          shadowColor == other.shadowColor &&
+          shadowOffset == other.shadowOffset;
 
   @override
-  int get hashCode => super.hashCode ^ rounded.hashCode ^ shadowBlurRadius.hashCode ^ shadowColor.hashCode;
+  int get hashCode =>
+      super.hashCode ^ rounded.hashCode ^ shadowBlurRadius.hashCode ^ shadowColor.hashCode ^ shadowOffset.hashCode;
 }
