@@ -14,10 +14,7 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     final theme = Theme.of(context);
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-    return Theme(
-      data: theme.copyWith(
-        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
-      ),
+    return _CustomThemeWrapper(
       child: AnimatedPainterSquare90s(
         key: key,
         duration: themeWrapper.animationDuration,
@@ -29,14 +26,34 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
 
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
-    final theme = Theme.of(context);
-    return Theme(
-      data: theme.copyWith(
-        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
-      ),
+    return _CustomThemeWrapper(
       child: Container(
         key: key,
         decoration: themeWrapper.buildDefaultBoxDecoration(context),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Дополнительная обертка, т.к. виджет [ThemeDepCommonItemBox] имеет особый цвет фона, для которого нужно адаптировать цвет текста.
+/// Конечно, можно было бы ограничится одним виджетом [Theme], но виджет [Text] ищет по дереву ближайший [DefaultTextStyle],
+/// т.е. для корректного использования [ThemeDepCommonItemBox] все равно приходилось переопределять стандартный стиль или
+/// задавать стиль напрямую в виджет [Text]
+class _CustomThemeWrapper extends StatelessWidget {
+  const _CustomThemeWrapper({Key? key, required this.child}) : super(key: key);
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final customTheme = theme.copyWith(
+      textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+    );
+    return Theme(
+      data: customTheme,
+      child: DefaultTextStyle(
+        style: customTheme.textTheme.bodyText2!,
         child: child,
       ),
     );

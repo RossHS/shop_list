@@ -335,32 +335,35 @@ class _CompletedInformation extends StatelessWidget {
     assert(todoViewController.todoModel != null);
     final completedAuthor = userMapController.getUserModel(todoViewController.todoModel!.completedAuthorId);
     final completedDateTime = DateTime.fromMillisecondsSinceEpoch(todoViewController.todoModel!.completedTimestamp);
-    final adaptedTextTheme = Get.textTheme.apply(bodyColor: Get.theme.canvasColor.calcTextColor);
-    // TODO 09.21.2021 - почему-то именно в этом виджете не корректно работает динамическая смена цвета текста на canvasColor в commonItemBox, хотя во всех остальных частях кода все ок
-    // Подставил костыль для закрытия проблемы явным заданием цвета текста
     return ThemeDepCommonItemBox(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'ЗАКРЫТО!',
-              style: adaptedTextTheme.headline5,
+      child: Builder(
+        builder: (context) {
+          // Builder для получения актуального контекста
+          final textTheme = Theme.of(context).textTheme;
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'ЗАКРЫТО!',
+                  style: textTheme.headline5,
+                ),
+                const SizedBox(height: 10),
+                Text(completedAuthor?.name ?? ''),
+                Text(
+                  formatterDate.format(completedDateTime),
+                  style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
+                ),
+                Text(
+                  formatterTime.format(completedDateTime),
+                  style: TextStyle(fontSize: 15, color: textTheme.bodyText2?.color?.withOpacity(0.3)),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Text(completedAuthor?.name ?? ''),
-            Text(
-              formatterDate.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
-            ),
-            Text(
-              formatterTime.format(completedDateTime),
-              style: TextStyle(fontSize: 15, color: adaptedTextTheme.bodyText2?.color?.withOpacity(0.3)),
-            ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }
