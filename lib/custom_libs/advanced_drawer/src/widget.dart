@@ -58,6 +58,8 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
   late final Animation<double> _drawerScaleAnimation;
   late final Animation<double> _childScaleAnimation;
   late final Animation<Decoration> _childDecorationAnimation;
+  late Animation<RelativeRect> _childRelativeRectAnimation;
+  late final Animation<double> _childRotationAnimation;
   late double _offsetValue;
   late Offset _freshPosition;
   Offset? _startPosition;
@@ -102,12 +104,22 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
 
     _childScaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 0.85,
+      end: 0.65,
     ).animate(_parentAnimation);
 
     _childDecorationAnimation = DecorationTween(
       begin: const BoxDecoration(),
       end: widget.childDecoration,
+    ).animate(_parentAnimation);
+
+    _childRelativeRectAnimation = RelativeRectTween(
+      begin: const RelativeRect.fromLTRB(0, 0, 0, 0),
+      end: RelativeRect.fromLTRB(_drawerSize?.width ?? 0, 0, -(_drawerSize?.width ?? 0), 0),
+    ).animate(_parentAnimation);
+
+    _childRotationAnimation = Tween<double>(
+      begin: 0,
+      end: 45 * math.pi / 180,
     ).animate(_parentAnimation);
   }
 
@@ -131,11 +143,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
                   scale: _drawerScaleAnimation,
                   alignment: widget.rtlOpening ? Alignment.centerLeft : Alignment.centerRight,
                   child: WidgetSize(
-                    onSizeChange: (Size? size) {
-                      setState(() {
-                        _drawerSize = size;
-                      });
-                    },
+                    onSizeChange: _updateDrawerSize,
                     // Стоп/запуск всех анимаций в поддереве, оптимизация производительности,
                     // чтобы не дергать Ticker на невидимых элементах
                     child: ValueListenableBuilder(
@@ -151,13 +159,20 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
               ),
               // -------- CHILD
               PositionedTransition(
-                rect: RelativeRectTween(
-                  begin: const RelativeRect.fromLTRB(0, 0, 0, 0),
-                  end: RelativeRect.fromLTRB(_drawerSize?.width ?? 0, 0, -(_drawerSize?.width ?? 0), 0),
-                ).animate(_parentAnimation),
-                child: ScaleTransition(
-                  alignment: Alignment.centerLeft,
-                  scale: _childScaleAnimation,
+                rect: _childRelativeRectAnimation,
+                child: AnimatedBuilder(
+                  animation: _childRotationAnimation,
+                  builder: (context, child) => Transform.scale(
+                    alignment: Alignment.centerLeft,
+                    scale: _childScaleAnimation.value,
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(_childRotationAnimation.value),
+                      alignment: Alignment.centerLeft,
+                      child: child,
+                    ),
+                  ),
                   child: Builder(
                     builder: (_) {
                       final childStack = Stack(
@@ -283,5 +298,18 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
     }
 
     super.dispose();
+  }
+
+  /// Обновления ширины шторки для корректной работы анимации
+  void _updateDrawerSize(Size? size) {
+    if (_drawerSize != size) {
+      setState(() {
+        _drawerSize = size;
+        _childRelativeRectAnimation = RelativeRectTween(
+          begin: const RelativeRect.fromLTRB(0, 0, 0, 0),
+          end: RelativeRect.fromLTRB(_drawerSize?.width ?? 0, 0, -(_drawerSize?.width ?? 0), 0),
+        ).animate(_parentAnimation);
+      });
+    }
   }
 }
