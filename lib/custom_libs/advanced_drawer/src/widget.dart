@@ -57,7 +57,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
   late final Animation<double> _parentAnimation;
   late final Animation<double> _drawerScaleAnimation;
   late final Animation<double> _childScaleAnimation;
-  late final Animation<Decoration> _childDecorationAnimation;
   late Animation<RelativeRect> _childRelativeRectAnimation;
   late final Animation<double> _childRotationAnimation;
   late double _offsetValue;
@@ -105,11 +104,6 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
     _childScaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.65,
-    ).animate(_parentAnimation);
-
-    _childDecorationAnimation = DecorationTween(
-      begin: const BoxDecoration(),
-      end: widget.childDecoration,
     ).animate(_parentAnimation);
 
     _childRelativeRectAnimation = RelativeRectTween(
@@ -173,51 +167,27 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
                       child: child,
                     ),
                   ),
-                  child: Builder(
-                    builder: (_) {
-                      final childStack = Stack(
-                        children: [
-                          widget.child,
-                          ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _controller,
-                            builder: (_, value, __) {
-                              if (!value.visible) {
-                                return const SizedBox();
-                              }
+                  child: Stack(
+                    children: [
+                      widget.child,
+                      ValueListenableBuilder<AdvancedDrawerValue>(
+                        valueListenable: _controller,
+                        builder: (_, value, __) {
+                          if (!value.visible) {
+                            return const SizedBox();
+                          }
 
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: _controller.hideDrawer,
-                                  highlightColor: Colors.transparent,
-                                  child: Container(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
-
-                      if (widget.animateChildDecoration && widget.childDecoration != null) {
-                        return AnimatedBuilder(
-                          animation: _childDecorationAnimation,
-                          builder: (_, child) {
-                            return Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: _childDecorationAnimation.value,
-                              child: child,
-                            );
-                          },
-                          child: childStack,
-                        );
-                      }
-
-                      return Container(
-                        clipBehavior: widget.childDecoration != null ? Clip.antiAlias : Clip.none,
-                        decoration: widget.childDecoration,
-                        child: childStack,
-                      );
-                    },
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: _controller.hideDrawer,
+                              highlightColor: Colors.transparent,
+                              child: Container(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
