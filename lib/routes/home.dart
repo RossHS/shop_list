@@ -22,8 +22,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AppDrawer(
       advancedDrawerController: _advancedDrawerController,
+      backgroundColor: theme.canvasColor,
       child: Scaffold(
         appBar: ThemeDepAppBar(
           title: const Text('Список дел'),

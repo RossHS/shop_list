@@ -6,6 +6,7 @@ import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
+import 'package:shop_list/models/theme_model.dart';
 
 /// Drawer в отдельном файле для лучшей читаемости и гибкости кода
 class AppDrawer extends StatelessWidget {
@@ -28,11 +29,9 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    final Color foregroundColor =
-        colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary;
+    final onBackgroundColor = backgroundColor.calcTextColor;
     // Стиль отображения имени пользователя
-    final titleTextStyle = theme.textTheme.headline6?.copyWith(color: foregroundColor);
+    final titleTextStyle = theme.textTheme.headline6?.copyWith(color: onBackgroundColor);
 
     final authController = AuthenticationController.instance;
 
@@ -50,8 +49,8 @@ class AppDrawer extends StatelessWidget {
       child: child,
       drawer: SafeArea(
         child: ListTileTheme(
-          textColor: Colors.white,
-          iconColor: Colors.white,
+          textColor: onBackgroundColor,
+          iconColor: onBackgroundColor,
           // Для обеспечения корректной работы Flex/Spacer элемента использовал пример из документации
           // https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
           // где задается ограничение по высоте из аргумента LayoutBuilder [constrains.maxHeight]
