@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
-import 'package:shop_list/models/theme_model.dart';
 
 /// Drawer в отдельном файле для лучшей читаемости и гибкости кода
 class AppDrawer extends StatelessWidget {
@@ -78,16 +78,23 @@ class AppDrawer extends StatelessWidget {
                                     boxColor: backgroundColor,
                                     child: child!,
                                   ),
-                                  material: (_, __, child) => Material(
-                                    elevation: 20,
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(300),
-                                    // shape: ,
-                                    child: ClipOval(
-                                      child: Container(child: child),
+                                  material: (_, __, child) => Hero(
+                                    tag: 'avatar',
+                                    child: Material(
+                                      elevation: 20,
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(300),
+                                      child: ClipOval(
+                                        child: Container(child: child),
+                                      ),
                                     ),
                                   ),
-                                  child: Avatar(user: authController.firestoreUser.value!),
+                                  child: TouchGetterProvider(
+                                    child: GestureDetector(
+                                      onTap: () => Get.toNamed('/account'),
+                                      child: Avatar(user: authController.firestoreUser.value!),
+                                    ),
+                                  ),
                                 )
                               : const SizedBox(),
                         ),

@@ -79,14 +79,17 @@ class _BodyState extends State<_Body> {
                             boxColor: backgroundColor,
                             child: child!,
                           ),
-                          material: (_, __, child) => Material(
-                            elevation: 10,
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(300),
-                            // shape: ,
-                            child: ClipOval(
-                              child: Container(
-                                child: child,
+                          material: (_, __, child) => Hero(
+                            tag: 'avatar',
+                            child: Material(
+                              elevation: 10,
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(300),
+                              // shape: ,
+                              child: ClipOval(
+                                child: Container(
+                                  child: child,
+                                ),
                               ),
                             ),
                           ),
