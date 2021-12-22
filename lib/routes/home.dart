@@ -262,12 +262,20 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
                   // Вынес "наверх" виджет обработки нажатий, чтобы виджет
                   // индикации завершенности работы не загораживал нажатия
                   Positioned.fill(
-                    child: TouchGetterProvider(
-                      child: RawMaterialButton(
-                        onLongPress: _longPressed,
-                        onPressed: _onPressed,
-                      ),
-                    ),
+                    child: Builder(builder: (context) {
+                      // Костыльное задание формы Ink эффекта
+                      final themeWrapper = ThemeController.to.appTheme.value;
+                      ShapeBorder shape = themeWrapper is MaterialThemeDataWrapper
+                          ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(themeWrapper.rounded))
+                          : const RoundedRectangleBorder();
+                      return TouchGetterProvider(
+                        child: RawMaterialButton(
+                          shape: shape,
+                          onLongPress: _longPressed,
+                          onPressed: _onPressed,
+                        ),
+                      );
+                    }),
                   ),
                   // Панель управления с командами (закрыть/Удалить/Редактировать список дел)
                   if (_isControlPanelInserted)
