@@ -164,7 +164,7 @@ class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProvid
                         ..setEntry(3, 2, 0.001)
                         ..rotateY(_childRotationAnimation.value),
                       alignment: Alignment.centerLeft,
-                      child: child,
+                      child: ClipRect(child: child),
                     ),
                   ),
                   child: Stack(
