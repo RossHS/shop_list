@@ -5,7 +5,7 @@ import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 
 /// Реализация аналога AppBar с наличием анимации 90х
 class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
-  const AnimatedAppBar90s({
+  AnimatedAppBar90s({
     this.leading,
     this.title,
     this.actions,
@@ -13,7 +13,8 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     this.config,
     this.duration,
     Key? key,
-  }) : super(key: key);
+  })  : preferredSize = _calcPrefSize(bottom),
+        super(key: key);
 
   /// Виджет предшествующий заголовку
   final Widget? leading;
@@ -35,7 +36,7 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   /// Прописал значение размера стандартное для SDK Flutter AppBar.
   /// Не стал производить самостоятельный расчет, т.к. высота не динамическая
   @override
-  Size get preferredSize => Size.fromHeight(toolBarHeight + (bottom?.preferredSize.height ?? 0));
+  final Size preferredSize;
 
   @override
   Widget build(BuildContext context) {
@@ -142,5 +143,10 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
     );
+  }
+
+  /// Вспомогательный метод расчета размеров AppBar
+  static Size _calcPrefSize(PreferredSizeWidget? bottom) {
+    return Size.fromHeight(toolBarHeight + (bottom?.preferredSize.height ?? 0));
   }
 }

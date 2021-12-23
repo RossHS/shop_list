@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
+import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep_cached.dart';
 
 class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements PreferredSizeWidget {
@@ -35,7 +35,7 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
           ),
         );
 
-    final appbar = AnimatedAppBar90s(
+    return AnimatedAppBar90s(
       leading: leading,
       title: title,
       actions: actions,
@@ -43,7 +43,6 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
       duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
     );
-    return appbar;
   }
 
   @override
@@ -56,19 +55,28 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
           child: BackButton(),
         );
 
-    final appbar = AppBar(
+    return AppBar(
       leading: leading,
       title: title,
       actions: actions,
       bottom: bottom,
     );
-    return appbar;
   }
 
   @override
   PreferredSizeWidget modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    // TODO 23.12.2021 implement modernWidgetImp
-    return materialWidgetImp(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
+    final leading = this.leading ??
+        // Обеспечение начальной точки обратной анимации круга [CustomCircleTransition]
+        const TouchGetterProvider(
+          child: BackButton(),
+        );
+
+    return ModernAppBar(
+      leading: leading,
+      title: title,
+      actions: actions,
+      bottom: bottom,
+    );
   }
 
   @override
