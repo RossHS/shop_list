@@ -87,6 +87,12 @@ class CurrentTodo extends StatelessWidget {
                                         child: child,
                                       ),
                                     ),
+                                    modern: (_, __, child) => ConstrainedBox(
+                                      constraints: const BoxConstraints.expand(height: 50, width: 50),
+                                      child: ClipOval(
+                                        child: child,
+                                      ),
+                                    ),
                                     child: Avatar(diameter: 70, user: authorModel),
                                   ),
                                 ),
@@ -363,7 +369,7 @@ class _CompletedInformation extends StatelessWidget {
               ],
             ),
           );
-        }
+        },
       ),
     );
   }

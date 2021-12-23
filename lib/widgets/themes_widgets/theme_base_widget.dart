@@ -26,9 +26,7 @@ Widget defaultBuilderFun(
   ThemeDataWrapper themeWrapper,
   Widget? child,
 ) {
-  return SizedBox(
-    child: child,
-  );
+  return child ?? const SizedBox();
 }
 
 /// Создание виджета на основе темы приложения [ThemeDataWrapper]

@@ -81,8 +81,14 @@ class _AnimatedIconWrapper extends StatelessWidget {
       modern: (_, __, child) => Container(
         height: height,
         width: width,
-        decoration: const BoxDecoration(shape: BoxShape.circle),
-        child: child,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: floatingActionButtonTheme.backgroundColor ?? theme.colorScheme.secondary,
+        ),
+        child: IconTheme.merge(
+          data: overallIconTheme,
+          child: child!,
+        ),
       ),
       child: icon,
     );

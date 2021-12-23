@@ -89,6 +89,14 @@ class AppDrawer extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  modern: (_, __, child) => Material(
+                                    elevation: 20,
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(300),
+                                    child: ClipOval(
+                                      child: Container(child: child),
+                                    ),
+                                  ),
                                   child: TouchGetterProvider(
                                     child: GestureDetector(
                                       onTap: () => Get.toNamed('/account'),
