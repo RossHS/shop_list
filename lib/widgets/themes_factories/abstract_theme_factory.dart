@@ -17,7 +17,6 @@ abstract class ThemeFactory {
     } else if (themeDataWrapper is MaterialThemeDataWrapper) {
       return MaterialThemeFactory(themeDataWrapper);
     } else if (themeDataWrapper is ModernThemeDataWrapper) {
-      // TODO 27.11.2021 пока возвращаем материал тему
       return MaterialThemeFactory(const MaterialThemeDataWrapper(
         textTheme: TextTheme(),
         lightColorScheme: ColorScheme.light(),

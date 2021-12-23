@@ -9,7 +9,7 @@ import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/custom_text_field.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
-/// Так как маршруты изменения и формирования маршрутов отличаются одной лишь кнопкой,
+/// Так как маршруты изменения и формирования списков дел отличаются одной лишь кнопкой,
 /// то имеет смысл выделить единую часть в отдельный виджет, дабы не дублировать код
 class TodoRouteBase extends StatelessWidget {
   const TodoRouteBase({
