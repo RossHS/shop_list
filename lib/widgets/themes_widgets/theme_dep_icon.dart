@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
@@ -29,6 +30,12 @@ class ThemeDepIcon extends ThemeDepWidgetBase {
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return material(themeWrapper);
+  }
+
+  @override
+  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+    // TODO 23.12.2021 implement modernWidget
+    return materialWidget(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
   }
 
   /// Просто вспомогательный метод для упрощения вызова

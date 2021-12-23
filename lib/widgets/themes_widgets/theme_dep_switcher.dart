@@ -47,6 +47,15 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
     ));
   }
 
+  @override
+  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+    return _animatedSwitcher(modern(
+      context,
+      themeWrapper,
+      child,
+    ));
+  }
+
   AnimatedSwitcher _animatedSwitcher(Widget? child) {
     return AnimatedSwitcher(
       duration: duration,

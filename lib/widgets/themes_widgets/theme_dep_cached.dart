@@ -25,16 +25,7 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
     } else if (appTheme is MaterialThemeDataWrapper) {
       _cachedWidget = _CachedWidget(materialWidgetImp(Get.context!, appTheme), appTheme);
     } else if (appTheme is ModernThemeDataWrapper) {
-      // TODO 17.12.2021 т.к. нет еще ModernTheme
-      const themeWrapper = MaterialThemeDataWrapper(
-        textTheme: TextTheme(),
-        lightColorScheme: ColorScheme.light(),
-        darkColorScheme: ColorScheme.dark(),
-      );
-      _cachedWidget = _CachedWidget(
-        materialWidgetImp(Get.context!, themeWrapper),
-        themeWrapper,
-      );
+      _cachedWidget = _CachedWidget(modernWidgetImp(Get.context!, appTheme), appTheme);
     }
   }
 
@@ -70,9 +61,17 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
     return _cachedWidget.widget;
   }
 
+  @override
+  T modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+    _updateCachedWidget(themeWrapper: themeWrapper, producer: () => modernWidgetImp(context, themeWrapper));
+    return _cachedWidget.widget;
+  }
+
   T animated90sWidgetImp(BuildContext context, Animated90sThemeDataWrapper themeWrapper);
 
   T materialWidgetImp(BuildContext context, MaterialThemeDataWrapper themeWrapper);
+
+  T modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper);
 }
 
 /// Кэширование виджета [widget] в соответствии с установленной темой [_themeWrapper]

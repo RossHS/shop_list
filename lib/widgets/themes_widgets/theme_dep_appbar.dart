@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/utils/routes_transition.dart';
@@ -62,6 +63,12 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
       bottom: bottom,
     );
     return appbar;
+  }
+
+  @override
+  PreferredSizeWidget modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+    // TODO 23.12.2021 implement modernWidgetImp
+    return materialWidgetImp(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
   }
 
   @override

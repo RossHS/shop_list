@@ -26,6 +26,11 @@ class ThemeDepDialog extends ThemeBaseClass {
     _showDialog();
   }
 
+  @override
+  void modern(ModernThemeDataWrapper themeWrapper) {
+    _showDialog();
+  }
+
   void _showDialog() {
     showGeneralDialog(
       context: Get.context!,

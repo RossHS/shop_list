@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
@@ -30,5 +31,11 @@ class ThemeDepFloatingActionButton extends ThemeDepWidgetBase {
       onPressed: onPressed,
       child: child,
     );
+  }
+
+  @override
+  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+    // TODO 23.12.2021 implement modernWidget
+    return materialWidget(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
   }
 }

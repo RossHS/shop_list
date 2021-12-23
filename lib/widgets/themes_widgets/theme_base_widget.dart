@@ -79,14 +79,7 @@ abstract class ThemeDepWidgetBase extends StatelessWidget {
         } else if (appTheme is MaterialThemeDataWrapper) {
           return materialWidget(context, appTheme);
         } else if (appTheme is ModernThemeDataWrapper) {
-          /// TODO 16.12.2021 пока возвращается material, т.к. не определился с modern стилем
-          return materialWidget(
-              context,
-              const MaterialThemeDataWrapper(
-                textTheme: TextTheme(),
-                lightColorScheme: ColorScheme.light(),
-                darkColorScheme: ColorScheme.dark(),
-              ));
+          return modernWidget(context, appTheme);
         }
         return throw UnsupportedError('Unsupported theme - ${appTheme.runtimeType}');
       },
@@ -99,8 +92,8 @@ abstract class ThemeDepWidgetBase extends StatelessWidget {
   @protected
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper);
 
-  /// TODO 16.12.2021 Закомментировал - т.к. нет еще представлению о том, как должна выглядеть данная тема
-// Widget moderWidget(BuildContext context, ModernThemeDataWrapper themeWrapper);
+  @protected
+  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper);
 }
 
 /// Т.к. нам не всегда необходим именно виджет, как пример - вызов диалогового окна [ThemeDepDialog].
@@ -117,14 +110,7 @@ abstract class ThemeBaseClass {
     } else if (appTheme is MaterialThemeDataWrapper) {
       material(appTheme);
     } else if (appTheme is ModernThemeDataWrapper) {
-      /// TODO 16.12.2021 пока вызываем material, т.к. не определился с modern стилем
-      material(
-        const MaterialThemeDataWrapper(
-          textTheme: TextTheme(),
-          lightColorScheme: ColorScheme.light(),
-          darkColorScheme: ColorScheme.dark(),
-        ),
-      );
+      modern(appTheme);
     } else {
       throw UnsupportedError('Unsupported theme - ${appTheme.runtimeType}');
     }
@@ -134,5 +120,5 @@ abstract class ThemeBaseClass {
 
   void material(MaterialThemeDataWrapper themeWrapper);
 
-// void modern(ModernThemeDataWrapper themeWrapper);
+  void modern(ModernThemeDataWrapper themeWrapper);
 }
