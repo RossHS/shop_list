@@ -6,6 +6,7 @@ import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
 import 'package:shop_list/widgets/material_custom_settings.dart';
+import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
@@ -527,6 +528,15 @@ class _SpecificThemeSettings extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                );
+              },
+              modern: (_, __, ___) {
+                // TODO 24.12.2021 изм. уникальных параметров стиля
+                return const ModernGlassMorph(
+                  child: Padding(
+                    padding: EdgeInsets.all(36.0),
+                    child: Text('TEXT'),
                   ),
                 );
               },
