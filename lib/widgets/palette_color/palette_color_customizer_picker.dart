@@ -94,9 +94,9 @@ class ColorChangeController {
   /// с учетом новых цветов из mainColor и backgroundColor
   ColorScheme get generateColor => colorScheme.copyWith(
         primary: mainColor.color,
-        primaryContainer: mainColor.color,
+        primaryVariant: mainColor.color,
         secondary: mainColor.color,
-        secondaryContainer: mainColor.color,
+        secondaryVariant: mainColor.color,
         background: backgroundColor.color,
         surface: mainColor.color,
         error: Colors.redAccent,
