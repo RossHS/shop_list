@@ -286,7 +286,10 @@ class _ColorPaletteBox extends StatelessWidget {
   }) {
     final colorController = ColorChangeController(colorScheme: colorScheme);
     ThemeDepDialog(
+      // т.к. создается отдельное дерево в котором требуется определение Material виджета,
+      // если его не задать тут, то получим исключение
       content: Material(
+        color: Colors.transparent,
         child: PaletteColorCustomizerPicker(
           controller: colorController,
         ),
