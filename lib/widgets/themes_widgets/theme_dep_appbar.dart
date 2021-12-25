@@ -28,6 +28,7 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
         TouchGetterProvider(
           child: IconButton(
             onPressed: Get.back,
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             icon: AnimatedIcon90s(
               duration: themeWrapper.animationDuration,
               iconsList: CustomIcons.arrow,
@@ -67,8 +68,12 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
   PreferredSizeWidget modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper) {
     final leading = this.leading ??
         // Обеспечение начальной точки обратной анимации круга [CustomCircleTransition]
-        const TouchGetterProvider(
-          child: BackButton(),
+        TouchGetterProvider(
+          child: IconButton(
+            onPressed: Get.back,
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            icon: const ModernIcon(Icons.arrow_back),
+          ),
         );
 
     return ModernAppBar(

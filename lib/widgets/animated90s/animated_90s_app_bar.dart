@@ -60,15 +60,19 @@ class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
     var leading = this.leading ??
         IconButton(
           onPressed: Get.back,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           icon: AnimatedIcon90s(
             duration: duration,
             iconsList: CustomIcons.arrow,
           ),
         );
     // Установка темы для виджета перед заголовком
-    leading = IconTheme.merge(
-      data: actionsIconTheme,
-      child: leading,
+    leading = ConstrainedBox(
+      constraints: const BoxConstraints.tightFor(width: toolBarHeight),
+      child: IconTheme.merge(
+        data: actionsIconTheme,
+        child: leading,
+      ),
     );
 
     // Оборачиваем виджет заголовка в виджет стиля текста,

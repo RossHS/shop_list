@@ -88,7 +88,7 @@ class _AnimatedIcon90sState extends State<AnimatedIcon90s> with SingleTickerProv
   Widget build(BuildContext context) {
     final iconTheme = IconTheme.of(context);
     final iconSize = iconTheme.size;
-    final iconColor = iconTheme.color!;
+    final iconColor = iconTheme.color;
 
     return SizedBox(
       height: iconSize,

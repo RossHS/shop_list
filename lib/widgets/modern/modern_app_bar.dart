@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shop_list/widgets/modern/modern.dart';
 
 /// Прозрачный AppBar написанный по аналогии с [AppBar], но с учетом особенности, прозрачный фон.
 /// Решил не использовать [AppBar] с backgroundColor: Colors.transparent, т.к. хочу иметь больший
@@ -35,10 +37,19 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
     final overallIconTheme = appBarTheme.iconTheme ?? theme.iconTheme.copyWith(color: foregroundColor);
     final actionsIconTheme = appBarTheme.actionsIconTheme ?? overallIconTheme;
 
-    var leading = this.leading ?? const BackButton();
-    leading = IconTheme.merge(
-      data: actionsIconTheme,
-      child: leading,
+    var leading = this.leading ??
+        IconButton(
+          onPressed: Get.back,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          icon: const ModernIcon(Icons.arrow_back),
+        );
+
+    leading = ConstrainedBox(
+      constraints: const BoxConstraints.tightFor(width: toolBarHeight),
+      child: IconTheme.merge(
+        data: actionsIconTheme,
+        child: leading,
+      ),
     );
 
     // Оборачиваем виджет заголовка в виджет стиля текста,
