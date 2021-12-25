@@ -27,7 +27,6 @@ class ThemeDepTextField extends ThemeDepWidgetBase {
   @override
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     return CustomTextField(
-      key: key,
       duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
       controller: controller,
@@ -43,7 +42,6 @@ class ThemeDepTextField extends ThemeDepWidgetBase {
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return MaterialCustomTextField(
-      key: key,
       controller: controller,
       inputValidator: inputValidator,
       hint: hint,

@@ -17,7 +17,6 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
     final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
     return _CustomThemeWrapper(
       child: AnimatedPainterSquare90s(
-        key: key,
         duration: themeWrapper.animationDuration,
         config: config,
         child: child,
@@ -29,7 +28,6 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return _CustomThemeWrapper(
       child: Container(
-        key: key,
         decoration: themeWrapper.buildDefaultBoxDecoration(context),
         child: child,
       ),

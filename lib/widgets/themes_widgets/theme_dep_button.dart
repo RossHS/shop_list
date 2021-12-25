@@ -18,7 +18,6 @@ class ThemeDepButton extends ThemeDepWidgetBase {
   @override
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     return AnimatedButton90s(
-      key: key,
       onPressed: onPressed,
       duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
@@ -29,7 +28,6 @@ class ThemeDepButton extends ThemeDepWidgetBase {
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return ElevatedButton(
-      key: key,
       onPressed: onPressed,
       child: child,
     );
@@ -38,7 +36,6 @@ class ThemeDepButton extends ThemeDepWidgetBase {
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
     return ModernButton(
-      key: key,
       onPressed: onPressed,
       child: child,
     );

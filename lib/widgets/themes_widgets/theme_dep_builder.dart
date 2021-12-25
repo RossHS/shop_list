@@ -19,10 +19,7 @@ class ThemeDepBuilder extends ThemeDepWidgetBase {
   final Widget? child;
 
   @override
-  Widget animated90sWidget(
-    BuildContext context,
-    Animated90sThemeDataWrapper themeWrapper,
-  ) {
+  Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     return animated90s(
       context,
       themeWrapper,
@@ -31,10 +28,7 @@ class ThemeDepBuilder extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget materialWidget(
-    BuildContext context,
-    MaterialThemeDataWrapper themeWrapper,
-  ) {
+  Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return material(
       context,
       themeWrapper,

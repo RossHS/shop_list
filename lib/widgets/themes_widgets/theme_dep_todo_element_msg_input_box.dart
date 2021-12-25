@@ -20,7 +20,6 @@ class ThemeDepTodoElementMsgInputBox extends ThemeDepWidgetBase {
         textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
       ),
       child: AnimatedPainterSquare90s(
-        key: key,
         duration: themeWrapper.animationDuration,
         config: config,
         borderPaint: const BorderPaint.top(),

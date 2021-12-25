@@ -16,7 +16,6 @@ class ThemeDepFloatingActionButton extends ThemeDepWidgetBase {
   @override
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     return AnimatedCircleButton90s(
-      key: key,
       onPressed: onPressed,
       duration: themeWrapper.animationDuration,
       config: themeWrapper.paint90sConfig,
@@ -27,7 +26,6 @@ class ThemeDepFloatingActionButton extends ThemeDepWidgetBase {
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return FloatingActionButton(
-      key: key,
       onPressed: onPressed,
       child: child,
     );
@@ -36,7 +34,6 @@ class ThemeDepFloatingActionButton extends ThemeDepWidgetBase {
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
     return ModernFloatingActionButton(
-      key: key,
       onPressed: onPressed,
       child: child,
     );
