@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
@@ -44,7 +43,15 @@ class ThemeDepTodoElementMsgInputBox extends ThemeDepWidgetBase {
 
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    // TODO 23.12.2021 implement modernWidget
-    return materialWidget(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
+    final theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+      ),
+      child: Container(
+        color: theme.canvasColor,
+        child: child,
+      ),
+    );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_icon.dart';
+import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 /// TODO 18.12.2021 - подумать об оптимизации
@@ -34,8 +34,7 @@ class ThemeDepIcon extends ThemeDepWidgetBase {
 
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    // TODO 23.12.2021 implement modernWidget
-    return materialWidget(context, MaterialThemeDataWrapper.fromGetStorage(GetStorage()));
+    return modern(themeWrapper);
   }
 
   /// Просто вспомогательный метод для упрощения вызова
@@ -49,46 +48,55 @@ class ThemeDepIcon extends ThemeDepWidgetBase {
   static Widget get create => ThemeDepIcon._(
         material: (_) => const Icon(Icons.create),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.create, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.create),
       );
 
   static Widget get user => ThemeDepIcon._(
         material: (_) => const Icon(Icons.account_circle),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.user, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.account_circle),
       );
 
   static Widget get lock => ThemeDepIcon._(
         material: (_) => const Icon(Icons.lock),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.lock, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.lock),
       );
 
   static Widget get sort => ThemeDepIcon._(
         material: (_) => const Icon(Icons.sort),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.sort, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.sort),
       );
 
   static Widget get close => ThemeDepIcon._(
         material: (_) => const Icon(Icons.close),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.close, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.close),
       );
 
   static Widget get dehaze => ThemeDepIcon._(
         material: (_) => const Icon(Icons.dehaze),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.dehaze, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.dehaze),
       );
 
   static Widget get settings => ThemeDepIcon._(
         material: (_) => const Icon(Icons.settings),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.settings, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.settings),
       );
 
   // ignore: non_constant_identifier_names
   static Widget get file_upload => ThemeDepIcon._(
         material: (_) => const Icon(Icons.file_upload),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.file_upload, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.file_upload),
       );
 
   static Widget get send => ThemeDepIcon._(
         material: (_) => const Icon(Icons.send),
         animated90s: (themeWrapper) => _createIcon(CustomIcons.send, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.send),
       );
 }
