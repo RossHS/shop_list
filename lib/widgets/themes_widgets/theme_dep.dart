@@ -9,3 +9,4 @@ export 'theme_dep_info_overlay.dart';
 export 'theme_dep_switcher.dart';
 export 'theme_dep_text_field.dart';
 export 'theme_dep_todo_element_msg_input_box.dart';
+export 'theme_dep_scaffold.dart';
