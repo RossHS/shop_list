@@ -23,7 +23,7 @@ const EdgeInsetsGeometry _kUnalignedMenuMargin = EdgeInsetsDirectional.only(star
 
 /// A builder to customize dropdown buttons.
 ///
-/// Used by [DropdownButton.selectedItemBuilder].
+/// Used by [CustomDropdownButton.selectedItemBuilder].
 typedef DropdownButtonBuilder = List<Widget> Function(BuildContext context);
 
 class _DropdownMenuPainter extends CustomPainter {
@@ -132,7 +132,7 @@ class _DropdownMenuItemButtonState<T> extends State<_DropdownMenuItemButton<T>> 
   }
 
   void _handleOnTap() {
-    final DropdownMenuItem<T> dropdownMenuItem = widget.route.items[widget.itemIndex].item!;
+    final CustomDropdownMenuItem<T> dropdownMenuItem = widget.route.items[widget.itemIndex].item!;
 
     dropdownMenuItem.onTap?.call();
 
@@ -151,7 +151,7 @@ class _DropdownMenuItemButtonState<T> extends State<_DropdownMenuItemButton<T>> 
 
   @override
   Widget build(BuildContext context) {
-    final DropdownMenuItem<T> dropdownMenuItem = widget.route.items[widget.itemIndex].item!;
+    final CustomDropdownMenuItem<T> dropdownMenuItem = widget.route.items[widget.itemIndex].item!;
     final CurvedAnimation opacity;
     final double unit = 0.5 / (widget.route.items.length + 1.5);
     if (widget.itemIndex == widget.route.selectedIndex) {
@@ -431,7 +431,7 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
     this.menuMaxHeight,
     required this.enableFeedback,
     this.borderRadius,
-  })  : itemHeights = List<double>.filled(items.length, itemHeight ?? kMinInteractiveDimension);
+  }) : itemHeights = List<double>.filled(items.length, itemHeight ?? kMinInteractiveDimension);
 
   final List<_MenuItem<T>> items;
   final EdgeInsetsGeometry padding;
@@ -656,11 +656,10 @@ class _MenuItem<T> extends SingleChildRenderObjectWidget {
     Key? key,
     required this.onLayout,
     required this.item,
-  })  : assert(onLayout != null),
-        super(key: key, child: item);
+  }) : super(key: key, child: item);
 
   final ValueChanged<Size> onLayout;
-  final DropdownMenuItem<T>? item;
+  final CustomDropdownMenuItem<T>? item;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -674,9 +673,7 @@ class _MenuItem<T> extends SingleChildRenderObjectWidget {
 }
 
 class _RenderMenuItem extends RenderProxyBox {
-  _RenderMenuItem(this.onLayout, [RenderBox? child])
-      : assert(onLayout != null),
-        super(child);
+  _RenderMenuItem(this.onLayout, [RenderBox? child]) : super(child);
 
   ValueChanged<Size> onLayout;
 
@@ -698,8 +695,7 @@ class _DropdownMenuItemContainer extends StatelessWidget {
     Key? key,
     this.alignment = AlignmentDirectional.centerStart,
     required this.child,
-  })  : assert(child != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// The widget below this widget in the tree.
   ///
@@ -728,30 +724,29 @@ class _DropdownMenuItemContainer extends StatelessWidget {
   }
 }
 
-/// An item in a menu created by a [DropdownButton].
+/// An item in a menu created by a [CustomDropdownButton].
 ///
 /// The type `T` is the type of the value the entry represents. All the entries
 /// in a given menu must represent values with consistent types.
-class DropdownMenuItem<T> extends _DropdownMenuItemContainer {
+class CustomDropdownMenuItem<T> extends _DropdownMenuItemContainer {
   /// Creates an item for a dropdown menu.
   ///
   /// The [child] argument is required.
-  const DropdownMenuItem({
+  const CustomDropdownMenuItem({
     Key? key,
     this.onTap,
     this.value,
     this.enabled = true,
     AlignmentGeometry alignment = AlignmentDirectional.centerStart,
     required Widget child,
-  })  : assert(child != null),
-        super(key: key, alignment: alignment, child: child);
+  }) : super(key: key, alignment: alignment, child: child);
 
   /// Called when the dropdown menu item is tapped.
   final VoidCallback? onTap;
 
   /// The value to return if the user selects this menu item.
   ///
-  /// Eventually returned in a call to [DropdownButton.onChanged].
+  /// Eventually returned in a call to [CustomDropdownButton.onChanged].
   final T? value;
 
   /// Whether or not a user can select this menu item.
@@ -760,29 +755,28 @@ class DropdownMenuItem<T> extends _DropdownMenuItemContainer {
   final bool enabled;
 }
 
-/// An inherited widget that causes any descendant [DropdownButton]
+/// An inherited widget that causes any descendant [CustomDropdownButton]
 /// widgets to not include their regular underline.
 ///
 /// This is used by [DataTable] to remove the underline from any
-/// [DropdownButton] widgets placed within material data tables, as
+/// [CustomDropdownButton] widgets placed within material data tables, as
 /// required by the material design specification.
-class DropdownButtonHideUnderline extends InheritedWidget {
-  /// Creates a [DropdownButtonHideUnderline]. A non-null [child] must
+class CustomDropdownButtonHideUnderline extends InheritedWidget {
+  /// Creates a [CustomDropdownButtonHideUnderline]. A non-null [child] must
   /// be given.
-  const DropdownButtonHideUnderline({
+  const CustomDropdownButtonHideUnderline({
     Key? key,
     required Widget child,
-  })  : assert(child != null),
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
-  /// Returns whether the underline of [DropdownButton] widgets should
+  /// Returns whether the underline of [CustomDropdownButton] widgets should
   /// be hidden.
   static bool at(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<DropdownButtonHideUnderline>() != null;
+    return context.dependOnInheritedWidgetOfExactType<CustomDropdownButtonHideUnderline>() != null;
   }
 
   @override
-  bool updateShouldNotify(DropdownButtonHideUnderline oldWidget) => false;
+  bool updateShouldNotify(CustomDropdownButtonHideUnderline oldWidget) => false;
 }
 
 /// A material design button for selecting from a list of items.
@@ -793,7 +787,7 @@ class DropdownButtonHideUnderline extends InheritedWidget {
 ///
 /// The type `T` is the type of the [value] that each dropdown item represents.
 /// All the entries in a given menu must represent values with consistent types.
-/// Typically, an enum is used. Each [DropdownMenuItem] in [items] must be
+/// Typically, an enum is used. Each [CustomDropdownMenuItem] in [items] must be
 /// specialized with that same type argument.
 ///
 /// The [onChanged] callback should update a state variable that defines the
@@ -821,17 +815,17 @@ class DropdownButtonHideUnderline extends InheritedWidget {
 ///
 /// See also:
 ///
-///  * [DropdownButtonFormField], which integrates with the [Form] widget.
-///  * [DropdownMenuItem], the class used to represent the [items].
-///  * [DropdownButtonHideUnderline], which prevents its descendant dropdown buttons
+///  * [CustomDropdownButtonFormField], which integrates with the [Form] widget.
+///  * [CustomDropdownMenuItem], the class used to represent the [items].
+///  * [CustomDropdownButtonHideUnderline], which prevents its descendant dropdown buttons
 ///    from displaying their underlines.
 ///  * [ElevatedButton], [TextButton], ordinary buttons that trigger a single action.
 ///  * <https://material.io/design/components/menus.html#dropdown-menu>
-class DropdownButton<T> extends StatefulWidget {
+class CustomDropdownButton<T> extends StatefulWidget {
   /// Creates a dropdown button.
   ///
   /// The [items] must have distinct values. If [value] isn't null then it
-  /// must be equal to one of the [DropdownMenuItem] values. If [items] or
+  /// must be equal to one of the [CustomDropdownMenuItem] values. If [items] or
   /// [onChanged] is null, the button will be disabled, the down arrow
   /// will be greyed out.
   ///
@@ -851,7 +845,7 @@ class DropdownButton<T> extends StatefulWidget {
   /// The [dropdownColor] argument specifies the background color of the
   /// dropdown when it is open. If it is null, the current theme's
   /// [ThemeData.canvasColor] will be used instead.
-  DropdownButton({
+  CustomDropdownButton({
     Key? key,
     required this.items,
     this.selectedItemBuilder,
@@ -884,7 +878,7 @@ class DropdownButton<T> extends StatefulWidget {
           items == null ||
               items.isEmpty ||
               value == null ||
-              items.where((DropdownMenuItem<T> item) {
+              items.where((CustomDropdownMenuItem<T> item) {
                     return item.value == value;
                   }).length ==
                   1,
@@ -893,11 +887,6 @@ class DropdownButton<T> extends StatefulWidget {
           'Either zero or 2 or more [DropdownMenuItem]s were detected '
           'with the same value',
         ),
-        assert(elevation != null),
-        assert(iconSize != null),
-        assert(isDense != null),
-        assert(isExpanded != null),
-        assert(autofocus != null),
         assert(itemHeight == null || itemHeight >= kMinInteractiveDimension),
         super(key: key);
 
@@ -906,9 +895,9 @@ class DropdownButton<T> extends StatefulWidget {
   /// If the [onChanged] callback is null or the list of items is null
   /// then the dropdown button will be disabled, i.e. its arrow will be
   /// displayed in grey and it will not respond to input.
-  final List<DropdownMenuItem<T>>? items;
+  final List<CustomDropdownMenuItem<T>>? items;
 
-  /// The value of the currently selected [DropdownMenuItem].
+  /// The value of the currently selected [CustomDropdownMenuItem].
   ///
   /// If [value] is null and the button is enabled, [hint] will be displayed
   /// if it is non-null.
@@ -936,12 +925,12 @@ class DropdownButton<T> extends StatefulWidget {
   /// {@template flutter.material.dropdownButton.onChanged}
   /// Called when the user selects an item.
   ///
-  /// If the [onChanged] callback is null or the list of [DropdownButton.items]
+  /// If the [onChanged] callback is null or the list of [CustomDropdownButton.items]
   /// is null then the dropdown button will be disabled, i.e. its arrow will be
   /// displayed in grey and it will not respond to input. A disabled button
-  /// will display the [DropdownButton.disabledHint] widget if it is non-null.
-  /// If [DropdownButton.disabledHint] is also null but [DropdownButton.hint] is
-  /// non-null, [DropdownButton.hint] will instead be displayed.
+  /// will display the [CustomDropdownButton.disabledHint] widget if it is non-null.
+  /// If [CustomDropdownButton.disabledHint] is also null but [CustomDropdownButton.hint] is
+  /// non-null, [CustomDropdownButton.hint] will instead be displayed.
   /// {@endtemplate}
   final ValueChanged<T?>? onChanged;
 
@@ -954,20 +943,20 @@ class DropdownButton<T> extends StatefulWidget {
   final VoidCallback? onTap;
 
   /// A builder to customize the dropdown buttons corresponding to the
-  /// [DropdownMenuItem]s in [items].
+  /// [CustomDropdownMenuItem]s in [items].
   ///
-  /// When a [DropdownMenuItem] is selected, the widget that will be displayed
-  /// from the list corresponds to the [DropdownMenuItem] of the same index
+  /// When a [CustomDropdownMenuItem] is selected, the widget that will be displayed
+  /// from the list corresponds to the [CustomDropdownMenuItem] of the same index
   /// in [items].
   ///
   /// {@tool dartpad}
   /// This sample shows a `DropdownButton` with a button with [Text] that
-  /// corresponds to but is unique from [DropdownMenuItem].
+  /// corresponds to but is unique from [CustomDropdownMenuItem].
   ///
   /// ** See code in examples/api/lib/material/dropdown/dropdown_button.selected_item_builder.0.dart **
   /// {@end-tool}
   ///
-  /// If this callback is null, the [DropdownMenuItem] from [items]
+  /// If this callback is null, the [CustomDropdownMenuItem] from [items]
   /// that matches [value] will be displayed.
   final DropdownButtonBuilder? selectedItemBuilder;
 
@@ -1114,10 +1103,10 @@ class DropdownButton<T> extends StatefulWidget {
   final BorderRadius? borderRadius;
 
   @override
-  State<DropdownButton<T>> createState() => _DropdownButtonState<T>();
+  State<CustomDropdownButton<T>> createState() => _CustomDropdownButtonState<T>();
 }
 
-class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindingObserver {
+class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with WidgetsBindingObserver {
   int? _selectedIndex;
   _DropdownRoute<T>? _dropdownRoute;
   Orientation? _lastOrientation;
@@ -1188,7 +1177,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
   }
 
   @override
-  void didUpdateWidget(DropdownButton<T> oldWidget) {
+  void didUpdateWidget(CustomDropdownButton<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.focusNode != oldWidget.focusNode) {
       oldWidget.focusNode?.removeListener(_handleFocusChanged);
@@ -1205,12 +1194,12 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
     if (widget.items == null ||
         widget.items!.isEmpty ||
         (widget.value == null &&
-            widget.items!.where((DropdownMenuItem<T> item) => item.enabled && item.value == widget.value).isEmpty)) {
+            widget.items!.where((CustomDropdownMenuItem<T> item) => item.enabled && item.value == widget.value).isEmpty)) {
       _selectedIndex = null;
       return;
     }
 
-    assert(widget.items!.where((DropdownMenuItem<T> item) => item.value == widget.value).length == 1);
+    assert(widget.items!.where((CustomDropdownMenuItem<T> item) => item.value == widget.value).length == 1);
     for (int itemIndex = 0; itemIndex < widget.items!.length; itemIndex++) {
       if (widget.items![itemIndex].value == widget.value) {
         _selectedIndex = itemIndex;
@@ -1417,7 +1406,7 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
       ),
     );
 
-    if (!DropdownButtonHideUnderline.at(context)) {
+    if (!CustomDropdownButtonHideUnderline.at(context)) {
       final double bottom = (widget.isDense || widget.itemHeight == null) ? 0.0 : 8.0;
       result = Stack(
         children: <Widget>[
@@ -1472,9 +1461,9 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
   }
 }
 
-/// A [FormField] that contains a [DropdownButton].
+/// A [FormField] that contains a [CustomDropdownButton].
 ///
-/// This is a convenience widget that wraps a [DropdownButton] widget in a
+/// This is a convenience widget that wraps a [CustomDropdownButton] widget in a
 /// [FormField].
 ///
 /// A [Form] ancestor is not required. The [Form] simply makes it easier to
@@ -1484,21 +1473,21 @@ class _DropdownButtonState<T> extends State<DropdownButton<T>> with WidgetsBindi
 ///
 /// See also:
 ///
-///  * [DropdownButton], which is the underlying text field without the [Form]
+///  * [CustomDropdownButton], which is the underlying text field without the [Form]
 ///    integration.
-class DropdownButtonFormField<T> extends FormField<T> {
-  /// Creates a [DropdownButton] widget that is a [FormField], wrapped in an
+class CustomDropdownButtonFormField<T> extends FormField<T> {
+  /// Creates a [CustomDropdownButton] widget that is a [FormField], wrapped in an
   /// [InputDecorator].
   ///
   /// For a description of the `onSaved`, `validator`, or `autovalidateMode`
   /// parameters, see [FormField]. For the rest (other than [decoration]), see
-  /// [DropdownButton].
+  /// [CustomDropdownButton].
   ///
   /// The `items`, `elevation`, `iconSize`, `isDense`, `isExpanded`,
   /// `autofocus`, and `decoration`  parameters must not be null.
-  DropdownButtonFormField({
+  CustomDropdownButtonFormField({
     Key? key,
-    required List<DropdownMenuItem<T>>? items,
+    required List<CustomDropdownMenuItem<T>>? items,
     DropdownButtonBuilder? selectedItemBuilder,
     T? value,
     Widget? hint,
@@ -1529,7 +1518,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
           items == null ||
               items.isEmpty ||
               value == null ||
-              items.where((DropdownMenuItem<T> item) {
+              items.where((CustomDropdownMenuItem<T> item) {
                     return item.value == value;
                   }).length ==
                   1,
@@ -1538,12 +1527,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
           'Either zero or 2 or more [DropdownMenuItem]s were detected '
           'with the same value',
         ),
-        assert(elevation != null),
-        assert(iconSize != null),
-        assert(isDense != null),
-        assert(isExpanded != null),
         assert(itemHeight == null || itemHeight >= kMinInteractiveDimension),
-        assert(autofocus != null),
         decoration = decoration ?? InputDecoration(focusColor: focusColor),
         super(
           key: key,
@@ -1552,14 +1536,14 @@ class DropdownButtonFormField<T> extends FormField<T> {
           validator: validator,
           autovalidateMode: autovalidateMode ?? AutovalidateMode.disabled,
           builder: (FormFieldState<T> field) {
-            final _DropdownButtonFormFieldState<T> state = field as _DropdownButtonFormFieldState<T>;
+            final _CustomDropdownButtonFormFieldState<T> state = field as _CustomDropdownButtonFormFieldState<T>;
             final InputDecoration decorationArg = decoration ?? InputDecoration(focusColor: focusColor);
             final InputDecoration effectiveDecoration = decorationArg.applyDefaults(
               Theme.of(field.context).inputDecorationTheme,
             );
 
             final bool showSelectedItem =
-                items != null && items.where((DropdownMenuItem<T> item) => item.value == state.value).isNotEmpty;
+                items != null && items.where((CustomDropdownMenuItem<T> item) => item.value == state.value).isNotEmpty;
             bool isHintOrDisabledHintAvailable() {
               final bool isDropdownDisabled = onChanged == null || (items == null || items.isEmpty);
               if (isDropdownDisabled) {
@@ -1581,8 +1565,8 @@ class DropdownButtonFormField<T> extends FormField<T> {
                   decoration: effectiveDecoration.copyWith(errorText: field.errorText),
                   isEmpty: isEmpty,
                   isFocused: Focus.of(context).hasFocus,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<T>(
+                  child: CustomDropdownButtonHideUnderline(
+                    child: CustomDropdownButton<T>(
                       items: items,
                       selectedItemBuilder: selectedItemBuilder,
                       value: state.value,
@@ -1627,12 +1611,12 @@ class DropdownButtonFormField<T> extends FormField<T> {
   final InputDecoration decoration;
 
   @override
-  FormFieldState<T> createState() => _DropdownButtonFormFieldState<T>();
+  FormFieldState<T> createState() => _CustomDropdownButtonFormFieldState<T>();
 }
 
-class _DropdownButtonFormFieldState<T> extends FormFieldState<T> {
+class _CustomDropdownButtonFormFieldState<T> extends FormFieldState<T> {
   @override
-  DropdownButtonFormField<T> get widget => super.widget as DropdownButtonFormField<T>;
+  CustomDropdownButtonFormField<T> get widget => super.widget as CustomDropdownButtonFormField<T>;
 
   @override
   void didChange(T? value) {
@@ -1642,7 +1626,7 @@ class _DropdownButtonFormFieldState<T> extends FormFieldState<T> {
   }
 
   @override
-  void didUpdateWidget(DropdownButtonFormField<T> oldWidget) {
+  void didUpdateWidget(CustomDropdownButtonFormField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialValue != widget.initialValue) {
       setValue(widget.initialValue);
