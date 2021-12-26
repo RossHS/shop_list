@@ -12,12 +12,34 @@ import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Маршрут настройки тем приложения
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+/// Виджет stateful, т.к. я использую [GlobalKey], который не рекомендуется создавать внутри метода build,
+/// комментарии из исходного кода :
+///
+/// ## Pitfalls
+///
+/// GlobalKeys should not be re-created on every build. They should usually be
+/// long-lived objects owned by a [State] object, for example.
+///
+/// Creating a new GlobalKey on every build will throw away the state of the
+/// subtree associated with the old key and create a new fresh subtree for the
+/// new key. Besides harming performance, this can also cause unexpected
+/// behavior in widgets in the subtree. For example, a [GestureDetector] in the
+/// subtree will be unable to track ongoing gestures since it will be recreated
+/// on each build.
+class _SettingsState extends State<Settings> {
+  final scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return ThemeDepScaffold(
+      scaffoldGlobalKey: scaffoldKey,
       appBar: ThemeDepAppBar(
         title: const Text('Настройка темы'),
       ),

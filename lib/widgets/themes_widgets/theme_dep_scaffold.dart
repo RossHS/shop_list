@@ -12,13 +12,24 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
     Key? key,
     this.appBar,
     this.body,
-  }) : super(key: key);
+    this.scaffoldGlobalKey,
+  })  : assert(key == null || key != scaffoldGlobalKey),
+        super(key: key);
   final PreferredSizeWidget? appBar;
   final Widget? body;
+
+  /// Т.к. в методе [modernWidget] добавляется новый виджет в дереве, что приводит к пересозданию всего поддерева
+  /// (новые element subtree, renderObjects, state и т.д.), то для сохранения поддерева при смене родителя я использую
+  /// GlobalKey [scaffoldGlobalKey].
+  ///
+  /// Передавать одинаковый [GlobalKey] в [key] и [scaffoldGlobalKey] нельзя, т.к. это прямое нарушения правила
+  /// использования [GlobalKey], которые запрещает использовать один ключ в нескольких местах внутри одного дерева
+  final GlobalKey? scaffoldGlobalKey;
 
   @override
   Widget animated90sWidget(BuildContext context, Animated90sThemeDataWrapper themeWrapper) {
     return Scaffold(
+      key: scaffoldGlobalKey,
       appBar: appBar,
       body: body,
     );
@@ -27,6 +38,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
   @override
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper) {
     return Scaffold(
+      key: scaffoldGlobalKey,
       appBar: appBar,
       body: body,
     );
@@ -47,6 +59,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
         ),
       ),
       child: Scaffold(
+        key: scaffoldGlobalKey,
         backgroundColor: Colors.transparent,
         appBar: appBar,
         body: body,
