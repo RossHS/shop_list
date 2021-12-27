@@ -77,12 +77,20 @@ class _Body extends StatelessWidget {
           trailing: Obx(
             () => ThemeDepDropdownButton<TextTheme>(
               value: controller.textTheme.value,
-              items: TextThemeCollection.map.entries
-                  .map<DropdownMenuItem<TextTheme>>((entry) => DropdownMenuItem(
-                        value: entry.value,
-                        child: Text(entry.key),
-                      ))
-                  .toList(),
+              items: TextThemeCollection.map.entries.map<DropdownMenuItem<TextTheme>>((entry) {
+                final entryTextStyle = entry.value.subtitle1!;
+                var style = TextStyle(
+                  fontSize: entryTextStyle.fontSize ?? 15,
+                  fontFamily: entryTextStyle.fontFamily,
+                );
+                return DropdownMenuItem(
+                  value: entry.value,
+                  child: Text(
+                    entry.key,
+                    style: style,
+                  ),
+                );
+              }).toList(),
               onChanged: (newValue) {
                 if (newValue != null) {
                   controller.textTheme.value = newValue;
