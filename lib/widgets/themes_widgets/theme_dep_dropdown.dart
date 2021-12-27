@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 import 'package:shop_list/widgets/widget_size.dart';
 
@@ -258,10 +259,12 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
                     controller: widget.route.scrollController!,
                     child: Scrollbar(
                       isAlwaysShown: true,
-                      child: ListView(
-                        padding: kMaterialListPadding,
-                        shrinkWrap: true,
-                        children: children,
+                      child: _CustomThemeWrapper(
+                        child: ListView(
+                          padding: kMaterialListPadding,
+                          shrinkWrap: true,
+                          children: children,
+                        ),
                       ),
                     ),
                   ),
@@ -1306,6 +1309,26 @@ class _ThemeDepDropdownButtonState<T> extends State<ThemeDepDropdownButton<T>> w
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CustomThemeWrapper extends StatelessWidget {
+  const _CustomThemeWrapper({Key? key, required this.child}) : super(key: key);
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final customTheme = theme.copyWith(
+      textTheme: theme.textTheme.apply(bodyColor: theme.canvasColor.calcTextColor),
+    );
+    return Theme(
+      data: customTheme,
+      child: DefaultTextStyle(
+        style: customTheme.textTheme.subtitle1!,
+        child: child,
       ),
     );
   }

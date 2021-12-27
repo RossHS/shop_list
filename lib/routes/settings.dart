@@ -53,7 +53,6 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final controller = ThemeController.to;
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -61,9 +60,8 @@ class _Body extends StatelessWidget {
         ListTile(
           title: const Text('Стиль'),
           trailing: Obx(
-            () => DropdownButton<String>(
+            () => ThemeDepDropdownButton<String>(
               value: controller.appTheme.value.themePrefix,
-              dropdownColor: colorScheme.background,
               items: controller.appThemeList
                   .map<DropdownMenuItem<String>>((value) => DropdownMenuItem(
                         value: value,
@@ -77,9 +75,8 @@ class _Body extends StatelessWidget {
         ListTile(
           title: const Text('Шрифт'),
           trailing: Obx(
-            () => DropdownButton<TextTheme>(
+            () => ThemeDepDropdownButton<TextTheme>(
               value: controller.textTheme.value,
-              dropdownColor: colorScheme.background,
               items: TextThemeCollection.map.entries
                   .map<DropdownMenuItem<TextTheme>>((entry) => DropdownMenuItem(
                         value: entry.value,
@@ -97,9 +94,8 @@ class _Body extends StatelessWidget {
         ListTile(
           title: const Text('Тема'),
           trailing: Obx(
-            () => DropdownButton<ThemeMode>(
+            () => ThemeDepDropdownButton<ThemeMode>(
               value: controller.themeMode.value,
-              dropdownColor: colorScheme.background,
               items: ThemeMode.values
                   .map<DropdownMenuItem<ThemeMode>>((themeMode) => DropdownMenuItem(
                         value: themeMode,
