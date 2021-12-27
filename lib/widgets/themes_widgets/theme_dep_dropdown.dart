@@ -719,7 +719,7 @@ class _DropdownMenuItemContainer extends StatelessWidget {
 ///    from displaying their underlines.
 ///  * [ElevatedButton], [TextButton], ordinary buttons that trigger a single action.
 ///  * <https://material.io/design/components/menus.html#dropdown-menu>
-class CustomDropdownButton<T> extends StatefulWidget {
+class ThemeDepDropdownButton<T> extends StatefulWidget {
   /// Creates a dropdown button.
   ///
   /// The [items] must have distinct values. If [value] isn't null then it
@@ -743,7 +743,7 @@ class CustomDropdownButton<T> extends StatefulWidget {
   /// The [dropdownColor] argument specifies the background color of the
   /// dropdown when it is open. If it is null, the current theme's
   /// [ThemeData.canvasColor] will be used instead.
-  CustomDropdownButton({
+  ThemeDepDropdownButton({
     Key? key,
     required this.items,
     this.selectedItemBuilder,
@@ -817,12 +817,12 @@ class CustomDropdownButton<T> extends StatefulWidget {
   /// {@template flutter.material.dropdownButton.onChanged}
   /// Called when the user selects an item.
   ///
-  /// If the [onChanged] callback is null or the list of [CustomDropdownButton.items]
+  /// If the [onChanged] callback is null or the list of [ThemeDepDropdownButton.items]
   /// is null then the dropdown button will be disabled, i.e. its arrow will be
   /// displayed in grey and it will not respond to input. A disabled button
-  /// will display the [CustomDropdownButton.disabledHint] widget if it is non-null.
-  /// If [CustomDropdownButton.disabledHint] is also null but [CustomDropdownButton.hint] is
-  /// non-null, [CustomDropdownButton.hint] will instead be displayed.
+  /// will display the [ThemeDepDropdownButton.disabledHint] widget if it is non-null.
+  /// If [ThemeDepDropdownButton.disabledHint] is also null but [ThemeDepDropdownButton.hint] is
+  /// non-null, [ThemeDepDropdownButton.hint] will instead be displayed.
   /// {@endtemplate}
   final ValueChanged<T?>? onChanged;
 
@@ -956,10 +956,10 @@ class CustomDropdownButton<T> extends StatefulWidget {
   final AlignmentGeometry alignment;
 
   @override
-  State<CustomDropdownButton<T>> createState() => _CustomDropdownButtonState<T>();
+  State<ThemeDepDropdownButton<T>> createState() => _ThemeDepDropdownButtonState<T>();
 }
 
-class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with WidgetsBindingObserver {
+class _ThemeDepDropdownButtonState<T> extends State<ThemeDepDropdownButton<T>> with WidgetsBindingObserver {
   int? _selectedIndex;
   _DropdownRoute<T>? _dropdownRoute;
   Orientation? _lastOrientation;
@@ -1030,7 +1030,7 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with 
   }
 
   @override
-  void didUpdateWidget(CustomDropdownButton<T> oldWidget) {
+  void didUpdateWidget(ThemeDepDropdownButton<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.focusNode != oldWidget.focusNode) {
       oldWidget.focusNode?.removeListener(_handleFocusChanged);
