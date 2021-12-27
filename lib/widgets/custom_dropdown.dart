@@ -11,6 +11,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
+import 'package:shop_list/widgets/widget_size.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = kMinInteractiveDimension;
@@ -227,6 +229,9 @@ class _DropdownMenu<T> extends StatefulWidget {
 class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
   late CurvedAnimation _fadeOpacity;
   late CurvedAnimation _resize;
+  Size? _menuSize;
+  Tween<double>? _top;
+  Tween<double>? _bottom;
 
   @override
   void initState() {
@@ -275,51 +280,79 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
 
     return FadeTransition(
       opacity: _fadeOpacity,
-      child: CustomPaint(
-        painter: _DropdownMenuPainter(
-          color: widget.dropdownColor ?? Theme.of(context).canvasColor,
-          elevation: route.elevation,
-          selectedIndex: route.selectedIndex,
-          resize: _resize,
-          borderRadius: widget.borderRadius,
-          // This offset is passed as a callback, not a value, because it must
-          // be retrieved at paint time (after layout), not at build time.
-          getSelectedItemOffset: () => route.getItemOffset(route.selectedIndex),
-        ),
-        child: Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          explicitChildNodes: true,
-          label: localizations.popupMenuLabel,
-          child: Material(
-            type: MaterialType.transparency,
-            textStyle: route.style,
-            child: ScrollConfiguration(
-              // Dropdown menus should never overscroll or display an overscroll indicator.
-              // Scrollbars are built-in below.
-              // Platform must use Theme and ScrollPhysics must be Clamping.
-              behavior: ScrollConfiguration.of(context).copyWith(
-                scrollbars: false,
-                overscroll: false,
-                physics: const ClampingScrollPhysics(),
-                platform: Theme.of(context).platform,
-              ),
-              child: PrimaryScrollController(
-                controller: widget.route.scrollController!,
-                child: Scrollbar(
-                  isAlwaysShown: true,
-                  child: ListView(
-                    padding: kMaterialListPadding,
-                    shrinkWrap: true,
-                    children: children,
+      child: WidgetSize(
+        onSizeChange: _updateMenuSize,
+        child: Stack(
+          children: [
+            AnimatedBuilder(
+              animation: _resize,
+              builder: (context, child) {
+                return Positioned.fromRect(
+                  rect: Rect.fromLTRB(
+                    0,
+                    _top?.evaluate(_resize) ?? 0,
+                    _menuSize?.width ?? 0,
+                    _bottom?.evaluate(_resize) ?? 0,
+                  ),
+                  child: child!,
+                );
+              },
+              child: const ThemeDepCommonItemBox(child: SizedBox()),
+            ),
+            Semantics(
+              scopesRoute: true,
+              namesRoute: true,
+              explicitChildNodes: true,
+              label: localizations.popupMenuLabel,
+              child: Material(
+                type: MaterialType.transparency,
+                textStyle: route.style,
+                child: ScrollConfiguration(
+                  // Dropdown menus should never overscroll or display an overscroll indicator.
+                  // Scrollbars are built-in below.
+                  // Platform must use Theme and ScrollPhysics must be Clamping.
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    scrollbars: false,
+                    overscroll: false,
+                    physics: const ClampingScrollPhysics(),
+                    platform: Theme.of(context).platform,
+                  ),
+                  child: PrimaryScrollController(
+                    controller: widget.route.scrollController!,
+                    child: Scrollbar(
+                      isAlwaysShown: true,
+                      child: ListView(
+                        padding: kMaterialListPadding,
+                        shrinkWrap: true,
+                        children: children,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
+  }
+
+  void _updateMenuSize(Size? size) {
+    if (size != null && _menuSize != size) {
+      setState(() {
+        _menuSize = size;
+        final double selectedItemOffset = widget.route.getItemOffset(widget.route.selectedIndex);
+        _top = Tween<double>(
+          begin: selectedItemOffset.clamp(0.0, math.max(size.height - _kMenuItemHeight, 0.0)),
+          end: 0.0,
+        );
+
+        _bottom = Tween<double>(
+          begin: (_top!.begin! + _kMenuItemHeight).clamp(math.min(_kMenuItemHeight, size.height), size.height),
+          end: size.height,
+        );
+      });
+    }
   }
 }
 
@@ -1194,7 +1227,9 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with 
     if (widget.items == null ||
         widget.items!.isEmpty ||
         (widget.value == null &&
-            widget.items!.where((CustomDropdownMenuItem<T> item) => item.enabled && item.value == widget.value).isEmpty)) {
+            widget.items!
+                .where((CustomDropdownMenuItem<T> item) => item.enabled && item.value == widget.value)
+                .isEmpty)) {
       _selectedIndex = null;
       return;
     }

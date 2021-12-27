@@ -4,7 +4,7 @@
 library flutter_advanced_drawer;
 
 import 'package:flutter/material.dart';
-import 'package:shop_list/custom_libs/advanced_drawer/src/widget_size.dart';
+import 'package:shop_list/widgets/widget_size.dart';
 import 'dart:math' as math;
 
 part 'src/controller.dart';
