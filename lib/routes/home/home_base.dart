@@ -10,6 +10,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(TodosController(usersMapController: UsersMapController()));
     // Написал так, а не через ThemeDepBuilder, т.к. это просто чуть более
     // производительный подход из-за наличия Helper Methods в ThemeDepBuilder,
     // но он более чреват потенциальными ошибками из-за state machine

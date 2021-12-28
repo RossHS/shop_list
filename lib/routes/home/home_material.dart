@@ -75,33 +75,31 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<TodosController>(
-      init: TodosController(usersMapController: UsersMapController()),
-      builder: (todosController) => Obx(() {
-        if (!todosController.isTodoStreamSubscribedNonNull) return const Center(child: CircularProgressIndicator());
-        if (todosController.filteredTodoList.isEmpty) {
-          return const Center(child: Text('Нет данных'));
-        } else {
-          return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              var rowCount = 2;
-              for (var width = 500; width < 3000; rowCount++, width += 400) {
-                if (constraints.maxWidth < width) {
-                  return _ItemGrid(
-                    key: ValueKey<int>(rowCount),
-                    rowCount: rowCount,
-                  );
-                }
+    final todosController = Get.find<TodosController>();
+    return Obx(() {
+      if (!todosController.isTodoStreamSubscribedNonNull) return const Center(child: CircularProgressIndicator());
+      if (todosController.filteredTodoList.isEmpty) {
+        return const Center(child: Text('Нет данных'));
+      } else {
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            var rowCount = 2;
+            for (var width = 500; width < 3000; rowCount++, width += 400) {
+              if (constraints.maxWidth < width) {
+                return _ItemGrid(
+                  key: ValueKey<int>(rowCount),
+                  rowCount: rowCount,
+                );
               }
-              return _ItemGrid(
-                key: ValueKey<int>(rowCount),
-                rowCount: rowCount,
-              );
-            },
-          );
-        }
-      }),
-    );
+            }
+            return _ItemGrid(
+              key: ValueKey<int>(rowCount),
+              rowCount: rowCount,
+            );
+          },
+        );
+      }
+    });
   }
 }
 
