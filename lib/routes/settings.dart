@@ -322,16 +322,16 @@ class _ColorPaletteBox extends StatelessWidget {
       ),
       actions: [
         TextButton(
-            onPressed: () {
-              onColorSave(colorController.generateColor);
-              Get.back();
-            },
-            child: const Text('Сохранить')),
+          onPressed: () {
+            onColorSave(colorController.generateColor);
+            Get.back();
+          },
+          child: const Text('Сохранить'),
+        ),
         TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: const Text('Отменить')),
+          onPressed: Get.back,
+          child: const Text('Отменить'),
+        ),
       ],
     );
   }
@@ -540,16 +540,16 @@ class _SpecificThemeSettings extends StatelessWidget {
                               ),
                               actions: [
                                 TextButton(
-                                    onPressed: () {
-                                      Get.back();
-                                      controller.acceptChanges();
-                                    },
-                                    child: const Text('Сохранить')),
+                                  onPressed: () {
+                                    Get.back();
+                                    controller.acceptChanges();
+                                  },
+                                  child: const Text('Сохранить'),
+                                ),
                                 TextButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: const Text('Отменить')),
+                                  onPressed: Get.back,
+                                  child: const Text('Отменить'),
+                                ),
                               ],
                             );
                           },

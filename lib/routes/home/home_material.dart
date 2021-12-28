@@ -399,10 +399,9 @@ class _ItemControlPanel extends StatelessWidget {
                                 },
                                 child: const Text('ОК')),
                             TextButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: const Text('Отмена'))
+                              onPressed: Get.back,
+                              child: const Text('Отмена'),
+                            )
                           ],
                         ),
                         child: const Icon(Icons.check),
@@ -431,10 +430,9 @@ class _ItemControlPanel extends StatelessWidget {
                                 },
                                 child: const Text('ОК')),
                             TextButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: const Text('Отмена'))
+                              onPressed: Get.back,
+                              child: const Text('Отмена'),
+                            )
                           ],
                         ),
                         child: const Icon(Icons.delete),

@@ -237,9 +237,7 @@ class _LoadedWidgetState extends State<_LoadedWidget> with SingleTickerProviderS
                             child: const Text('Ok'),
                           ),
                           TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
+                            onPressed: Get.back,
                             child: const Text('Отмена'),
                           ),
                         ],
