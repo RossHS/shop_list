@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/custom_libs/advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shop_list/models/theme_model.dart';
+import 'package:shop_list/routes/routing_for_test.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_circle.dart';
 import 'package:shop_list/widgets/avatar.dart';
@@ -124,6 +125,13 @@ class AppDrawer extends StatelessWidget {
                           onTap: () => Get.toNamed('/settings'),
                           leading: ThemeDepIcon.settings,
                           title: const Text('Settings'),
+                        ),
+                      ),
+                      TouchGetterProvider(
+                        child: ListTile(
+                          onTap: () => Get.to(const RoutingForTest()),
+                          leading: const Icon(Icons.warning_amber_rounded),
+                          title: const Text('TEST'),
                         ),
                       ),
                       const Spacer(),

@@ -59,6 +59,9 @@ dependencies:
   # Библиотека выбора цветов
   flutter_colorpicker: ^1.0.2
 
+  # Анимация https://rive.app/
+  rive: ^0.8.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -90,6 +93,7 @@ flutter:
   assets:
     - assets/
     - assets/img/
+    - assets/rive/
 
   # Путь и имена ассетов с кастомными иконками для анимации
   fonts:
