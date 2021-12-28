@@ -1,10 +1,9 @@
-
 import 'package:get/get.dart';
 import 'package:shop_list/routes/account.dart';
 import 'package:shop_list/routes/create_todo.dart';
 import 'package:shop_list/routes/current_todo.dart';
 import 'package:shop_list/routes/edit_todo.dart';
-import 'package:shop_list/routes/home.dart';
+import 'package:shop_list/routes/home/home_base.dart';
 import 'package:shop_list/routes/settings.dart';
 import 'package:shop_list/routes/sign_in.dart';
 import 'package:shop_list/routes/splash.dart';

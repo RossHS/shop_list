@@ -10,14 +10,14 @@ import 'package:shop_list/widgets/drawer.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Главный экран пользователя, где отображаются все актуальные списки покупок
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeMaterial extends StatefulWidget {
+  const HomeMaterial({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeMaterial> createState() => _HomeMaterialState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeMaterialState extends State<HomeMaterial> {
   final _advancedDrawerController = AdvancedDrawerController();
 
   @override
