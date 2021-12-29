@@ -16,7 +16,7 @@ class Account extends StatelessWidget {
     final authController = AuthenticationController.instance;
     Get.put(UserInfoUpdateController());
     Get.put(FirebaseStorageUploaderController());
-    return Scaffold(
+    return ThemeDepScaffold(
       appBar: ThemeDepAppBar(
         title: const Text('Аккаунт'),
       ),

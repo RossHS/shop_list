@@ -62,7 +62,7 @@ class CurrentTodo extends StatelessWidget {
               if (controller.todoModel != null) {
                 authorModel = userMapController.getUserModel(controller.todoModel!.authorId);
               }
-              return Scaffold(
+              return ThemeDepScaffold(
                 appBar: ThemeDepAppBar(
                   title: Text(appBarTitle),
                   bottom: controller.todoModel != null && authorModel != null

@@ -33,7 +33,7 @@ class TodoRouteBase extends StatelessWidget {
     );
     final todoEditController = Get.find<TodoEditCreateController>();
     // Гарантированная инициализация контроллера TodoEditCreatorController
-    return Scaffold(
+    return ThemeDepScaffold(
       appBar: ThemeDepAppBar(
         title: SizedBox(
           width: _Body._width,
