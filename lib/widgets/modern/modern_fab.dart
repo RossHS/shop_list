@@ -4,8 +4,8 @@ import 'package:shop_list/widgets/modern/modern_raw_button.dart';
 class ModernFloatingActionButton extends StatelessWidget {
   const ModernFloatingActionButton({
     Key? key,
-    required this.child,
     required this.onPressed,
+    required this.child,
   }) : super(key: key);
 
   final void Function() onPressed;

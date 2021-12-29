@@ -10,13 +10,15 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 class ThemeDepScaffold extends ThemeDepWidgetBase {
   const ThemeDepScaffold({
     Key? key,
+    this.scaffoldGlobalKey,
     this.appBar,
     this.body,
-    this.scaffoldGlobalKey,
+    this.floatingActionButton,
   })  : assert(key == null || key != scaffoldGlobalKey),
         super(key: key);
   final PreferredSizeWidget? appBar;
   final Widget? body;
+  final Widget? floatingActionButton;
 
   /// Т.к. в методе [modernWidget] добавляется новый виджет в дереве, что приводит к пересозданию всего поддерева
   /// (новые element subtree, renderObjects, state и т.д.), то для сохранения поддерева при смене родителя я использую
@@ -32,6 +34,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
       key: scaffoldGlobalKey,
       appBar: appBar,
       body: body,
+      floatingActionButton: floatingActionButton,
     );
   }
 
@@ -41,6 +44,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
       key: scaffoldGlobalKey,
       appBar: appBar,
       body: body,
+      floatingActionButton: floatingActionButton,
     );
   }
 
@@ -63,6 +67,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
         backgroundColor: Colors.transparent,
         appBar: appBar,
         body: body,
+        floatingActionButton: floatingActionButton,
       ),
     );
   }
