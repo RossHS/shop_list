@@ -116,30 +116,59 @@ class _CarouselWithIndicator extends StatefulWidget {
 }
 
 class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
+  late final ValueNotifier<int> currentPage;
   final _controller = CarouselController();
   final list = List<int>.generate(10, (i) => i).map((e) => _TodoItem(string: '$e')).toList(growable: false);
 
   @override
   void initState() {
     super.initState();
+    currentPage = ValueNotifier(_controller.initialPage);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(
-        dragDevices: {
-          PointerDeviceKind.touch,
-          PointerDeviceKind.mouse,
-        },
-      ),
-      child: Carousel(
-        controller: _controller,
-        items: list,
-        onPageChanged: (page) {
-          print('current page - $page');
-        },
-      ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      children: [
+        Expanded(
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+              },
+            ),
+            child: Carousel(
+              controller: _controller,
+              items: list,
+              onPageChanged: (page) {
+                currentPage.value = page;
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        ValueListenableBuilder(
+          valueListenable: currentPage,
+          // TODO 30.12.2021 ограничить макс кол-во элементов по ширине, установить предел отображаемых списков
+          builder: (context, value, child) => Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: List<int>.generate(list.length, (i) => i)
+                .map((e) => AnimatedContainer(
+                      height: 10,
+                      width: e == value ? 30 : 10,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: colorScheme.primary,
+                      ),
+                      duration: const Duration(milliseconds: 200),
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
