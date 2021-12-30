@@ -153,19 +153,21 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
           valueListenable: currentPage,
           // TODO 30.12.2021 ограничить макс кол-во элементов по ширине, установить предел отображаемых списков
           builder: (context, value, child) => Wrap(
+            alignment: WrapAlignment.center,
             spacing: 4,
             runSpacing: 4,
-            children: List<int>.generate(list.length, (i) => i)
-                .map((e) => AnimatedContainer(
-                      height: 10,
-                      width: e == value ? 30 : 10,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: colorScheme.primary,
-                      ),
-                      duration: const Duration(milliseconds: 200),
-                    ))
-                .toList(),
+            children: [
+              for (var i = 0; i < list.length; i++)
+                AnimatedContainer(
+                  height: 10,
+                  width: i == value ? 30 : 10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: colorScheme.primary,
+                  ),
+                  duration: const Duration(milliseconds: 200),
+                ),
+            ],
           ),
         ),
       ],
