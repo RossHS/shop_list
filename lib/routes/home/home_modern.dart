@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/avatar.dart';
+import 'package:shop_list/widgets/carousel/carousel_controller.dart';
+import 'package:shop_list/widgets/carousel/carousel_widget.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
@@ -42,14 +45,16 @@ class _Body extends StatelessWidget {
           Positioned(
             left: 20,
             top: 20,
-            child: _ControlPanel(),
+            child: RepaintBoundary(
+              child: _ControlPanel(),
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: 100,
             ),
             child: Center(
-              child: _TodoItem(),
+              child: _CarouselWithIndicator(),
             ),
           ),
         ],
@@ -102,8 +107,50 @@ class _ControlPanel extends StatelessWidget {
   }
 }
 
+/// Главное окно с каруселью списков задач и индикацией текущего/показываемого списка в виде точек точек
+class _CarouselWithIndicator extends StatefulWidget {
+  const _CarouselWithIndicator({Key? key}) : super(key: key);
+
+  @override
+  State<_CarouselWithIndicator> createState() => _CarouselWithIndicatorState();
+}
+
+class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
+  final _controller = CarouselController();
+  final list = List<int>.generate(10, (i) => i).map((e) => _TodoItem(string: '$e')).toList(growable: false);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+        },
+      ),
+      child: Carousel(
+        controller: _controller,
+        items: list,
+        onPageChanged: (page) {
+          print('current page - $page');
+        },
+      ),
+    );
+  }
+}
+
 class _TodoItem extends StatelessWidget {
-  const _TodoItem({Key? key}) : super(key: key);
+  const _TodoItem({
+    Key? key,
+    required this.string,
+  }) : super(key: key);
+
+  final String string;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +158,7 @@ class _TodoItem extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         height: double.infinity,
+        child: Center(child: Text(string)),
       ),
     );
   }
