@@ -113,16 +113,16 @@ class _ItemGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todosController = Get.find<TodosController>();
-    return StaggeredGridView.countBuilder(
+    return MasonryGridView.count(
       crossAxisCount: rowCount,
       itemCount: todosController.filteredTodoList.length,
       itemBuilder: (context, index) {
+        final todo = todosController.filteredTodoList[index];
         return _TodoItem(
-          key: ObjectKey(todosController.filteredTodoList[index]),
-          refModel: todosController.filteredTodoList[index],
+          key: ObjectKey(todo),
+          refModel: todo,
         );
       },
-      staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
       mainAxisSpacing: 25.0,
       crossAxisSpacing: 25.0,
       padding: const EdgeInsets.all(25.0),

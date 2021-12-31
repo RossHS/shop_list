@@ -50,8 +50,9 @@ class _Body extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 100,
+            padding: EdgeInsets.only(
+              top: 160,
+              bottom: 100,
             ),
             child: Center(
               child: _CarouselWithIndicator(),
@@ -148,26 +149,28 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
             ),
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 50),
         ValueListenableBuilder(
           valueListenable: currentPage,
           // TODO 30.12.2021 ограничить макс кол-во элементов по ширине, установить предел отображаемых списков
-          builder: (context, value, child) => Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              for (var i = 0; i < list.length; i++)
-                AnimatedContainer(
-                  height: 10,
-                  width: i == value ? 30 : 10,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: colorScheme.primary,
+          builder: (context, value, child) => RepaintBoundary(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                for (var i = 0; i < list.length; i++)
+                  AnimatedContainer(
+                    height: 10,
+                    width: i == value ? 30 : 10,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: colorScheme.primary,
+                    ),
+                    duration: const Duration(milliseconds: 200),
                   ),
-                  duration: const Duration(milliseconds: 200),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
