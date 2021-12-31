@@ -33,8 +33,9 @@ class _CarouselState extends State<Carousel> {
 
   @override
   Widget build(BuildContext context) {
+    final pageController = widget._controller.pageController!;
     return PageView.builder(
-      controller: widget._controller.pageController,
+      controller: pageController,
       onPageChanged: (page) {
         if (widget.onPageChanged != null) {
           final currentPage =
@@ -43,8 +44,30 @@ class _CarouselState extends State<Carousel> {
         }
       },
       itemBuilder: (context, index) {
-        index = realIndex(index + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
-        return widget.items[index % (widget.items.length)];
+        final calcIndex =
+            realIndex(index + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
+        return AnimatedBuilder(
+          animation: pageController,
+          builder: (context, child) {
+            double itemOffset;
+            // т.к. обращение к widget._controller.pageController!.page при первом построении вызывает исключение
+            // Page value is only available after content dimensions are established.
+            // 'package:flutter/src/widgets/page_view.dart':
+            // Failed assertion: line 402 pos 7: '!hasPixels || hasContentDimensions'
+            // То в ручную рассчитываем размеры
+            try {
+              itemOffset = pageController.page! - index;
+            } catch (e) {
+              itemOffset = widget._controller.realPage.toDouble() - index;
+            }
+            final scale = (1 - (itemOffset.abs() * 0.3)).clamp(0.0, 1.0);
+            return Transform.scale(
+              scale: scale,
+              child: child!,
+            );
+          },
+          child: widget.items[calcIndex % (widget.items.length)],
+        );
       },
     );
   }
