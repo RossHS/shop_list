@@ -41,8 +41,8 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
-        children: const [
-          Positioned(
+        children: [
+          const Positioned(
             left: 20,
             top: 20,
             child: RepaintBoundary(
@@ -50,12 +50,23 @@ class _Body extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 160,
               bottom: 100,
             ),
             child: Center(
-              child: _CarouselWithIndicator(),
+              child: GetX<TodosController>(builder: (todosController) {
+                // Здесь GetX вываливает ошибку, для закрытия ошибки использую в
+                // условном операторе дополнительную RX переменную todosController.filteredTodoList
+                if (!todosController.isTodoStreamSubscribedNonNull && todosController.filteredTodoList.isEmpty) {
+                  return const CircularProgressIndicator();
+                }
+                if (todosController.filteredTodoList.isEmpty) {
+                  return const Text('Нет данных');
+                } else {
+                  return _CarouselWithIndicator(todoList: todosController.filteredTodoList);
+                }
+              }),
             ),
           ),
         ],
@@ -110,7 +121,11 @@ class _ControlPanel extends StatelessWidget {
 
 /// Главное окно с каруселью списков задач и индикацией текущего/показываемого списка в виде точек точек
 class _CarouselWithIndicator extends StatefulWidget {
-  const _CarouselWithIndicator({Key? key}) : super(key: key);
+  const _CarouselWithIndicator({
+    Key? key,
+    required this.todoList,
+  }) : super(key: key);
+  final List<FirestoreRefTodoModel> todoList;
 
   @override
   State<_CarouselWithIndicator> createState() => _CarouselWithIndicatorState();
@@ -119,7 +134,6 @@ class _CarouselWithIndicator extends StatefulWidget {
 class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
   late final ValueNotifier<int> currentPage;
   final _controller = CarouselController();
-  final list = List<int>.generate(10, (i) => i).map((e) => _TodoItem(string: '$e')).toList(growable: false);
 
   @override
   void initState() {
@@ -142,7 +156,7 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
             ),
             child: Carousel(
               controller: _controller,
-              items: list,
+              items: widget.todoList.map((e) => _TodoItem(string: e.todoModel.title)).toList(),
               onPageChanged: (page) {
                 currentPage.value = page;
               },
@@ -159,7 +173,7 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
               spacing: 4,
               runSpacing: 4,
               children: [
-                for (var i = 0; i < list.length; i++)
+                for (var i = 0; i < widget.todoList.length; i++)
                   AnimatedContainer(
                     height: 10,
                     width: i == value ? 30 : 10,
