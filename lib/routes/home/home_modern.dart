@@ -5,8 +5,7 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/avatar.dart';
-import 'package:shop_list/widgets/carousel/carousel_controller.dart';
-import 'package:shop_list/widgets/carousel/carousel_widget.dart';
+import 'package:shop_list/widgets/carousel.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
@@ -132,13 +131,21 @@ class _CarouselWithIndicator extends StatefulWidget {
 }
 
 class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
-  late final ValueNotifier<int> currentPage;
+  late final ValueNotifier<int> _currentPage;
   final _controller = CarouselController();
 
   @override
   void initState() {
     super.initState();
-    currentPage = ValueNotifier(_controller.initialPage);
+    _currentPage = ValueNotifier(_controller.initialPage);
+  }
+
+  @override
+  void didUpdateWidget(_CarouselWithIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.todoList != widget.todoList) {
+      _currentPage.value = _controller.calcPageIndex(widget.todoList.length);
+    }
   }
 
   @override
@@ -156,16 +163,21 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
             ),
             child: Carousel(
               controller: _controller,
-              items: widget.todoList.map((e) => _TodoItem(string: e.todoModel.title)).toList(),
+              items: widget.todoList
+                  .map((e) => _TodoItem(
+                        key: ObjectKey(e),
+                        string: e.todoModel.title,
+                      ))
+                  .toList(),
               onPageChanged: (page) {
-                currentPage.value = page;
+                _currentPage.value = page;
               },
             ),
           ),
         ),
         const SizedBox(height: 50),
         ValueListenableBuilder(
-          valueListenable: currentPage,
+          valueListenable: _currentPage,
           // TODO 30.12.2021 ограничить макс кол-во элементов по ширине, установить предел отображаемых списков
           builder: (context, value, child) => RepaintBoundary(
             child: Wrap(
@@ -175,6 +187,7 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
               children: [
                 for (var i = 0; i < widget.todoList.length; i++)
                   AnimatedContainer(
+                    key: ObjectKey(widget.todoList[i]),
                     height: 10,
                     width: i == value ? 30 : 10,
                     decoration: BoxDecoration(

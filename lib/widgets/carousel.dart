@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shop_list/widgets/carousel/carousel_controller.dart';
 
 /// Виджет прокручивающейся "карусели"
 class Carousel extends StatefulWidget {
@@ -39,13 +38,13 @@ class _CarouselState extends State<Carousel> {
       onPageChanged: (page) {
         if (widget.onPageChanged != null) {
           final currentPage =
-              realIndex(page + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
+              _realIndex(page + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
           widget.onPageChanged!(currentPage);
         }
       },
       itemBuilder: (context, index) {
         final calcIndex =
-            realIndex(index + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
+            _realIndex(index + widget._controller.initialPage, widget._controller.realPage, widget.items.length);
         return AnimatedBuilder(
           animation: pageController,
           builder: (context, child) {
@@ -81,9 +80,27 @@ class _CarouselState extends State<Carousel> {
 /// [position] - текущая позиция,
 /// [base] - реальная (не 0) позиция в контроллере,
 /// [length] - длина отображаемой коллекции
-int realIndex(int position, int base, int length) {
+int _realIndex(int position, int base, int length) {
   if (length == 0) return 0;
   final offset = position - base;
   final res = offset % length;
   return res < 0 ? length + res : res;
+}
+
+/// Обертка над контроллером PageController используемом в PageView
+/// TODO 30.12.2021 скорее всего перенесу в carousel_widget, дабы не нарушать инкапсуляцию
+class CarouselController {
+  CarouselController({
+    this.pageController,
+    this.realPage = 100000,
+    this.initialPage = 0,
+  });
+
+  PageController? pageController;
+  final int realPage;
+  final int initialPage;
+
+  int calcPageIndex(int length) {
+    return _realIndex(pageController?.page?.toInt() ?? 0 + initialPage, realPage, length);
+  }
 }
