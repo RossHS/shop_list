@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
@@ -8,6 +9,8 @@ import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/carousel.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
+
+final _formatter = DateFormat('dd MM yyyy');
 
 /// Основное рабочее окно в теме [ModernThemeDataWrapper]
 class HomeModern extends StatelessWidget {
@@ -164,9 +167,9 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
             child: Carousel(
               controller: _controller,
               items: widget.todoList
-                  .map((e) => _TodoItem(
-                        key: ObjectKey(e),
-                        string: e.todoModel.title,
+                  .map((todo) => _TodoItem(
+                        key: ObjectKey(todo),
+                        refModel: todo,
                       ))
                   .toList(),
               onPageChanged: (page) {
@@ -205,22 +208,146 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
   }
 }
 
+/// Виджет элемента записи списка дел
 class _TodoItem extends StatelessWidget {
   const _TodoItem({
     Key? key,
-    required this.string,
+    required this.refModel,
   }) : super(key: key);
 
-  final String string;
+  final FirestoreRefTodoModel refModel;
 
   @override
   Widget build(BuildContext context) {
-    return ThemeDepCommonItemBox(
-      child: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(child: Text(string)),
+    return TouchGetterProvider(
+      child: ThemeDepCommonItemBox(
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () => Get.toNamed('/todo/${refModel.idRef}/view'),
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Первая строчка с информацией о создателе списка
+                    _TodoItemHeader(refModel.todoModel),
+                    const Spacer(),
+                    // Нижняя срока шорткатов управления
+                    _TodoItemFooter(refModel),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
+    );
+  }
+}
+
+/// Панель-заголовок, в которой отображается информация о создателе списка/времени создания
+class _TodoItemHeader extends StatelessWidget {
+  const _TodoItemHeader(
+    this.todoModel, {
+    Key? key,
+  }) : super(key: key);
+  final TodoModel todoModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final userMapController = Get.find<UsersMapController>();
+    return Obx(
+      () => Row(
+        children: [
+          ClipOval(
+            child: Avatar(
+              diameter: 40,
+              user: userMapController.getUserModel(todoModel.authorId)!,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${userMapController.getUserModel(todoModel.authorId)?.name}',
+              ),
+              Text(
+                _formatter.format(DateTime.fromMillisecondsSinceEpoch(todoModel.createdTimestamp)),
+              ),
+            ],
+          ),
+          const Spacer(),
+          if (!todoModel.isPublic) const ModernIcon(Icons.lock),
+        ],
+      ),
+    );
+  }
+}
+
+/// Самая нижняя панель списка дел с кнопками шорткатами (закрытия задачи, ее изменения и удаления)
+class _TodoItemFooter extends StatelessWidget {
+  const _TodoItemFooter(this.refModel, {Key? key}) : super(key: key);
+  final FirestoreRefTodoModel refModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final todoModel = refModel.todoModel;
+    final todosController = Get.find<TodosController>();
+    final authController = Get.find<AuthenticationController>();
+    return Row(
+      children: [
+        if (!todoModel.completed)
+          IconButton(
+            onPressed: () => ThemeDepDialog(
+              text: 'Завершить задачу?',
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      todosController.completeTodo(
+                        docId: refModel.idRef,
+                        completedAuthorUid: authController.firestoreUser.value!.uid,
+                      );
+                      Get.back();
+                    },
+                    child: const Text('ОК')),
+                TextButton(
+                  onPressed: Get.back,
+                  child: const Text('Отмена'),
+                )
+              ],
+            ),
+            icon: const ModernIcon(Icons.check),
+          ),
+        if (authController.firestoreUser.value?.uid == todoModel.authorId && !todoModel.completed)
+          IconButton(
+            onPressed: () => Get.toNamed('/todo/${refModel.idRef}/edit'),
+            icon: const ModernIcon(Icons.edit),
+          ),
+        if (authController.firestoreUser.value?.uid == todoModel.authorId)
+          IconButton(
+            onPressed: () => ThemeDepDialog(
+              text: 'Удалить задачу?',
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      todosController.deleteTodo(refModel.idRef);
+                      Get.back();
+                    },
+                    child: const Text('ОК')),
+                TextButton(
+                  onPressed: Get.back,
+                  child: const Text('Отмена'),
+                )
+              ],
+            ),
+            icon: const ModernIcon(Icons.delete),
+          )
+      ],
     );
   }
 }
