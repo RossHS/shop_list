@@ -221,51 +221,54 @@ class _TodoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final todoModel = refModel.todoModel;
     final textTheme = Theme.of(context).textTheme;
-    return TouchGetterProvider(
-      child: ThemeDepCommonItemBox(
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () => Get.toNamed('/todo/${refModel.idRef}/view'),
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Первая строчка с информацией о создателе списка
-                    _TodoItemHeader(refModel.todoModel),
-                    // Заголовок списка дел
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          todoModel.title,
-                          style: textTheme.headline5,
-                          textAlign: TextAlign.center,
+    return RepaintBoundary(
+      child: TouchGetterProvider(
+        child: ThemeDepCommonItemBox(
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: () => Get.toNamed('/todo/${refModel.idRef}/view'),
+              child: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Первая строчка с информацией о создателе списка
+                      _TodoItemHeader(refModel.todoModel),
+                      // Заголовок списка дел
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            todoModel.title,
+                            style: textTheme.headline5,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(8.0),
-                        itemCount: todoModel.elements.length,
-                        itemBuilder: (context, index) {
-                          final element = todoModel.elements[index];
-                          return Text(
-                            element.name,
-                            style: textTheme.bodyText2?.copyWith(
-                              decoration: element.completed ? TextDecoration.lineThrough : null,
-                            ),
-                          );
-                        },
+                      // TODO Низкая производительность на слабых телефонах при наличии emoji
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(8.0),
+                          itemCount: todoModel.elements.length,
+                          itemBuilder: (context, index) {
+                            final element = todoModel.elements[index];
+                            return Text(
+                              element.name,
+                              style: textTheme.bodyText2?.copyWith(
+                                decoration: element.completed ? TextDecoration.lineThrough : null,
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    // Нижняя срока шорткатов управления
-                    _TodoItemFooter(refModel),
-                  ],
+                      // Нижняя срока шорткатов управления
+                      _TodoItemFooter(refModel),
+                    ],
+                  ),
                 ),
               ),
             ),
