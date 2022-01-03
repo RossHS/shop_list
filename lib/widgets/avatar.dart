@@ -10,33 +10,37 @@ class Avatar extends StatelessWidget {
   })  : assert(diameter > 0, 'incorrect diameter $diameter'),
         super(key: key);
 
-  final UserModel user;
+  final UserModel? user;
 
   /// Диаметр аватара пользователя
   final double diameter;
 
   @override
   Widget build(BuildContext context) {
-    // Если у пользователя нет аватара, то используем стандартную картинку
-    return user.photoUrl == ''
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final cacheDiameter = (diameter * devicePixelRatio).round();
+    // Если нет такого пользователя или у него отсутствует аватар, то используем стандартную картинку
+    return user == null || user!.photoUrl == ''
         ? Image.asset(
-            'assets/img/sample.jpg',
+            'assets/img/avatar.png',
             fit: BoxFit.cover,
             width: diameter,
             height: diameter,
           )
         : Image.network(
-            user.photoUrl,
+            user!.photoUrl,
             fit: BoxFit.cover,
             width: diameter,
             height: diameter,
+            cacheWidth: cacheDiameter,
+            cacheHeight: cacheDiameter,
             // Обработка процесса загрузки аватара пользователя
             loadingBuilder: (context, child, progress) {
               if (progress == null) {
                 return child;
               } else {
                 return _PlaceHolder(
-                  user: user,
+                  user: user!,
                   diameter: diameter,
                 );
               }

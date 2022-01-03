@@ -266,7 +266,7 @@ class _TodoItemHeader extends StatelessWidget {
           ClipOval(
             child: Avatar(
               diameter: 40,
-              user: userMapController.getUserModel(todoModel.authorId)!,
+              user: userMapController.getUserModel(todoModel.authorId),
             ),
           ),
           const SizedBox(width: 10),
