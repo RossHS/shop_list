@@ -219,6 +219,8 @@ class _TodoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final todoModel = refModel.todoModel;
+    final textTheme = Theme.of(context).textTheme;
     return TouchGetterProvider(
       child: ThemeDepCommonItemBox(
         child: Material(
@@ -235,7 +237,32 @@ class _TodoItem extends StatelessWidget {
                   children: [
                     // Первая строчка с информацией о создателе списка
                     _TodoItemHeader(refModel.todoModel),
-                    const Spacer(),
+                    // Заголовок списка дел
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          todoModel.title,
+                          style: textTheme.headline5,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(8.0),
+                        itemCount: todoModel.elements.length,
+                        itemBuilder: (context, index) {
+                          final element = todoModel.elements[index];
+                          return Text(
+                            element.name,
+                            style: textTheme.bodyText2?.copyWith(
+                              decoration: element.completed ? TextDecoration.lineThrough : null,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                     // Нижняя срока шорткатов управления
                     _TodoItemFooter(refModel),
                   ],
@@ -303,23 +330,15 @@ class _TodoItemFooter extends StatelessWidget {
       children: [
         if (!todoModel.completed)
           IconButton(
-            onPressed: () => ThemeDepDialog(
-              text: 'Завершить задачу?',
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      todosController.completeTodo(
-                        docId: refModel.idRef,
-                        completedAuthorUid: authController.firestoreUser.value!.uid,
-                      );
-                      Get.back();
-                    },
-                    child: const Text('ОК')),
-                TextButton(
-                  onPressed: Get.back,
-                  child: const Text('Отмена'),
-                )
-              ],
+            onPressed: () => _dialog(
+              title: 'Завершить задачу?',
+              okCallback: () {
+                todosController.completeTodo(
+                  docId: refModel.idRef,
+                  completedAuthorUid: authController.firestoreUser.value!.uid,
+                );
+                Get.back();
+              },
             ),
             icon: const ModernIcon(Icons.check),
           ),
@@ -330,23 +349,31 @@ class _TodoItemFooter extends StatelessWidget {
           ),
         if (authController.firestoreUser.value?.uid == todoModel.authorId)
           IconButton(
-            onPressed: () => ThemeDepDialog(
-              text: 'Удалить задачу?',
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      todosController.deleteTodo(refModel.idRef);
-                      Get.back();
-                    },
-                    child: const Text('ОК')),
-                TextButton(
-                  onPressed: Get.back,
-                  child: const Text('Отмена'),
-                )
-              ],
+            onPressed: () => _dialog(
+              title: 'Удалить задачу?',
+              okCallback: () {
+                todosController.deleteTodo(refModel.idRef);
+                Get.back();
+              },
             ),
             icon: const ModernIcon(Icons.delete),
           )
+      ],
+    );
+  }
+
+  void _dialog({required String title, required void Function() okCallback}) {
+    ThemeDepDialog(
+      text: title,
+      actions: [
+        TextButton(
+          onPressed: okCallback,
+          child: const Text('ОК'),
+        ),
+        TextButton(
+          onPressed: Get.back,
+          child: const Text('Отмена'),
+        )
       ],
     );
   }
