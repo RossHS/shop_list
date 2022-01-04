@@ -312,7 +312,7 @@ class _TodoItemHeader extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          if (!todoModel.isPublic) const ModernIcon(Icons.lock),
+          if (!todoModel.isPublic) const Icon(Icons.lock),
         ],
       ),
     );
@@ -343,12 +343,12 @@ class _TodoItemFooter extends StatelessWidget {
                 Get.back();
               },
             ),
-            icon: const ModernIcon(Icons.check),
+            icon: const Icon(Icons.check),
           ),
         if (authController.firestoreUser.value?.uid == todoModel.authorId && !todoModel.completed)
           IconButton(
             onPressed: () => Get.toNamed('/todo/${refModel.idRef}/edit'),
-            icon: const ModernIcon(Icons.edit),
+            icon: const Icon(Icons.edit),
           ),
         if (authController.firestoreUser.value?.uid == todoModel.authorId)
           IconButton(
@@ -359,7 +359,7 @@ class _TodoItemFooter extends StatelessWidget {
                 Get.back();
               },
             ),
-            icon: const ModernIcon(Icons.delete),
+            icon: const Icon(Icons.delete),
           )
       ],
     );
