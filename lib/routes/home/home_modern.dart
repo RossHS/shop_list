@@ -10,7 +10,8 @@ import 'package:shop_list/widgets/carousel.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
-final _formatter = DateFormat('dd MM yyyy');
+final _formatterDate = DateFormat('dd MM yyyy');
+final _formatterTime = DateFormat('HH:mm:ss');
 
 /// Основное рабочее окно в теме [ModernThemeDataWrapper]
 class HomeModern extends StatelessWidget {
@@ -249,21 +250,8 @@ class _TodoItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // TODO Низкая производительность на слабых телефонах при наличии emoji
                       Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(8.0),
-                          itemCount: todoModel.elements.length,
-                          itemBuilder: (context, index) {
-                            final element = todoModel.elements[index];
-                            return Text(
-                              element.name,
-                              style: textTheme.bodyText2?.copyWith(
-                                decoration: element.completed ? TextDecoration.lineThrough : null,
-                              ),
-                            );
-                          },
-                        ),
+                        child: _TodoItemBody(refModel),
                       ),
                       // Нижняя срока шорткатов управления
                       _TodoItemFooter(refModel),
@@ -276,6 +264,86 @@ class _TodoItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Основное тело списка задач.
+/// Список - если задача открыта
+/// Таблица с информацией о закрытии, если задача закрыта
+class _TodoItemBody extends StatelessWidget {
+  const _TodoItemBody(
+    this.refModel, {
+    Key? key,
+  }) : super(key: key);
+  final FirestoreRefTodoModel refModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final todoModel = refModel.todoModel;
+    final textTheme = Theme.of(context).textTheme;
+    // Отображение не завершенных задач
+    if (!todoModel.completed) {
+      // TODO Низкая производительность на слабых телефонах при наличии emoji
+      return ListView.builder(
+        padding: const EdgeInsets.all(8.0),
+        itemCount: todoModel.elements.length,
+        itemBuilder: (context, index) {
+          final element = todoModel.elements[index];
+          return Text(
+            element.name,
+            style: textTheme.bodyText2?.copyWith(
+              decoration: element.completed ? TextDecoration.lineThrough : null,
+            ),
+          );
+        },
+      );
+    } else {
+      // Отображение завершенных задач
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              width: 1.5,
+              color: Colors.white,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Закрыто!',
+                style: textTheme.headline5,
+              ),
+              const SizedBox(height: 10),
+              GetX<UsersMapController>(
+                builder: (userMapController) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipOval(
+                      child: Avatar(
+                        user: userMapController.getUserModel(todoModel.completedAuthorId),
+                        diameter: 40,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${userMapController.getUserModel(todoModel.completedAuthorId)?.name}'),
+                        Text(_formatterDate.format(DateTime.fromMillisecondsSinceEpoch(todoModel.completedTimestamp))),
+                        Text(_formatterTime.format(DateTime.fromMillisecondsSinceEpoch(todoModel.completedTimestamp))),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
 
@@ -303,12 +371,8 @@ class _TodoItemHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '${userMapController.getUserModel(todoModel.authorId)?.name}',
-              ),
-              Text(
-                _formatter.format(DateTime.fromMillisecondsSinceEpoch(todoModel.createdTimestamp)),
-              ),
+              Text('${userMapController.getUserModel(todoModel.authorId)?.name}'),
+              Text(_formatterDate.format(DateTime.fromMillisecondsSinceEpoch(todoModel.createdTimestamp))),
             ],
           ),
           const Spacer(),
