@@ -320,6 +320,7 @@ class _TodoItemBody extends StatelessWidget {
               GetX<UsersMapController>(
                 builder: (userMapController) => Row(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipOval(
                       child: Avatar(
