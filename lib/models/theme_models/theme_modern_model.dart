@@ -65,7 +65,11 @@ Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
     ),
     'custom light': GradientBackground(
       colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
-          GetStorage(), '${ModernThemeDataWrapper.appThemeStorageValue}-custom-light'),
+        GetStorage(),
+        '${ModernThemeDataWrapper.appThemeStorageValue}-custom-light',
+        defMainColor: Colors.greenAccent,
+        defBackgroundColor: Colors.greenAccent,
+      ),
       background: Colors.white,
     ),
   };
@@ -85,7 +89,11 @@ Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
     ),
     'custom dark': GradientBackground(
       colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
-          GetStorage(), '${ModernThemeDataWrapper.appThemeStorageValue}-custom-dark'),
+        GetStorage(),
+        '${ModernThemeDataWrapper.appThemeStorageValue}-custom-dark',
+        defMainColor: Colors.black,
+        defBackgroundColor: Colors.black,
+      ),
       background: Colors.red,
     ),
   };
