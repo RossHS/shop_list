@@ -88,7 +88,6 @@ int _realIndex(int position, int base, int length) {
 }
 
 /// Обертка над контроллером PageController используемом в PageView
-/// TODO 30.12.2021 скорее всего перенесу в carousel_widget, дабы не нарушать инкапсуляцию
 class CarouselController {
   CarouselController({
     this.pageController,

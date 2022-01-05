@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 
 /// Виджет настройки кастомных элементов (радиус тени, цвет, расположение) в теме [MaterialThemeDataWrapper]
 class MaterialCustomSettings extends StatelessWidget {
@@ -184,13 +185,14 @@ class _OffsetIndicator extends StatelessWidget {
 
 /// Контроллер тонкой настройки темы [MaterialThemeDataWrapper], содержащий в себе временные изменения темы.
 /// Для принятия изменений следует вызывать метод [acceptChanges]
-class MaterialCustomSettingsController extends GetxController {
+class MaterialCustomSettingsController extends CustomSettingsController {
   MaterialCustomSettingsController({
     required MaterialThemeDataWrapper proxyThemeWrapper,
   }) : proxyDataWrapper = proxyThemeWrapper.obs;
 
   final Rx<MaterialThemeDataWrapper> proxyDataWrapper;
 
+  @override
   void acceptChanges() {
     final themeController = Get.find<ThemeController>();
     final proxy = proxyDataWrapper.value;
