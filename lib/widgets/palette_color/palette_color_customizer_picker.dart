@@ -80,19 +80,19 @@ class _PaletteColorCustomizerPickerState extends State<PaletteColorCustomizerPic
 /// Конечно лучше было бы использовать GetX/GetxController и т.п.,
 /// но захотелось попробовать написать так, без участия сторонних библиотек
 class ColorChangeController {
-  ColorChangeController({required this.colorScheme})
-      : mainColor = _ColorMutableWrapper(colorScheme.primary),
-        backgroundColor = _ColorMutableWrapper(colorScheme.background);
+  ColorChangeController({required this.colorSchemeWrapper})
+      : mainColor = _ColorMutableWrapper(colorSchemeWrapper.colorScheme.primary),
+        backgroundColor = _ColorMutableWrapper(colorSchemeWrapper.colorScheme.background);
 
-  ColorScheme colorScheme;
+  ColorSchemeWrapper colorSchemeWrapper;
 
   /// Обертка над цветом, зачем нужна? - в комментариях к классу [_ColorMutableWrapper]
   final _ColorMutableWrapper mainColor;
   final _ColorMutableWrapper backgroundColor;
 
-  /// Генерация новой цветовой схемы на основе базовой [colorScheme],
+  /// Генерация новой цветовой схемы на основе базовой [colorSchemeWrapper],
   /// с учетом новых цветов из mainColor и backgroundColor
-  ColorScheme get generateColor => colorScheme.copyWith(
+  ColorScheme get generateColor => colorSchemeWrapper.colorScheme.copyWith(
         primary: mainColor.color,
         primaryVariant: mainColor.color,
         secondary: mainColor.color,

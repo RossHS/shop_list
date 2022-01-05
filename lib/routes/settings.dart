@@ -5,7 +5,9 @@ import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
-import 'package:shop_list/widgets/material_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/material_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/modern_custom_settings.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
@@ -191,26 +193,26 @@ class _ColorPaletteBox extends StatelessWidget {
                 ),
               ),
               // Те, в которых можно настраивать цвета
-              ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+              ...ThemeController.to.appTheme.value.lightColorSchemesWrapperMap.entries
                   .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
-                        colorScheme: entry.value,
+                        key: ValueKey<ColorSchemeWrapper>(entry.value),
+                        colorSchemeWrapper: entry.value,
                         paletteDiameter: paletteDiameter,
-                        isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
+                        isSelected: ThemeController.to.appTheme.value.lightColorSchemeWrapper == entry.value,
                         onPressed: (colorScheme) {
                           _customizeLightColorSchemeAction(colorScheme, entry.key);
                         },
                         child: const Icon(Icons.settings_outlined),
                       ))
                   .toList(),
-              ...ThemeController.to.appTheme.value.lightColorSchemesMap.entries
+              ...ThemeController.to.appTheme.value.lightColorSchemesWrapperMap.entries
                   .where((element) => element.key.contains('default'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
-                        colorScheme: entry.value,
+                        key: ValueKey<ColorSchemeWrapper>(entry.value),
+                        colorSchemeWrapper: entry.value,
                         paletteDiameter: paletteDiameter,
-                        isSelected: ThemeController.to.appTheme.value.lightColorScheme == entry.value,
+                        isSelected: ThemeController.to.appTheme.value.lightColorSchemeWrapper == entry.value,
                         onPressed: ThemeController.to.setLightColorScheme,
                       ))
                   .toList(),
@@ -238,13 +240,13 @@ class _ColorPaletteBox extends StatelessWidget {
                 ),
               ),
               // Те, в которых можно настраивать цвета
-              ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+              ...ThemeController.to.appTheme.value.darkColorSchemesWrapperMap.entries
                   .where((element) => element.key.contains('custom'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
-                        colorScheme: entry.value,
+                        key: ValueKey<ColorSchemeWrapper>(entry.value),
+                        colorSchemeWrapper: entry.value,
                         paletteDiameter: paletteDiameter,
-                        isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
+                        isSelected: ThemeController.to.appTheme.value.darkColorSchemeWrapper == entry.value,
                         onPressed: (colorScheme) {
                           _customizeDarkColorSchemeAction(colorScheme, entry.key);
                         },
@@ -252,13 +254,13 @@ class _ColorPaletteBox extends StatelessWidget {
                       ))
                   .toList(),
               // Обычные цветовые схемы
-              ...ThemeController.to.appTheme.value.darkColorSchemesMap.entries
+              ...ThemeController.to.appTheme.value.darkColorSchemesWrapperMap.entries
                   .where((element) => element.key.contains('default'))
                   .map<Widget>((entry) => _ColorPaletteItem(
-                        key: ValueKey<ColorScheme>(entry.value),
-                        colorScheme: entry.value,
+                        key: ValueKey<ColorSchemeWrapper>(entry.value),
+                        colorSchemeWrapper: entry.value,
                         paletteDiameter: paletteDiameter,
-                        isSelected: ThemeController.to.appTheme.value.darkColorScheme == entry.value,
+                        isSelected: ThemeController.to.appTheme.value.darkColorSchemeWrapper == entry.value,
                         onPressed: ThemeController.to.setDarkColorScheme,
                       ))
                   .toList(),
@@ -275,42 +277,42 @@ class _ColorPaletteBox extends StatelessWidget {
     );
   }
 
-  void _customizeDarkColorSchemeAction(ColorScheme? colorScheme, String key) {
-    if (colorScheme == null) return;
+  void _customizeDarkColorSchemeAction(ColorSchemeWrapper? colorSchemeWrapper, String key) {
+    if (colorSchemeWrapper == null) return;
     final themeWrapper = ThemeController.to.appTheme.value;
-    if (themeWrapper.darkColorScheme != colorScheme) {
-      ThemeController.to.setDarkColorScheme(colorScheme, key: key);
+    if (themeWrapper.darkColorSchemeWrapper != colorSchemeWrapper) {
+      ThemeController.to.setDarkColorScheme(colorSchemeWrapper, key: key);
     } else {
       _changeColorDialog(
         onColorSave: (newColorScheme) {
           ThemeController.to.setDarkColorScheme(newColorScheme, key: key);
         },
-        colorScheme: ThemeController.to.appTheme.value.darkColorScheme,
+        colorScheme: ThemeController.to.appTheme.value.darkColorSchemeWrapper,
       );
     }
   }
 
-  void _customizeLightColorSchemeAction(ColorScheme? colorScheme, String key) {
-    if (colorScheme == null) return;
+  void _customizeLightColorSchemeAction(ColorSchemeWrapper? colorSchemeWrapper, String key) {
+    if (colorSchemeWrapper == null) return;
     final themeWrapper = ThemeController.to.appTheme.value;
-    if (themeWrapper.lightColorScheme != colorScheme) {
-      ThemeController.to.setLightColorScheme(colorScheme, key: key);
+    if (themeWrapper.lightColorSchemeWrapper != colorSchemeWrapper) {
+      ThemeController.to.setLightColorScheme(colorSchemeWrapper, key: key);
     } else {
-      ThemeController.to.appTheme.value.lightColorScheme;
+      ThemeController.to.appTheme.value.lightColorSchemeWrapper;
       _changeColorDialog(
         onColorSave: (newColorScheme) {
           ThemeController.to.setLightColorScheme(newColorScheme, key: key);
         },
-        colorScheme: ThemeController.to.appTheme.value.lightColorScheme,
+        colorScheme: ThemeController.to.appTheme.value.lightColorSchemeWrapper,
       );
     }
   }
 
   void _changeColorDialog({
-    required void Function(ColorScheme newColorScheme) onColorSave,
-    required ColorScheme colorScheme,
+    required void Function(ColorSchemeWrapper newColorScheme) onColorSave,
+    required ColorSchemeWrapper colorScheme,
   }) {
-    final colorController = ColorChangeController(colorScheme: colorScheme);
+    final colorController = ColorChangeController(colorSchemeWrapper: colorScheme);
     ThemeDepDialog(
       // т.к. создается отдельное дерево в котором требуется определение Material виджета,
       // если его не задать тут, то получим исключение
@@ -323,7 +325,7 @@ class _ColorPaletteBox extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            onColorSave(colorController.generateColor);
+            onColorSave(colorScheme.copyWith(colorScheme: colorController.generateColor));
             Get.back();
           },
           child: const Text('Сохранить'),
@@ -341,16 +343,16 @@ class _ColorPaletteBox extends StatelessWidget {
 class _ColorPaletteItem extends StatelessWidget {
   const _ColorPaletteItem({
     Key? key,
-    required this.colorScheme,
+    required this.colorSchemeWrapper,
     required this.paletteDiameter,
     required this.onPressed,
     required this.isSelected,
     this.child,
   }) : super(key: key);
 
-  final ColorScheme colorScheme;
+  final ColorSchemeWrapper colorSchemeWrapper;
   final double paletteDiameter;
-  final void Function(ColorScheme? colorScheme) onPressed;
+  final void Function(ColorSchemeWrapper? colorSchemeWrapper) onPressed;
   final bool isSelected;
   final Widget? child;
 
@@ -367,7 +369,7 @@ class _ColorPaletteItem extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: colorScheme.primary,
+                  color: colorSchemeWrapper.colorScheme.primary,
                   blurRadius: 10.0,
                 ),
               ],
@@ -384,11 +386,11 @@ class _ColorPaletteItem extends StatelessWidget {
             ),
       child: PaletteColorSelector(
         onPressed: () {
-          onPressed(colorScheme);
+          onPressed(colorSchemeWrapper);
         },
         paletteDiameter: paletteDiameter,
-        mainColor: colorScheme.background,
-        additionColor: colorScheme.primary,
+        mainColor: colorSchemeWrapper.colorScheme.background,
+        additionColor: colorSchemeWrapper.colorScheme.primary,
         child: child,
       ),
     );

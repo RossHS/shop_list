@@ -11,8 +11,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     double? shadowBlurRadius,
     Color? shadowColor,
     Offset? shadowOffset,
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
+    required ColorSchemeWrapper lightColorSchemeWrapper,
+    required ColorSchemeWrapper darkColorSchemeWrapper,
   })  : assert(rounded == null || (rounded >= 0 && rounded <= 30)),
         assert(shadowBlurRadius == null || (shadowBlurRadius >= 0 && shadowBlurRadius <= 20)),
         rounded = rounded ?? 10,
@@ -21,8 +21,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
         shadowOffset = shadowOffset ?? const Offset(0, 1),
         super(
           textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
+          lightColorSchemeWrapper: lightColorSchemeWrapper,
+          darkColorSchemeWrapper: darkColorSchemeWrapper,
         );
 
   factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
@@ -47,8 +47,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       shadowBlurRadius: shadowBlurRadius,
       shadowColor: shadowColor,
       shadowOffset: offset,
-      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
-      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
+      lightColorSchemeWrapper: _getLightColorSchemesWrapperMap[lightThemeKey]!,
+      darkColorSchemeWrapper: _getDarkColorSchemesWrapperMap[darkThemeKey]!,
     );
   }
 
@@ -79,37 +79,46 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     );
   }
 
-  /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
-  static Map<String, ColorScheme>? _lightColorSchemesMap;
-  static Map<String, ColorScheme>? _darkColorSchemesMap;
+  /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesWrapperMap]
+  static Map<String, ColorSchemeWrapper>? _lightColorSchemesMap;
+  static Map<String, ColorSchemeWrapper>? _darkColorSchemesMap;
 
-  static Map<String, ColorScheme> get _getLightColorSchemesMap {
+  static Map<String, ColorSchemeWrapper> get _getLightColorSchemesWrapperMap {
     _lightColorSchemesMap ??= {
-      'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
-      'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
-      'custom light':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
+      'default light 1': ColorSchemeWrapper(
+        ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
+      ),
+      'default light 2': ColorSchemeWrapper(
+        ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
+      ),
+      'custom light': ColorSchemeWrapper(
+          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light')),
     };
     assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
     return _lightColorSchemesMap!;
   }
 
-  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
+  static Map<String, ColorSchemeWrapper> get _getDarkColorSchemesWrapperMap {
     _darkColorSchemesMap ??= {
-      'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.brown),
-      'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
-      'custom dark':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+      'default dark 1': ColorSchemeWrapper(
+        ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.brown),
+      ),
+      'default dark 2': ColorSchemeWrapper(
+        ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
+      ),
+      'custom dark': ColorSchemeWrapper(
+        ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+      ),
     };
     assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
     return _darkColorSchemesMap!;
   }
 
   @override
-  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get lightColorSchemesWrapperMap => _getLightColorSchemesWrapperMap;
 
   @override
-  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get darkColorSchemesWrapperMap => _getDarkColorSchemesWrapperMap;
 
   @override
   String get themePrefix => MaterialThemeDataWrapper.appThemeStorageValue;
@@ -131,8 +140,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
     double? shadowBlurRadius,
     Color? shadowColor,
     Offset? shadowOffset,
-    ColorScheme? lightColorScheme,
-    ColorScheme? darkColorScheme,
+    ColorSchemeWrapper? lightColorSchemeWrapper,
+    ColorSchemeWrapper? darkColorSchemeWrapper,
   }) {
     return MaterialThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
@@ -140,8 +149,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
       shadowColor: shadowColor ?? this.shadowColor,
       shadowOffset: shadowOffset ?? this.shadowOffset,
-      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
-      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
+      lightColorSchemeWrapper: lightColorSchemeWrapper ?? this.lightColorSchemeWrapper,
+      darkColorSchemeWrapper: darkColorSchemeWrapper ?? this.darkColorSchemeWrapper,
     );
   }
 

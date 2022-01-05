@@ -19,8 +19,8 @@ abstract class ThemeFactory {
     } else if (themeDataWrapper is ModernThemeDataWrapper) {
       return MaterialThemeFactory(const MaterialThemeDataWrapper(
         textTheme: TextTheme(),
-        lightColorScheme: ColorScheme.light(),
-        darkColorScheme: ColorScheme.dark(),
+        lightColorSchemeWrapper: ColorSchemeWrapper(ColorScheme.light()),
+        darkColorSchemeWrapper: ColorSchemeWrapper(ColorScheme.dark()),
       ));
     }
     throw Exception('Unsupported type of ThemeDataWrapper - $themeDataWrapper');

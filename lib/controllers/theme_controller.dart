@@ -115,11 +115,11 @@ class ThemeController extends GetxController {
   /// Параметр key необходим для обновления цвета в коллекции цветовых схем,
   /// по сути нужен только для кастомных цветов, которые можно изменять,
   /// в остальных случаях указывать не обязательно
-  void setLightColorScheme(ColorScheme? colorScheme, {String? key}) {
-    _log.fine('set light ColorScheme - $colorScheme');
-    if (key != null && colorScheme != null) appTheme.value.lightColorSchemesMap[key] = colorScheme;
+  void setLightColorScheme(ColorSchemeWrapper? colorSchemeWrapper, {String? key}) {
+    _log.fine('set light ColorScheme - $colorSchemeWrapper');
+    if (key != null && colorSchemeWrapper != null) appTheme.value.lightColorSchemesWrapperMap[key] = colorSchemeWrapper;
     appTheme.value = appTheme.value.copyWith(
-      lightColorScheme: colorScheme,
+      lightColorSchemeWrapper: colorSchemeWrapper,
     );
   }
 
@@ -127,11 +127,11 @@ class ThemeController extends GetxController {
   /// Параметр key необходим для обновления цвета в коллекции цветовых схем,
   /// по сути нужен только для кастомных цветов, которые можно изменять,
   /// в остальных случаях указывать не обязательно
-  void setDarkColorScheme(ColorScheme? colorScheme, {String? key}) {
-    _log.fine('set dark ColorScheme - $colorScheme');
-    if (key != null && colorScheme != null) appTheme.value.darkColorSchemesMap[key] = colorScheme;
+  void setDarkColorScheme(ColorSchemeWrapper? colorSchemeWrapper, {String? key}) {
+    _log.fine('set dark ColorScheme - $colorSchemeWrapper');
+    if (key != null && colorSchemeWrapper != null) appTheme.value.darkColorSchemesWrapperMap[key] = colorSchemeWrapper;
     appTheme.value = appTheme.value.copyWith(
-      darkColorScheme: colorScheme,
+      darkColorSchemeWrapper: colorSchemeWrapper,
     );
   }
 

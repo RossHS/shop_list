@@ -7,12 +7,12 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
 
   const ModernThemeDataWrapper({
     required TextTheme textTheme,
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
+    required ColorSchemeWrapper lightColorSchemeWrapper,
+    required ColorSchemeWrapper darkColorSchemeWrapper,
   }) : super(
           textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
+          lightColorSchemeWrapper: lightColorSchemeWrapper,
+          darkColorSchemeWrapper: darkColorSchemeWrapper,
         );
 
   factory ModernThemeDataWrapper.fromGetStorage(GetStorage storage) {
@@ -21,42 +21,16 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
     final String darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     return ModernThemeDataWrapper(
       textTheme: textTheme,
-      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
-      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
+      lightColorSchemeWrapper: _getLightColorSchemesWrapperMap[lightThemeKey]!,
+      darkColorSchemeWrapper: _getDarkColorSchemesWrapperMap[darkThemeKey]!,
     );
   }
 
-  /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
-  static Map<String, ColorScheme>? _lightColorSchemesMap;
-  static Map<String, ColorScheme>? _darkColorSchemesMap;
-
-  static Map<String, ColorScheme> get _getLightColorSchemesMap {
-    _lightColorSchemesMap ??= {
-      'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
-      'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
-      'custom light':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
-    };
-    assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
-    return _lightColorSchemesMap!;
-  }
-
-  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
-    _darkColorSchemesMap ??= {
-      'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.lightGreen),
-      'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
-      'custom dark':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
-    };
-    assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
-    return _darkColorSchemesMap!;
-  }
+  @override
+  Map<String, ColorSchemeWrapper> get lightColorSchemesWrapperMap => _getLightColorSchemesWrapperMap;
 
   @override
-  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
-
-  @override
-  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get darkColorSchemesWrapperMap => _getDarkColorSchemesWrapperMap;
 
   @override
   String get themePrefix => ModernThemeDataWrapper.appThemeStorageValue;
@@ -64,13 +38,78 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   @override
   ModernThemeDataWrapper copyWith({
     TextTheme? textTheme,
-    ColorScheme? lightColorScheme,
-    ColorScheme? darkColorScheme,
+    ColorSchemeWrapper? lightColorSchemeWrapper,
+    ColorSchemeWrapper? darkColorSchemeWrapper,
   }) {
     return ModernThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
-      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
-      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
+      lightColorSchemeWrapper: lightColorSchemeWrapper ?? this.lightColorSchemeWrapper,
+      darkColorSchemeWrapper: darkColorSchemeWrapper ?? this.darkColorSchemeWrapper,
+    );
+  }
+}
+
+/// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
+Map<String, GradientBackground>? _lightColorSchemesWrapperMap;
+Map<String, GradientBackground>? _darkColorSchemesWrapperMap;
+
+Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
+  _lightColorSchemesWrapperMap ??= {
+    'default light 1': GradientBackground(
+      colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.green),
+      background: Colors.black,
+    ),
+    'default light 2': GradientBackground(
+      colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.blue),
+      background: Colors.green,
+    ),
+    'custom light': GradientBackground(
+      colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+          GetStorage(), '${ModernThemeDataWrapper.appThemeStorageValue}-custom-light'),
+      background: Colors.white,
+    ),
+  };
+  assert(_lightColorSchemesWrapperMap != null && _lightColorSchemesWrapperMap!.isNotEmpty);
+  return _lightColorSchemesWrapperMap!;
+}
+
+Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
+  _darkColorSchemesWrapperMap ??= {
+    'default dark 1': GradientBackground(
+      colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.redAccent),
+      background: Colors.red,
+    ),
+    'default dark 2': GradientBackground(
+      colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.blueGrey),
+      background: Colors.red,
+    ),
+    'custom dark': GradientBackground(
+      colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+          GetStorage(), '${ModernThemeDataWrapper.appThemeStorageValue}-custom-dark'),
+      background: Colors.red,
+    ),
+  };
+  assert(_darkColorSchemesWrapperMap != null && _darkColorSchemesWrapperMap!.isNotEmpty);
+  return _darkColorSchemesWrapperMap!;
+}
+
+@immutable
+class GradientBackground extends ColorSchemeWrapper {
+  const GradientBackground({
+    required ColorScheme colorScheme,
+    required this.background,
+  }) : super(colorScheme);
+
+  final Color background;
+
+  @override
+  GradientBackground copyWith({
+    ColorScheme? colorScheme,
+    Color? background,
+  }) {
+    return GradientBackground(
+      colorScheme: colorScheme ?? this.colorScheme,
+      background: background ?? this.background,
     );
   }
 }

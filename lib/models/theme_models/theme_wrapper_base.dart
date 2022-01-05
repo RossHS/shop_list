@@ -9,29 +9,29 @@ abstract class ThemeDataWrapper {
 
   const ThemeDataWrapper({
     required this.textTheme,
-    required this.lightColorScheme,
-    required this.darkColorScheme,
+    required this.lightColorSchemeWrapper,
+    required this.darkColorSchemeWrapper,
   });
 
   final TextTheme textTheme;
 
   /// Текущая темная цветовая схема
-  final ColorScheme lightColorScheme;
+  final ColorSchemeWrapper lightColorSchemeWrapper;
 
   /// Текущая светлая цветовая схема
-  final ColorScheme darkColorScheme;
+  final ColorSchemeWrapper darkColorSchemeWrapper;
 
   /// Все допустимы цветовые схемы в светлой теме
-  Map<String, ColorScheme> get lightColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get lightColorSchemesWrapperMap;
 
   /// Все допустимы цветовые схемы в темной теме
-  Map<String, ColorScheme> get darkColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get darkColorSchemesWrapperMap;
 
-  ThemeData get lightTheme => _generateColorScheme(lightColorScheme);
+  ThemeData get lightTheme => _generateThemeData(lightColorSchemeWrapper.colorScheme);
 
-  ThemeData get darkTheme => _generateColorScheme(darkColorScheme);
+  ThemeData get darkTheme => _generateThemeData(darkColorSchemeWrapper.colorScheme);
 
-  ThemeData _generateColorScheme(ColorScheme colorScheme) {
+  ThemeData _generateThemeData(ColorScheme colorScheme) {
     final mainTextColor = colorScheme.primary.calcTextColor;
     final backgroundTextColor = colorScheme.background.calcTextColor;
     return ThemeData(
@@ -67,27 +67,38 @@ abstract class ThemeDataWrapper {
     // Запись названий текущих цветовых тем
     storage.write(
       _lightThemeStorageKey,
-      lightColorSchemesMap.entries.firstWhere((element) => element.value == lightColorScheme).key,
+      lightColorSchemesWrapperMap.entries.firstWhere((element) => element.value == lightColorSchemeWrapper).key,
     );
     storage.write(
       _darkThemeStorageKey,
-      darkColorSchemesMap.entries.firstWhere((element) => element.value == darkColorScheme).key,
+      darkColorSchemesWrapperMap.entries.firstWhere((element) => element.value == darkColorSchemeWrapper).key,
     );
 
     // Запись кастомных цветов светлой темы и темной. Не очень нравится идея разбивать кастомную цветовую схему
     // по строковым константам и отталкиваться от типа ключа при использовании в виджетах, как мне кажется,
     // лучше было бы использовать систему классов с наследованием (полиморфизм), но пока оставлю как есть.
-    // TODO 07.12.2021 подумать об идеи с классами цветовых схем (обертками над ColorScheme)
-    storage.write('$themePrefix-custom-light-mainColor', lightColorSchemesMap['custom light']!.primary.value);
-    storage.write('$themePrefix-custom-light-backgroundColor', lightColorSchemesMap['custom light']!.background.value);
-    storage.write('$themePrefix-custom-dark-mainColor', darkColorSchemesMap['custom dark']!.primary.value);
-    storage.write('$themePrefix-custom-dark-backgroundColor', darkColorSchemesMap['custom dark']!.background.value);
+    storage.write(
+      '$themePrefix-custom-light-mainColor',
+      lightColorSchemesWrapperMap['custom light']!.colorScheme.primary.value,
+    );
+    storage.write(
+      '$themePrefix-custom-light-backgroundColor',
+      lightColorSchemesWrapperMap['custom light']!.colorScheme.background.value,
+    );
+    storage.write(
+      '$themePrefix-custom-dark-mainColor',
+      darkColorSchemesWrapperMap['custom dark']!.colorScheme.primary.value,
+    );
+    storage.write(
+      '$themePrefix-custom-dark-backgroundColor',
+      darkColorSchemesWrapperMap['custom dark']!.colorScheme.background.value,
+    );
   }
 
   ThemeDataWrapper copyWith({
     TextTheme? textTheme,
-    ColorScheme? lightColorScheme,
-    ColorScheme? darkColorScheme,
+    ColorSchemeWrapper? lightColorSchemeWrapper,
+    ColorSchemeWrapper? darkColorSchemeWrapper,
   });
 
   @override
@@ -96,9 +107,23 @@ abstract class ThemeDataWrapper {
       other is ThemeDataWrapper &&
           runtimeType == other.runtimeType &&
           textTheme == other.textTheme &&
-          lightColorScheme == other.lightColorScheme &&
-          darkColorScheme == other.darkColorScheme;
+          lightColorSchemeWrapper == other.lightColorSchemeWrapper &&
+          darkColorSchemeWrapper == other.darkColorSchemeWrapper;
 
   @override
-  int get hashCode => textTheme.hashCode ^ lightColorScheme.hashCode ^ darkColorScheme.hashCode;
+  int get hashCode => textTheme.hashCode ^ lightColorSchemeWrapper.hashCode ^ darkColorSchemeWrapper.hashCode;
+}
+
+/// Класс обертка над ColorScheme, расширяя которую можно добавлять новые поля
+@immutable
+class ColorSchemeWrapper {
+  const ColorSchemeWrapper(this.colorScheme);
+
+  final ColorScheme colorScheme;
+
+  ColorSchemeWrapper copyWith({
+    ColorScheme? colorScheme,
+  }) {
+    return ColorSchemeWrapper(colorScheme ?? this.colorScheme);
+  }
 }

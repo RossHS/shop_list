@@ -10,12 +10,12 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     required TextTheme textTheme,
     required this.paint90sConfig,
     this.animationDuration = const Duration(milliseconds: 80),
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
+    required ColorSchemeWrapper lightColorSchemeWrapper,
+    required ColorSchemeWrapper darkColorSchemeWrapper,
   }) : super(
           textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
+          lightColorSchemeWrapper: lightColorSchemeWrapper,
+          darkColorSchemeWrapper: darkColorSchemeWrapper,
         );
 
   factory Animated90sThemeDataWrapper.fromGetStorage(GetStorage storage) {
@@ -32,8 +32,8 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       textTheme: textTheme,
       paint90sConfig: paint90sConfig,
       animationDuration: Duration(milliseconds: animationDurationMillis ?? 80),
-      lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
-      darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
+      lightColorSchemeWrapper: _getLightColorSchemesWrapperMap[lightThemeKey]!,
+      darkColorSchemeWrapper: _getDarkColorSchemesWrapperMap[darkThemeKey]!,
     );
   }
 
@@ -45,29 +45,42 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   /// статическую область и заполняю их лишь при первом обращении.
   /// Не использую единую мапу с ColorScheme, т.к. предполагается,
   /// что каждая тема имеет свой уникальный набор цветов
-  static Map<String, ColorScheme>? _lightColorSchemesMap;
-  static Map<String, ColorScheme>? _darkColorSchemesMap;
+  static Map<String, ColorSchemeWrapper>? _lightColorSchemesWrapperMap;
+  static Map<String, ColorSchemeWrapper>? _darkColorSchemesWrapperMap;
 
-  static Map<String, ColorScheme> get _getLightColorSchemesMap {
-    _lightColorSchemesMap ??= {
-      'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
-      'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
-      'custom light':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
+  static Map<String, ColorSchemeWrapper> get _getLightColorSchemesWrapperMap {
+    _lightColorSchemesWrapperMap ??= {
+      'default light 1': ColorSchemeWrapper(
+        ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
+      ),
+      'default light 2': ColorSchemeWrapper(
+        ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
+      ),
+      'custom light': ColorSchemeWrapper(
+        ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+          GetStorage(),
+          '$appThemeStorageValue-custom-light',
+        ),
+      ),
     };
-    assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
-    return _lightColorSchemesMap!;
+    assert(_lightColorSchemesWrapperMap != null && _lightColorSchemesWrapperMap!.isNotEmpty);
+    return _lightColorSchemesWrapperMap!;
   }
 
-  static Map<String, ColorScheme> get _getDarkColorSchemesMap {
-    _darkColorSchemesMap ??= {
-      'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.yellow, Colors.purple),
-      'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
-      'custom dark':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+  static Map<String, ColorSchemeWrapper> get _getDarkColorSchemesWrapperMap {
+    _darkColorSchemesWrapperMap ??= {
+      'default dark 1': ColorSchemeWrapper(
+        ThemeWrapperUtils.createDarkColorScheme(Colors.yellow, Colors.purple),
+      ),
+      'default dark 2': ColorSchemeWrapper(
+        ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
+      ),
+      'custom dark': ColorSchemeWrapper(
+        ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+      ),
     };
-    assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
-    return _darkColorSchemesMap!;
+    assert(_darkColorSchemesWrapperMap != null && _darkColorSchemesWrapperMap!.isNotEmpty);
+    return _darkColorSchemesWrapperMap!;
   }
 
   /// Стандартный кофиг для темы Animated90sThemeDataWrapper,
@@ -78,10 +91,10 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   final Duration animationDuration;
 
   @override
-  Map<String, ColorScheme> get lightColorSchemesMap => _getLightColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get lightColorSchemesWrapperMap => _getLightColorSchemesWrapperMap;
 
   @override
-  Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
+  Map<String, ColorSchemeWrapper> get darkColorSchemesWrapperMap => _getDarkColorSchemesWrapperMap;
 
   @override
   String get themePrefix => Animated90sThemeDataWrapper.appThemeStorageValue;
@@ -99,15 +112,15 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
     TextTheme? textTheme,
     Paint90sConfig? paint90sConfig,
     Duration? animationDuration,
-    ColorScheme? lightColorScheme,
-    ColorScheme? darkColorScheme,
+    ColorSchemeWrapper? lightColorSchemeWrapper,
+    ColorSchemeWrapper? darkColorSchemeWrapper,
   }) {
     return Animated90sThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
       paint90sConfig: paint90sConfig ?? this.paint90sConfig,
       animationDuration: animationDuration ?? this.animationDuration,
-      lightColorScheme: lightColorScheme ?? this.lightColorScheme,
-      darkColorScheme: darkColorScheme ?? this.darkColorScheme,
+      lightColorSchemeWrapper: lightColorSchemeWrapper ?? this.lightColorSchemeWrapper,
+      darkColorSchemeWrapper: darkColorSchemeWrapper ?? this.darkColorSchemeWrapper,
     );
   }
 
