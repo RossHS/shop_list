@@ -4,9 +4,14 @@ import 'package:get_storage/get_storage.dart';
 class ThemeWrapperUtils {
   ThemeWrapperUtils._();
 
-  static ColorScheme loadCustomColorSchemeFromStorage(GetStorage storage, String key) {
-    final mainColor = Color(storage.read<int>('$key-mainColor') ?? Colors.blue.value);
-    final backgroundColor = Color(storage.read<int>('$key-backgroundColor') ?? Colors.pink.value);
+  static ColorScheme loadCustomColorSchemeFromStorage(
+    GetStorage storage,
+    String key, {
+    Color defMainColor = Colors.blue,
+    Color defBackgroundColor = Colors.pink,
+  }) {
+    final mainColor = _createColor(storage.read<int>('$key-mainColor')) ?? defMainColor;
+    final backgroundColor = _createColor(storage.read<int>('$key-backgroundColor')) ?? defBackgroundColor;
     if (key.contains('light')) {
       return createLightColorScheme(mainColor, backgroundColor);
     } else if (key.contains('dark')) {
@@ -38,4 +43,7 @@ class ThemeWrapperUtils {
       error: Colors.redAccent,
     );
   }
+
+  /// [colorValue] - численное представление цвета
+  static Color? _createColor(int? colorValue) => colorValue != null ? Color(colorValue) : null;
 }

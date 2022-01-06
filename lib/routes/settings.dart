@@ -5,7 +5,9 @@ import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
-import 'package:shop_list/widgets/material_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/material_custom_settings.dart';
+import 'package:shop_list/widgets/custom_settings/modern_custom_settings.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
@@ -310,7 +312,51 @@ class _ColorPaletteBox extends StatelessWidget {
     required void Function(ColorScheme newColorScheme) onColorSave,
     required ColorScheme colorScheme,
   }) {
-    final colorController = ColorChangeController(colorScheme: colorScheme);
+    final appTheme = ThemeController.to.appTheme.value;
+    // Хотел создать отдельный класс с билдером, оберткой и т.п. (все по правильному),
+    // но не стал ради одного участка кода совершать Overkill
+    ColorChangeController colorController;
+    ColorScheme Function() generateColorScheme;
+    if (appTheme is ModernThemeDataWrapper) {
+      colorController = ColorChangeController(
+        colors: {
+          'Основной': colorScheme.primary,
+        },
+      );
+      generateColorScheme = () {
+        final mainColor = colorController.colors['Основной']!.color;
+        return colorScheme.copyWith(
+          primary: mainColor,
+          primaryVariant: mainColor,
+          secondary: mainColor,
+          secondaryVariant: mainColor,
+          background: mainColor,
+          surface: mainColor,
+          error: Colors.redAccent,
+        );
+      };
+    } else {
+      colorController = ColorChangeController(
+        colors: {
+          'Основной': colorScheme.primary,
+          'Фон': colorScheme.background,
+        },
+      );
+      generateColorScheme = () {
+        final mainColor = colorController.colors['Основной']!.color;
+        final backgroundColor = colorController.colors['Фон']!.color;
+        return colorScheme.copyWith(
+          primary: mainColor,
+          primaryVariant: mainColor,
+          secondary: mainColor,
+          secondaryVariant: mainColor,
+          background: backgroundColor,
+          surface: mainColor,
+          error: Colors.redAccent,
+        );
+      };
+    }
+
     ThemeDepDialog(
       // т.к. создается отдельное дерево в котором требуется определение Material виджета,
       // если его не задать тут, то получим исключение
@@ -323,7 +369,7 @@ class _ColorPaletteBox extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            onColorSave(colorController.generateColor);
+            onColorSave(generateColorScheme());
             Get.back();
           },
           child: const Text('Сохранить'),

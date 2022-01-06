@@ -22,56 +22,43 @@ class _PaletteColorCustomizerPickerState extends State<PaletteColorCustomizerPic
   @override
   void initState() {
     super.initState();
-    selectedColor = widget.controller.backgroundColor;
+    selectedColor = widget.controller.colors.values.first;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        RadioListTile<_ColorMutableWrapper>(
-          title: const Text('Основной'),
-          value: widget.controller.mainColor,
-          groupValue: selectedColor,
-          controlAffinity: ListTileControlAffinity.trailing,
-          onChanged: (_) {
-            setState(() {
-              selectedColor = widget.controller.mainColor;
-            });
-          },
-          secondary: Container(
-            height: 100,
-            width: 100,
-            color: widget.controller.mainColor.color,
-          ),
-        ),
-        RadioListTile<_ColorMutableWrapper>(
-          title: const Text('Фон'),
-          value: widget.controller.backgroundColor,
-          groupValue: selectedColor,
-          controlAffinity: ListTileControlAffinity.trailing,
-          onChanged: (_) {
-            setState(() {
-              selectedColor = widget.controller.backgroundColor;
-            });
-          },
-          secondary: Container(
-            height: 100,
-            width: 100,
-            color: widget.controller.backgroundColor.color,
-          ),
-        ),
-        ColorPicker(
-            enableAlpha: false,
-            displayThumbColor: false,
-            colorPickerWidth: 300,
-            paletteType: PaletteType.hueWheel,
-            pickerColor: selectedColor.color,
-            onColorChanged: (value) {
+        ...widget.controller.colors.entries.map<Widget>((entry) {
+          return RadioListTile<_ColorMutableWrapper>(
+            title: Text(entry.key),
+            value: entry.value,
+            groupValue: selectedColor,
+            controlAffinity: ListTileControlAffinity.trailing,
+            onChanged: (_) {
               setState(() {
-                selectedColor.color = value;
+                selectedColor = entry.value;
               });
-            }),
+            },
+            secondary: Container(
+              height: 100,
+              width: 100,
+              color: entry.value.color,
+            ),
+          );
+        }).toList(),
+        ColorPicker(
+          enableAlpha: false,
+          displayThumbColor: false,
+          colorPickerWidth: 300,
+          paletteType: PaletteType.hueWheel,
+          pickerColor: selectedColor.color,
+          onColorChanged: (value) {
+            setState(() {
+              selectedColor.color = value;
+            });
+          },
+        ),
       ],
     );
   }
@@ -80,27 +67,15 @@ class _PaletteColorCustomizerPickerState extends State<PaletteColorCustomizerPic
 /// Конечно лучше было бы использовать GetX/GetxController и т.п.,
 /// но захотелось попробовать написать так, без участия сторонних библиотек
 class ColorChangeController {
-  ColorChangeController({required this.colorScheme})
-      : mainColor = _ColorMutableWrapper(colorScheme.primary),
-        backgroundColor = _ColorMutableWrapper(colorScheme.background);
+  ColorChangeController({
+    required Map<String, Color> colors,
+  })  : assert(colors.isNotEmpty, 'Коллекция цветов не должна быть пустой'),
+        colors = colors.map((key, value) => MapEntry(key, _ColorMutableWrapper(value)));
 
-  ColorScheme colorScheme;
-
+  /// Все цвета под настройку
   /// Обертка над цветом, зачем нужна? - в комментариях к классу [_ColorMutableWrapper]
-  final _ColorMutableWrapper mainColor;
-  final _ColorMutableWrapper backgroundColor;
-
-  /// Генерация новой цветовой схемы на основе базовой [colorScheme],
-  /// с учетом новых цветов из mainColor и backgroundColor
-  ColorScheme get generateColor => colorScheme.copyWith(
-        primary: mainColor.color,
-        primaryVariant: mainColor.color,
-        secondary: mainColor.color,
-        secondaryVariant: mainColor.color,
-        background: backgroundColor.color,
-        surface: mainColor.color,
-        error: Colors.redAccent,
-      );
+  /// Где ключ, имя расположения цвета (основной, фоновый и т.п.), а значение - сам цвет
+  final Map<String, _ColorMutableWrapper> colors;
 }
 
 /// так как объект [Color] immutable, то создал обертку над цветом,

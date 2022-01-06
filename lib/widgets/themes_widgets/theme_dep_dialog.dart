@@ -10,7 +10,7 @@ class ThemeDepDialog extends ThemeBaseClass {
     this.text,
     this.content,
     this.actions,
-  }) : super();
+  });
 
   final String? text;
   final Widget? content;
