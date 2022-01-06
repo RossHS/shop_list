@@ -483,25 +483,26 @@ class _SpecificThemeSettings extends StatelessWidget {
     // так, чтобы текст не сливался с фоном
     final adaptedTextTheme = theme.textTheme.apply(bodyColor: textColor);
     final controller = ThemeController.to;
-    return DefaultTextStyle(
-      style: adaptedTextTheme.bodyText2!,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 200),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ThemeDepAnimatedSwitcher(
-            duration: const Duration(seconds: 1),
-            switchInCurve: Curves.bounceOut,
-            switchOutCurve: Curves.easeOutQuint,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return ScaleTransition(child: child, scale: animation);
-            },
-            animated90s: (_, themeWrapper, __) {
-              // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,
-              // т.к. он внутри имеет GetX<ThemeController>, который сменит отображение внешнего
-              // контейнера до окончания анимации
-              final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-              return AnimatedPainterSquare90s(
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ThemeDepAnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          switchInCurve: Curves.bounceOut,
+          switchOutCurve: Curves.easeOutQuint,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(child: child, scale: animation);
+          },
+          animated90s: (_, themeWrapper, __) {
+            // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,
+            // т.к. он внутри имеет GetX<ThemeController>, который сменит отображение внешнего
+            // контейнера до окончания анимации
+            final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+            return DefaultTextStyle(
+              key: const ValueKey('animated'),
+              style: adaptedTextTheme.bodyText2!,
+              child: AnimatedPainterSquare90s(
                 duration: themeWrapper.animationDuration,
                 config: config,
                 child: Column(
@@ -543,10 +544,14 @@ class _SpecificThemeSettings extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            },
-            material: (context, themeWrapper, __) {
-              return Container(
+              ),
+            );
+          },
+          material: (context, themeWrapper, __) {
+            return DefaultTextStyle(
+              key: const ValueKey('material'),
+              style: adaptedTextTheme.bodyText2!,
+              child: Container(
                 decoration: themeWrapper.buildDefaultBoxDecoration(context),
                 child: Column(
                   children: [
@@ -590,39 +595,39 @@ class _SpecificThemeSettings extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            },
-            modern: (_, themeWrapper, __) {
-              // TODO 24.12.2021 изм. уникальных параметров стиля
-              return ModernGlassMorph(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Настройки стиля',
-                        style: adaptedTextTheme.headline5,
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton.icon(
-                        onPressed: () {
-                          final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
-                          _createCustomSettingDialog(
-                            body: ModernCustomSettings(
-                              controller: controller,
-                            ),
+              ),
+            );
+          },
+          modern: (_, themeWrapper, __) {
+            // TODO 24.12.2021 изм. уникальных параметров стиля
+            return ModernGlassMorph(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Настройки стиля',
+                      style: theme.textTheme.headline5,
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton.icon(
+                      onPressed: () {
+                        final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
+                        _createCustomSettingDialog(
+                          body: ModernCustomSettings(
                             controller: controller,
-                          );
-                        },
-                        icon: const ModernIcon(Icons.settings),
-                        label: const Text('Настройка фона'),
-                      ),
-                    ],
-                  ),
+                          ),
+                          controller: controller,
+                        );
+                      },
+                      icon: const ModernIcon(Icons.settings),
+                      label: const Text('Настройка фона'),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

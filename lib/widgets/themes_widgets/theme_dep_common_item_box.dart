@@ -36,10 +36,9 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
 
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    return _CustomThemeWrapper(
-      child: ModernGlassMorph(
-        child: child,
-      ),
+    // Нет необходимости в обертке [_CustomThemeWrapper], т.к. фон всегда статический
+    return ModernGlassMorph(
+      child: child,
     );
   }
 }
