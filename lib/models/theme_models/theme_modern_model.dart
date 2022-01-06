@@ -32,10 +32,14 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
 
   static Map<String, ColorScheme> get _getLightColorSchemesMap {
     _lightColorSchemesMap ??= {
-      'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.red),
-      'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.white),
-      'custom light':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-light'),
+      'default light 1': ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.green),
+      'default light 2': ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.blue),
+      'custom light': ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+        GetStorage(),
+        '$appThemeStorageValue-custom-light',
+        defMainColor: Colors.white,
+        defBackgroundColor: Colors.white,
+      ),
     };
     assert(_lightColorSchemesMap != null && _lightColorSchemesMap!.isNotEmpty);
     return _lightColorSchemesMap!;
@@ -43,10 +47,14 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
 
   static Map<String, ColorScheme> get _getDarkColorSchemesMap {
     _darkColorSchemesMap ??= {
-      'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.lightGreen),
-      'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.pink),
-      'custom dark':
-          ThemeWrapperUtils.loadCustomColorSchemeFromStorage(GetStorage(), '$appThemeStorageValue-custom-dark'),
+      'default dark 1': ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.redAccent),
+      'default dark 2': ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.blueGrey),
+      'custom dark': ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+        GetStorage(),
+        '$appThemeStorageValue-custom-dark',
+        defMainColor: Colors.black,
+        defBackgroundColor: Colors.black,
+      ),
     };
     assert(_darkColorSchemesMap != null && _darkColorSchemesMap!.isNotEmpty);
     return _darkColorSchemesMap!;

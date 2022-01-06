@@ -486,137 +486,170 @@ class _SpecificThemeSettings extends StatelessWidget {
     return DefaultTextStyle(
       style: adaptedTextTheme.bodyText2!,
       child: AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: ThemeDepAnimatedSwitcher(
-              duration: const Duration(seconds: 1),
-              switchInCurve: Curves.bounceOut,
-              switchOutCurve: Curves.easeOutQuint,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return ScaleTransition(child: child, scale: animation);
-              },
-              animated90s: (_, themeWrapper, __) {
-                // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,
-                // т.к. он внутри имеет GetX<ThemeController>, который сменит отображение внешнего
-                // контейнера до окончания анимации
-                final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
-                return AnimatedPainterSquare90s(
-                  duration: themeWrapper.animationDuration,
-                  config: config,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Настройки стиля',
-                        style: adaptedTextTheme.headline5,
-                      ),
-                      const SizedBox(height: 10),
-                      // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
-                      Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
-                      Slider(
-                        value: themeWrapper.paint90sConfig.strokeWidth,
-                        min: 1,
-                        max: 10,
-                        onChanged: (double strokeWidth) {
-                          controller.updateAnimated90sThemeData(strokeWidth: strokeWidth);
-                        },
-                      ),
-                      Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
-                      Slider(
-                        value: themeWrapper.paint90sConfig.offset.toDouble(),
-                        min: 5,
-                        max: 20,
-                        onChanged: (double offset) {
-                          controller.updateAnimated90sThemeData(offset: offset.toInt());
-                        },
-                      ),
-                      Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
-                      Slider(
-                        value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
-                        min: 40,
-                        max: 300,
-                        onChanged: (double millisDuration) {
-                          controller.updateAnimated90sThemeData(
-                            animationDuration: Duration(milliseconds: millisDuration.toInt()),
+        duration: const Duration(milliseconds: 200),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ThemeDepAnimatedSwitcher(
+            duration: const Duration(seconds: 1),
+            switchInCurve: Curves.bounceOut,
+            switchOutCurve: Curves.easeOutQuint,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(child: child, scale: animation);
+            },
+            animated90s: (_, themeWrapper, __) {
+              // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,
+              // т.к. он внутри имеет GetX<ThemeController>, который сменит отображение внешнего
+              // контейнера до окончания анимации
+              final config = themeWrapper.paint90sConfig.copyWith(backgroundColor: theme.canvasColor);
+              return AnimatedPainterSquare90s(
+                duration: themeWrapper.animationDuration,
+                config: config,
+                child: Column(
+                  children: [
+                    Text(
+                      'Настройки стиля',
+                      style: adaptedTextTheme.headline5,
+                    ),
+                    const SizedBox(height: 10),
+                    // Установка параметра StrokeWidth в теме [Animated90sThemeDataWrapper]
+                    Text('Толщина - ${themeWrapper.paint90sConfig.strokeWidth.toStringAsFixed(2)}'),
+                    Slider(
+                      value: themeWrapper.paint90sConfig.strokeWidth,
+                      min: 1,
+                      max: 10,
+                      onChanged: (double strokeWidth) {
+                        controller.updateAnimated90sThemeData(strokeWidth: strokeWidth);
+                      },
+                    ),
+                    Text('Отступ - ${themeWrapper.paint90sConfig.offset}'),
+                    Slider(
+                      value: themeWrapper.paint90sConfig.offset.toDouble(),
+                      min: 5,
+                      max: 20,
+                      onChanged: (double offset) {
+                        controller.updateAnimated90sThemeData(offset: offset.toInt());
+                      },
+                    ),
+                    Text('Анимация - ${themeWrapper.animationDuration.inMilliseconds}'),
+                    Slider(
+                      value: themeWrapper.animationDuration.inMilliseconds.toDouble(),
+                      min: 40,
+                      max: 300,
+                      onChanged: (double millisDuration) {
+                        controller.updateAnimated90sThemeData(
+                          animationDuration: Duration(milliseconds: millisDuration.toInt()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+            material: (context, themeWrapper, __) {
+              return Container(
+                decoration: themeWrapper.buildDefaultBoxDecoration(context),
+                child: Column(
+                  children: [
+                    Text(
+                      'Настройки стиля',
+                      style: adaptedTextTheme.headline5,
+                    ),
+                    const SizedBox(height: 10),
+                    Text('Скругление - ${themeWrapper.rounded.toStringAsFixed(2)}'),
+                    Slider(
+                      value: themeWrapper.rounded,
+                      min: 0,
+                      max: 30,
+                      onChanged: (double rounded) {
+                        controller.updateMaterialThemeData(rounded: rounded);
+                      },
+                    ),
+                    Text('Радиус тени - ${themeWrapper.shadowBlurRadius.toStringAsFixed(2)}'),
+                    Slider(
+                      value: themeWrapper.shadowBlurRadius,
+                      min: 0,
+                      max: 20,
+                      onChanged: (double shadowBlurRadius) {
+                        controller.updateMaterialThemeData(shadowBlurRadius: shadowBlurRadius);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final controller = MaterialCustomSettingsController(proxyThemeWrapper: themeWrapper);
+                          _createCustomSettingDialog(
+                            body: MaterialCustomSettings(
+                              controller: controller,
+                            ),
+                            controller: controller,
                           );
                         },
+                        child: const Text('Настройка теней'),
                       ),
-                    ],
-                  ),
-                );
-              },
-              material: (context, themeWrapper, __) {
-                return Container(
-                  decoration: themeWrapper.buildDefaultBoxDecoration(context),
+                    ),
+                  ],
+                ),
+              );
+            },
+            modern: (_, themeWrapper, __) {
+              // TODO 24.12.2021 изм. уникальных параметров стиля
+              return ModernGlassMorph(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
                   child: Column(
                     children: [
                       Text(
                         'Настройки стиля',
                         style: adaptedTextTheme.headline5,
                       ),
-                      const SizedBox(height: 10),
-                      Text('Скругление - ${themeWrapper.rounded.toStringAsFixed(2)}'),
-                      Slider(
-                        value: themeWrapper.rounded,
-                        min: 0,
-                        max: 30,
-                        onChanged: (double rounded) {
-                          controller.updateMaterialThemeData(rounded: rounded);
+                      const SizedBox(height: 20),
+                      TextButton.icon(
+                        onPressed: () {
+                          final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
+                          _createCustomSettingDialog(
+                            body: ModernCustomSettings(
+                              controller: controller,
+                            ),
+                            controller: controller,
+                          );
                         },
-                      ),
-                      Text('Радиус тени - ${themeWrapper.shadowBlurRadius.toStringAsFixed(2)}'),
-                      Slider(
-                        value: themeWrapper.shadowBlurRadius,
-                        min: 0,
-                        max: 20,
-                        onChanged: (double shadowBlurRadius) {
-                          controller.updateMaterialThemeData(shadowBlurRadius: shadowBlurRadius);
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final controller = MaterialCustomSettingsController(proxyThemeWrapper: themeWrapper);
-                            ThemeDepDialog(
-                              content: Material(
-                                child: MaterialCustomSettings(
-                                  controller: controller,
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Get.back();
-                                    controller.acceptChanges();
-                                  },
-                                  child: const Text('Сохранить'),
-                                ),
-                                TextButton(
-                                  onPressed: Get.back,
-                                  child: const Text('Отменить'),
-                                ),
-                              ],
-                            );
-                          },
-                          child: const Text('Настройка теней'),
-                        ),
+                        icon: const ModernIcon(Icons.settings),
+                        label: const Text('Настройка фона'),
                       ),
                     ],
                   ),
-                );
-              },
-              modern: (_, __, ___) {
-                // TODO 24.12.2021 изм. уникальных параметров стиля
-                return const ModernGlassMorph(
-                  child: Padding(
-                    padding: EdgeInsets.all(36.0),
-                    child: Text('TEXT'),
-                  ),
-                );
-              },
-            ),
-          )),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Вызов диалогового окна настройки параметров темы
+  void _createCustomSettingDialog({
+    required Widget body,
+    required CustomSettingsController controller,
+  }) {
+    ThemeDepDialog(
+      content: Material(
+        child: body,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Get.back();
+            controller.acceptChanges();
+          },
+          child: const Text('Сохранить'),
+        ),
+        TextButton(
+          onPressed: Get.back,
+          child: const Text('Отменить'),
+        ),
+      ],
     );
   }
 }
