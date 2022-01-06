@@ -133,6 +133,7 @@ class ColorSchemeWrapper {
     return ColorSchemeWrapper(colorScheme ?? this.colorScheme);
   }
 
+  @mustCallSuper
   void writeToGetStorage(GetStorage storage, {required String keyPrefix}) {
     // Записываю цифровое представление цвета, т.к. объект Color не сериализуем
     storage.write('$keyPrefix-mainColor', colorScheme.primary.value);

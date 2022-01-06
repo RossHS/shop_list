@@ -61,8 +61,17 @@ Map<String, GradientBackground>? _darkColorSchemesWrapperMap;
 Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
   _lightColorSchemesWrapperMap ??= {
     'default light 1': GradientBackground(
-      colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.green),
-      decoration: const BoxDecoration(color: Colors.black),
+      colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.black, Colors.black),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Colors.blue,
+            Colors.red,
+          ],
+        ),
+      ),
     ),
     'default light 2': GradientBackground(
       colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.blue),
@@ -84,22 +93,35 @@ Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
 
 Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
   _darkColorSchemesWrapperMap ??= {
-    'default dark 1': GradientBackground(
-      colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.redAccent),
-      decoration: const BoxDecoration(color: Colors.red),
-    ),
-    'default dark 2': GradientBackground(
-      colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.blueGrey),
-      decoration: const BoxDecoration(color: Colors.red),
-    ),
-    'custom dark': GradientBackground(
-      colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
-        GetStorage(),
-        '${ModernThemeDataWrapper.appThemeStorageValue}-custom-dark',
-        defMainColor: Colors.black,
-        defBackgroundColor: Colors.black,
+    'default dark 1': GradientBackground.withDefault(
+      keyPrefix: '${ModernThemeDataWrapper.appThemeStorageValue} default dark 1',
+      defaultGradientBackground: GradientBackground(
+        colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.white, Colors.white),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.white,
+              Colors.black,
+            ],
+          ),
+        ),
       ),
-      decoration: const BoxDecoration(color: Colors.red),
+    ),
+    'default dark 2': GradientBackground.withDefault(
+      keyPrefix: '${ModernThemeDataWrapper.appThemeStorageValue} default dark 2',
+      defaultGradientBackground: GradientBackground(
+        colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.blueGrey),
+        decoration: const BoxDecoration(color: Colors.red),
+      ),
+    ),
+    'custom dark': GradientBackground.withDefault(
+      keyPrefix: '${ModernThemeDataWrapper.appThemeStorageValue}-custom-dark',
+      defaultGradientBackground: GradientBackground(
+        colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.black, Colors.black),
+        decoration: const BoxDecoration(color: Colors.red),
+      ),
     ),
   };
   assert(_darkColorSchemesWrapperMap != null && _darkColorSchemesWrapperMap!.isNotEmpty);
@@ -111,20 +133,53 @@ class GradientBackground extends ColorSchemeWrapper {
   const GradientBackground({
     required ColorScheme colorScheme,
     required this.decoration,
+    this.defaultGradientBackground,
   }) : super(colorScheme);
 
   // TODO 06.01.2022 различные типы boxDecoration
   final BoxDecoration decoration;
 
+  /// Дефолтное значение [GradientBackground] необходимое в случае сброса значений
+  /// TODO 06.01.2022 стоит вынести в отдельный класс, дабы не нарушать принципы SOLID
+  final GradientBackground? defaultGradientBackground;
+
+  /// Создание обертки на основе записи в хранилище по ключу [keyPrefix],
+  /// если записи нет, то используется значение по умолчанию [defaultGradientBackground]
+  factory GradientBackground.withDefault({
+    required GradientBackground defaultGradientBackground,
+    required String keyPrefix,
+  }) {
+    final colorScheme = ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
+      GetStorage(),
+      keyPrefix,
+      defMainColor: defaultGradientBackground.colorScheme.primary,
+      defBackgroundColor: defaultGradientBackground.colorScheme.background,
+    );
+    // final decoration =_decorationLoadFromGetStorage
+    return GradientBackground(
+      colorScheme: colorScheme,
+      decoration: defaultGradientBackground.decoration,
+      defaultGradientBackground: defaultGradientBackground,
+    );
+  }
+
   @override
   GradientBackground copyWith({
     ColorScheme? colorScheme,
     BoxDecoration? decoration,
+    GradientBackground? defaultGradientBackground,
   }) {
     return GradientBackground(
       colorScheme: colorScheme ?? this.colorScheme,
       decoration: decoration ?? this.decoration,
+      defaultGradientBackground: defaultGradientBackground ?? this.defaultGradientBackground,
     );
+  }
+
+  @override
+  void writeToGetStorage(GetStorage storage, {required String keyPrefix}) {
+    super.writeToGetStorage(storage, keyPrefix: keyPrefix);
+    _decorationWriteToGetStorage(storage, decoration, keyPrefix);
   }
 
   @override
@@ -137,4 +192,16 @@ class GradientBackground extends ColorSchemeWrapper {
 
   @override
   int get hashCode => super.hashCode ^ decoration.hashCode;
+
+  static void _decorationWriteToGetStorage(
+    GetStorage storage,
+    BoxDecoration decoration,
+    String keyPrefix,
+  ) {
+    if (decoration.color != null) {}
+  }
+
+// static BoxDecoration _decorationLoadFromGetStorage(GetStorage storage,
+//     BoxDecoration decoration,
+//     String keyPrefix,) {}
 }
