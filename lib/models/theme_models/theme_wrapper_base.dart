@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/models/theme_model.dart';
 
 @immutable
 abstract class ThemeDataWrapper {
+  static final _log = Logger('ThemeDataWrapper');
+
   /// Ключи для записи/чтения тем из хранилища
   static const appThemeStorageKey = 'app_theme_storage_key';
 
@@ -30,6 +33,22 @@ abstract class ThemeDataWrapper {
   ThemeData get lightTheme => _generateThemeData(lightColorSchemeWrapper.colorScheme);
 
   ThemeData get darkTheme => _generateThemeData(darkColorSchemeWrapper.colorScheme);
+
+  /// Возвращает текущую обертку над ColorSchemeWrapper
+  ColorSchemeWrapper getColorSchemeWrapper(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    switch (colorScheme.brightness) {
+      case Brightness.light:
+        return lightColorSchemeWrapper;
+      case Brightness.dark:
+        return darkColorSchemeWrapper;
+      default:
+        // На случай, если в будущем появится еще один вариант [Brightness],
+        // то в лог пропишется ошибка, но приложение будут исполняться
+        _log.warning('undefined colorScheme.brightness - ${colorScheme.brightness.name}');
+        return lightColorSchemeWrapper;
+    }
+  }
 
   ThemeData _generateThemeData(ColorScheme colorScheme) {
     final mainTextColor = colorScheme.primary.calcTextColor;
@@ -64,7 +83,7 @@ abstract class ThemeDataWrapper {
   /// Запись собранной темы в хранилище
   @mustCallSuper
   void writeToGetStorage(GetStorage storage) {
-    // Запись названий текущих цветовых тем
+    // Запись названий текущих цветовых тем, для последующей загрузки установленной цветовой схемы
     storage.write(
       _lightThemeStorageKey,
       lightColorSchemesWrapperMap.entries.firstWhere((element) => element.value == lightColorSchemeWrapper).key,
@@ -74,25 +93,12 @@ abstract class ThemeDataWrapper {
       darkColorSchemesWrapperMap.entries.firstWhere((element) => element.value == darkColorSchemeWrapper).key,
     );
 
-    // Запись кастомных цветов светлой темы и темной. Не очень нравится идея разбивать кастомную цветовую схему
-    // по строковым константам и отталкиваться от типа ключа при использовании в виджетах, как мне кажется,
-    // лучше было бы использовать систему классов с наследованием (полиморфизм), но пока оставлю как есть.
-    storage.write(
-      '$themePrefix-custom-light-mainColor',
-      lightColorSchemesWrapperMap['custom light']!.colorScheme.primary.value,
-    );
-    storage.write(
-      '$themePrefix-custom-light-backgroundColor',
-      lightColorSchemesWrapperMap['custom light']!.colorScheme.background.value,
-    );
-    storage.write(
-      '$themePrefix-custom-dark-mainColor',
-      darkColorSchemesWrapperMap['custom dark']!.colorScheme.primary.value,
-    );
-    storage.write(
-      '$themePrefix-custom-dark-backgroundColor',
-      darkColorSchemesWrapperMap['custom dark']!.colorScheme.background.value,
-    );
+    // Запись кастомных оберток цветовых схем.
+    final customDark = darkColorSchemesWrapperMap['custom dark'];
+    final customLight = lightColorSchemesWrapperMap['custom light'];
+    assert(customDark != null && customLight != null);
+    customDark!.writeToGetStorage(storage, keyPrefix: '$themePrefix-custom-dark');
+    customLight!.writeToGetStorage(storage, keyPrefix: '$themePrefix-custom-light');
   }
 
   ThemeDataWrapper copyWith({
@@ -126,4 +132,18 @@ class ColorSchemeWrapper {
   }) {
     return ColorSchemeWrapper(colorScheme ?? this.colorScheme);
   }
+
+  void writeToGetStorage(GetStorage storage, {required String keyPrefix}) {
+    // Записываю цифровое представление цвета, т.к. объект Color не сериализуем
+    storage.write('$keyPrefix-mainColor', colorScheme.primary.value);
+    storage.write('$keyPrefix-backgroundColor', colorScheme.background.value);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ColorSchemeWrapper && runtimeType == other.runtimeType && colorScheme == other.colorScheme;
+
+  @override
+  int get hashCode => colorScheme.hashCode;
 }

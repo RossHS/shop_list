@@ -27,13 +27,18 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   }
 
   @override
-  Map<String, ColorSchemeWrapper> get lightColorSchemesWrapperMap => _getLightColorSchemesWrapperMap;
+  Map<String, GradientBackground> get lightColorSchemesWrapperMap => _getLightColorSchemesWrapperMap;
 
   @override
-  Map<String, ColorSchemeWrapper> get darkColorSchemesWrapperMap => _getDarkColorSchemesWrapperMap;
+  Map<String, GradientBackground> get darkColorSchemesWrapperMap => _getDarkColorSchemesWrapperMap;
 
   @override
   String get themePrefix => ModernThemeDataWrapper.appThemeStorageValue;
+
+  @override
+  GradientBackground getColorSchemeWrapper(BuildContext context) {
+    return super.getColorSchemeWrapper(context) as GradientBackground;
+  }
 
   @override
   ModernThemeDataWrapper copyWith({
@@ -57,11 +62,11 @@ Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
   _lightColorSchemesWrapperMap ??= {
     'default light 1': GradientBackground(
       colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.green, Colors.green),
-      background: Colors.black,
+      decoration: const BoxDecoration(color: Colors.black),
     ),
     'default light 2': GradientBackground(
       colorScheme: ThemeWrapperUtils.createLightColorScheme(Colors.blue, Colors.blue),
-      background: Colors.green,
+      decoration: const BoxDecoration(color: Colors.green),
     ),
     'custom light': GradientBackground(
       colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
@@ -70,7 +75,7 @@ Map<String, GradientBackground> get _getLightColorSchemesWrapperMap {
         defMainColor: Colors.greenAccent,
         defBackgroundColor: Colors.greenAccent,
       ),
-      background: Colors.white,
+      decoration: const BoxDecoration(color: Colors.pink),
     ),
   };
   assert(_lightColorSchemesWrapperMap != null && _lightColorSchemesWrapperMap!.isNotEmpty);
@@ -81,11 +86,11 @@ Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
   _darkColorSchemesWrapperMap ??= {
     'default dark 1': GradientBackground(
       colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.redAccent, Colors.redAccent),
-      background: Colors.red,
+      decoration: const BoxDecoration(color: Colors.red),
     ),
     'default dark 2': GradientBackground(
       colorScheme: ThemeWrapperUtils.createDarkColorScheme(Colors.blueGrey, Colors.blueGrey),
-      background: Colors.red,
+      decoration: const BoxDecoration(color: Colors.red),
     ),
     'custom dark': GradientBackground(
       colorScheme: ThemeWrapperUtils.loadCustomColorSchemeFromStorage(
@@ -94,7 +99,7 @@ Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
         defMainColor: Colors.black,
         defBackgroundColor: Colors.black,
       ),
-      background: Colors.red,
+      decoration: const BoxDecoration(color: Colors.red),
     ),
   };
   assert(_darkColorSchemesWrapperMap != null && _darkColorSchemesWrapperMap!.isNotEmpty);
@@ -105,19 +110,31 @@ Map<String, GradientBackground> get _getDarkColorSchemesWrapperMap {
 class GradientBackground extends ColorSchemeWrapper {
   const GradientBackground({
     required ColorScheme colorScheme,
-    required this.background,
+    required this.decoration,
   }) : super(colorScheme);
 
-  final Color background;
+  // TODO 06.01.2022 различные типы boxDecoration
+  final BoxDecoration decoration;
 
   @override
   GradientBackground copyWith({
     ColorScheme? colorScheme,
-    Color? background,
+    BoxDecoration? decoration,
   }) {
     return GradientBackground(
       colorScheme: colorScheme ?? this.colorScheme,
-      background: background ?? this.background,
+      decoration: decoration ?? this.decoration,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is GradientBackground &&
+          runtimeType == other.runtimeType &&
+          decoration == other.decoration;
+
+  @override
+  int get hashCode => super.hashCode ^ decoration.hashCode;
 }
