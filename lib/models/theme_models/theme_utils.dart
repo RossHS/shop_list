@@ -65,7 +65,9 @@ class ThemeWrapperUtils {
       gradient: LinearGradient(
         begin: Alignment(json['begin_x'] as double, json['begin_y'] as double),
         end: Alignment(json['end_x'] as double, json['end_y'] as double),
+        stops: (json['stops'] as List<dynamic>?)?.map((e) => e as double).toList(),
         colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+        tileMode: TileMode.values.byName(json['tileMode'] as String),
       ),
     );
   }
@@ -81,16 +83,22 @@ class ThemeWrapperUtils {
       'begin_y': (gradient.begin as Alignment).y,
       'end_x': (gradient.end as Alignment).x,
       'end_y': (gradient.end as Alignment).y,
+      'stops': gradient.stops,
       'colors': gradient.colors.map((e) => e.value).toList(),
+      'tileMode': gradient.tileMode.name,
     };
   }
 
   /// Формирование [BoxDecoration] по записи сформированной функцией [radialGradientToJson]
   static BoxDecoration radialGradientFromJson(Map<String, dynamic> json) {
-    // TODO 06.01.2022 дописать реализацию
     return BoxDecoration(
       gradient: RadialGradient(
+        center: Alignment(json['center_x'] as double, json['center_y'] as double),
+        focalRadius: json['focalRadius'] as double,
+        radius: json['radius'] as double,
+        stops: (json['stops'] as List<dynamic>?)?.map((e) => e as double).toList(),
         colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+        tileMode: TileMode.values.byName(json['tileMode'] as String),
       ),
     );
   }
@@ -103,7 +111,13 @@ class ThemeWrapperUtils {
     }
     final gradient = decoration.gradient as RadialGradient;
     return <String, dynamic>{
+      'center_x': (gradient.center as Alignment).x,
+      'center_y': (gradient.center as Alignment).y,
+      'focalRadius': gradient.focalRadius,
+      'radius': gradient.radius,
+      'stops': gradient.stops,
       'colors': gradient.colors.map((e) => e.value).toList(),
+      'tileMode': gradient.tileMode.name,
     };
   }
 }
