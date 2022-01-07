@@ -46,4 +46,64 @@ class ThemeWrapperUtils {
 
   /// [colorValue] - численное представление цвета
   static Color? _createColor(int? colorValue) => colorValue != null ? Color(colorValue) : null;
+
+  /// Формирование [BoxDecoration] по записи сформированной функцией [justColorToJson]
+  static BoxDecoration justColorFromJson(Map<String, dynamic> json) {
+    return BoxDecoration(
+      color: Color(json['color'] as int),
+    );
+  }
+
+  /// Формирование json из [BoxDecoration], обратная операция представлена функцией [justColorFromJson]
+  static Map<String, dynamic> justColorToJson(BoxDecoration decoration) => <String, dynamic>{
+        'color': decoration.color!.value,
+      };
+
+  /// Формирование [BoxDecoration] по записи сформированной функцией [linearGradientToJson]
+  static BoxDecoration linearGradientFromJson(Map<String, dynamic> json) {
+    return BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment(json['begin_x'] as double, json['begin_y'] as double),
+        end: Alignment(json['end_x'] as double, json['end_y'] as double),
+        colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+      ),
+    );
+  }
+
+  /// Формирование json из [BoxDecoration], обратная операция представлена функцией [linearGradientFromJson]
+  static Map<String, dynamic> linearGradientToJson(BoxDecoration decoration) {
+    if (decoration.gradient is! LinearGradient) {
+      throw ArgumentError('Not a LinearGradient - ${decoration.gradient.runtimeType}');
+    }
+    final gradient = decoration.gradient as LinearGradient;
+    return <String, dynamic>{
+      'begin_x': (gradient.begin as Alignment).x,
+      'begin_y': (gradient.begin as Alignment).y,
+      'end_x': (gradient.end as Alignment).x,
+      'end_y': (gradient.end as Alignment).y,
+      'colors': gradient.colors.map((e) => e.value).toList(),
+    };
+  }
+
+  /// Формирование [BoxDecoration] по записи сформированной функцией [radialGradientToJson]
+  static BoxDecoration radialGradientFromJson(Map<String, dynamic> json) {
+    // TODO 06.01.2022 дописать реализацию
+    return BoxDecoration(
+      gradient: RadialGradient(
+        colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+      ),
+    );
+  }
+
+  /// Формирование json из [BoxDecoration], обратная операция представлена функцией [radialGradientFromJson]
+  static Map<String, dynamic> radialGradientToJson(BoxDecoration decoration) {
+    // TODO 06.01.2022 дописать реализацию
+    if (decoration.gradient is! RadialGradient) {
+      throw ArgumentError('Not a RadialGradient - ${decoration.gradient.runtimeType}');
+    }
+    final gradient = decoration.gradient as RadialGradient;
+    return <String, dynamic>{
+      'colors': gradient.colors.map((e) => e.value).toList(),
+    };
+  }
 }
