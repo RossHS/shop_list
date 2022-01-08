@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logging/logging.dart';
 import 'package:shop_list/models/theme_model.dart';
+
+final _log = Logger('ModernThemeDataWrapper');
 
 class ModernThemeDataWrapper extends ThemeDataWrapper {
   static const appThemeStorageValue = 'Modern';
@@ -108,7 +111,6 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   int get hashCode => super.hashCode ^ backgroundDecoration.hashCode;
 }
 
-// TODO 06.01.2022 написать тесты
 const _decorationTypeKey = '${ModernThemeDataWrapper.appThemeStorageValue}-decoration-type';
 const _decorationMapKey = '${ModernThemeDataWrapper.appThemeStorageValue}-decoration-map';
 
@@ -122,6 +124,9 @@ void _writeToGetStorageDecoration(GetStorage storage, BoxDecoration decoration) 
   } else if (decoration.gradient is RadialGradient) {
     storage.write(_decorationTypeKey, 'radial_gradient');
     storage.write(_decorationMapKey, ThemeWrapperUtils.radialGradientToJson(decoration));
+  } else {
+    _log.shout('Unsupported BoxDecoration type - $decoration');
+    throw ArgumentError.value(decoration, 'Unsupported BoxDecoration type');
   }
 }
 
@@ -149,6 +154,7 @@ BoxDecoration _parseDecorationBox(GetStorage storage) {
     case 'radial_gradient':
       return ThemeWrapperUtils.radialGradientFromJson(decorationMap);
     default:
-      throw Exception('Unknown decorationType value - $decorationType');
+      _log.shout('Unknown decorationType value - $decorationType');
+      throw ArgumentError.value(decorationType, 'Unknown decorationType value');
   }
 }

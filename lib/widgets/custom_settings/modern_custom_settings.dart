@@ -20,15 +20,101 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // ToggleButtons(
-        //   children: const <Widget>[
-        //     Icon(Icons.ac_unit),
-        //     Icon(Icons.call),
-        //     Icon(Icons.cake),
-        //   ],
-        //   isSelected: isSelected,
-        // ),
+        _ModernDecorationTypeSelector(widget.controller),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SizedBox.square(
+            dimension: 270,
+            child: Obx(() {
+              final themeWrapper = widget.controller.proxyDataWrapper.value;
+              return DecoratedBox(
+                decoration: themeWrapper.backgroundDecoration,
+              );
+            }),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+/// Выбор типа декорации
+class _ModernDecorationTypeSelector extends StatefulWidget {
+  const _ModernDecorationTypeSelector(
+    this.controller, {
+    Key? key,
+  }) : super(key: key);
+  final ModernCustomSettingsController controller;
+
+  @override
+  State<_ModernDecorationTypeSelector> createState() => _ModernDecorationTypeSelectorState();
+}
+
+/// Все допустимые варианты стиля DecorationBox
+enum DecorationType { color, linearGradient, radialGradient }
+
+class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSelector> {
+  late final Map<DecorationType, BoxDecoration> decorations;
+  late DecorationType selectedType;
+
+  @override
+  void initState() {
+    super.initState();
+    decorations = const <DecorationType, BoxDecoration>{
+      DecorationType.color: BoxDecoration(
+        color: Colors.red,
+      ),
+      DecorationType.linearGradient: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+          colors: [Colors.red, Colors.blue],
+        ),
+      ),
+      DecorationType.radialGradient: BoxDecoration(
+        gradient: RadialGradient(
+          colors: [Colors.red, Colors.blue],
+        ),
+      ),
+    };
+
+    final initDecoration = widget.controller.proxyDataWrapper.value.backgroundDecoration;
+    if (initDecoration.color != null) {
+      selectedType = DecorationType.color;
+    } else if (initDecoration.gradient is LinearGradient) {
+      selectedType = DecorationType.linearGradient;
+    } else if (initDecoration.gradient is RadialGradient) {
+      selectedType = DecorationType.radialGradient;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: ToggleButtons(
+        constraints: const BoxConstraints.expand(width: 100),
+        children: decorations.values
+            .map((decoration) => Ink(
+                  width: 100,
+                  height: 50,
+                  decoration: decoration,
+                ))
+            .toList(),
+        borderRadius: BorderRadius.circular(20),
+        borderWidth: 3,
+        selectedBorderColor: Theme.of(context).canvasColor,
+        isSelected: decorations.keys.map((type) => type == selectedType).toList(),
+        onPressed: (index) {
+          final newType = decorations.keys.toList()[index];
+          if (selectedType != newType) {
+            widget.controller.proxyDataWrapper.value =
+                widget.controller.proxyDataWrapper.value.copyWith(backgroundDecoration: decorations[newType]);
+            setState(() {
+              selectedType = newType;
+            });
+          }
+        },
+      ),
     );
   }
 }
@@ -46,10 +132,8 @@ class ModernCustomSettingsController extends CustomSettingsController {
   void acceptChanges() {
     final themeController = Get.find<ThemeController>();
     final proxy = proxyDataWrapper.value;
-    // themeController.updateMaterialThemeData(
-    //   shadowBlurRadius: proxy.shadowBlurRadius,
-    //   shadowColor: proxy.shadowColor,
-    //   shadowOffset: proxy.shadowOffset,
-    // );
+    themeController.updateModernThemeData(
+      backgroundDecoration: proxy.backgroundDecoration,
+    );
   }
 }

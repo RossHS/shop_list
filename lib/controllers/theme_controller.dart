@@ -167,4 +167,14 @@ class ThemeController extends GetxController {
       shadowOffset: shadowOffset,
     );
   }
+
+  void updateModernThemeData({
+    BoxDecoration? backgroundDecoration,
+  }) {
+    if (appTheme.value is! ModernThemeDataWrapper) return;
+    final wrapper = appTheme.value as ModernThemeDataWrapper;
+    appTheme.value = wrapper.copyWith(
+      backgroundDecoration: backgroundDecoration,
+    );
+  }
 }

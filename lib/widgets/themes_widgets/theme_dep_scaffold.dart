@@ -50,18 +50,8 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
 
   @override
   Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    // TODO 25.12.2021 брать градиенту из ModernThemeDataWrapper
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Colors.blue,
-            Colors.red,
-          ],
-        ),
-      ),
+      decoration: themeWrapper.backgroundDecoration,
       child: Scaffold(
         key: scaffoldGlobalKey,
         backgroundColor: Colors.transparent,

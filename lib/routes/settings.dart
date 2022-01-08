@@ -640,6 +640,7 @@ class _SpecificThemeSettings extends StatelessWidget {
   }) {
     ThemeDepDialog(
       content: Material(
+        color: Colors.transparent,
         child: body,
       ),
       actions: [
