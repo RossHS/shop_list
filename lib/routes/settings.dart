@@ -628,10 +628,9 @@ class _SpecificThemeSettings extends StatelessWidget {
                     TouchGetterProvider(
                       child: TextButton.icon(
                         onPressed: () {
-                          final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
                           Get.to(
                             ModernCustomSettings(
-                              controller: controller,
+                              themeWrapper: themeWrapper,
                             ),
                           );
                         },

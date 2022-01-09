@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/theme_model.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
@@ -10,9 +11,9 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 class ModernCustomSettings extends StatefulWidget {
   const ModernCustomSettings({
     Key? key,
-    required this.controller,
+    required this.themeWrapper,
   }) : super(key: key);
-  final ModernCustomSettingsController controller;
+  final ModernThemeDataWrapper themeWrapper;
 
   @override
   State<ModernCustomSettings> createState() => _ModernCustomSettingsState();
@@ -20,7 +21,14 @@ class ModernCustomSettings extends StatefulWidget {
 
 class _ModernCustomSettingsState extends State<ModernCustomSettings> {
   @override
+  void initState() {
+    super.initState();
+    Get.put(ModernCustomSettingsController(proxyThemeWrapper: widget.themeWrapper));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ModernCustomSettingsController>();
     // Вывел в локальную переменную, дабы не пересоздавать неизменяемые виджеты
     final child = Scaffold(
       backgroundColor: Colors.transparent,
@@ -38,12 +46,12 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _ModernDecorationTypeSelector(widget.controller),
+                      children: const [
+                        _ModernDecorationTypeSelector(),
                         AnimatedSize(
-                          duration: const Duration(milliseconds: 300),
+                          duration: Duration(milliseconds: 300),
                           alignment: Alignment.topCenter,
-                          child: _ModernDecorationBody(widget.controller),
+                          child: _ModernDecorationBody(),
                         ),
                       ],
                     ),
@@ -54,36 +62,38 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ModernButton(
-              onPressed: () {
-                Get.back();
-                widget.controller.acceptChanges();
-              },
-              child: const Text('Сохранить'),
+            child: TouchGetterProvider(
+              child: ModernButton(
+                onPressed: () {
+                  Get.back();
+                  controller.acceptChanges();
+                },
+                child: const Text('Сохранить'),
+              ),
             ),
           ),
         ],
       ),
     );
     return Obx(() => DecoratedBox(
-          decoration: widget.controller.proxyDataWrapper.value.backgroundDecoration,
+          decoration: controller.proxyDataWrapper.value.backgroundDecoration,
           child: child,
         ));
   }
 }
 
 class _ModernDecorationBody extends StatelessWidget {
-  const _ModernDecorationBody(
-    this.controller, {
+  const _ModernDecorationBody({
     Key? key,
   }) : super(key: key);
-  final ModernCustomSettingsController controller;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ModernCustomSettingsController>();
     return Obx(() {
       final modernProxy = controller.proxyDataWrapper.value;
       final Widget child;
+
       /// Набор потенциальных настроек
       if (_isJustColor(modernProxy.backgroundDecoration)) {
         child = ColorPicker(
@@ -115,11 +125,9 @@ class _ModernDecorationBody extends StatelessWidget {
 
 /// Выбор типа декорации
 class _ModernDecorationTypeSelector extends StatefulWidget {
-  const _ModernDecorationTypeSelector(
-    this.controller, {
+  const _ModernDecorationTypeSelector({
     Key? key,
   }) : super(key: key);
-  final ModernCustomSettingsController controller;
 
   @override
   State<_ModernDecorationTypeSelector> createState() => _ModernDecorationTypeSelectorState();
@@ -131,10 +139,12 @@ enum _DecorationType { color, linearGradient, radialGradient }
 class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSelector> {
   late final Map<_DecorationType, BoxDecoration> decorations;
   late _DecorationType selectedType;
+  late final ModernCustomSettingsController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<ModernCustomSettingsController>();
     decorations = const <_DecorationType, BoxDecoration>{
       _DecorationType.color: BoxDecoration(
         color: Colors.red,
@@ -153,7 +163,7 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
       ),
     };
 
-    final initDecoration = widget.controller.proxyDataWrapper.value.backgroundDecoration;
+    final initDecoration = controller.proxyDataWrapper.value.backgroundDecoration;
     if (_isJustColor(initDecoration)) {
       selectedType = _DecorationType.color;
     } else if (_isLinearGradient(initDecoration)) {
@@ -181,8 +191,8 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
         onPressed: (index) {
           final newType = decorations.keys.toList()[index];
           if (selectedType != newType) {
-            widget.controller.proxyDataWrapper.value =
-                widget.controller.proxyDataWrapper.value.copyWith(backgroundDecoration: decorations[newType]);
+            controller.proxyDataWrapper.value =
+                controller.proxyDataWrapper.value.copyWith(backgroundDecoration: decorations[newType]);
             setState(() {
               selectedType = newType;
             });
