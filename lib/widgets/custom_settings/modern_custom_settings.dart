@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/theme_model.dart';
@@ -29,11 +30,24 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: ModernGlassMorph(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: _ModernDecorationTypeSelector(widget.controller),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Center(
+                child: ModernGlassMorph(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _ModernDecorationTypeSelector(widget.controller),
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 300),
+                          alignment: Alignment.topCenter,
+                          child: _ModernDecorationBody(widget.controller),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -58,6 +72,47 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
   }
 }
 
+class _ModernDecorationBody extends StatelessWidget {
+  const _ModernDecorationBody(
+    this.controller, {
+    Key? key,
+  }) : super(key: key);
+  final ModernCustomSettingsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final modernProxy = controller.proxyDataWrapper.value;
+      final Widget child;
+      /// Набор потенциальных настроек
+      if (_isJustColor(modernProxy.backgroundDecoration)) {
+        child = ColorPicker(
+          enableAlpha: false,
+          displayThumbColor: false,
+          colorPickerWidth: 300,
+          paletteType: PaletteType.hueWheel,
+          pickerColor: modernProxy.backgroundDecoration.color!,
+          onColorChanged: (color) {
+            // Проверка служит защитой от того, что пользователь в момент переключения
+            // анимации виджетов может залочить их в полу-позиции
+            if (_isJustColor(controller.proxyDataWrapper.value.backgroundDecoration)) {
+              controller.proxyDataWrapper.value = modernProxy.copyWith(
+                backgroundDecoration: BoxDecoration(color: color),
+              );
+            }
+          },
+        );
+      } else {
+        child = const SizedBox(width: 300, height: 10);
+      }
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: child,
+      );
+    });
+  }
+}
+
 /// Выбор типа декорации
 class _ModernDecorationTypeSelector extends StatefulWidget {
   const _ModernDecorationTypeSelector(
@@ -71,27 +126,27 @@ class _ModernDecorationTypeSelector extends StatefulWidget {
 }
 
 /// Все допустимые варианты стиля DecorationBox
-enum DecorationType { color, linearGradient, radialGradient }
+enum _DecorationType { color, linearGradient, radialGradient }
 
 class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSelector> {
-  late final Map<DecorationType, BoxDecoration> decorations;
-  late DecorationType selectedType;
+  late final Map<_DecorationType, BoxDecoration> decorations;
+  late _DecorationType selectedType;
 
   @override
   void initState() {
     super.initState();
-    decorations = const <DecorationType, BoxDecoration>{
-      DecorationType.color: BoxDecoration(
+    decorations = const <_DecorationType, BoxDecoration>{
+      _DecorationType.color: BoxDecoration(
         color: Colors.red,
       ),
-      DecorationType.linearGradient: BoxDecoration(
+      _DecorationType.linearGradient: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
           colors: [Colors.red, Colors.blue],
         ),
       ),
-      DecorationType.radialGradient: BoxDecoration(
+      _DecorationType.radialGradient: BoxDecoration(
         gradient: RadialGradient(
           colors: [Colors.red, Colors.blue],
         ),
@@ -99,12 +154,12 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
     };
 
     final initDecoration = widget.controller.proxyDataWrapper.value.backgroundDecoration;
-    if (initDecoration.color != null) {
-      selectedType = DecorationType.color;
-    } else if (initDecoration.gradient is LinearGradient) {
-      selectedType = DecorationType.linearGradient;
-    } else if (initDecoration.gradient is RadialGradient) {
-      selectedType = DecorationType.radialGradient;
+    if (_isJustColor(initDecoration)) {
+      selectedType = _DecorationType.color;
+    } else if (_isLinearGradient(initDecoration)) {
+      selectedType = _DecorationType.linearGradient;
+    } else if (_isRadialGradient(initDecoration)) {
+      selectedType = _DecorationType.radialGradient;
     }
   }
 
@@ -156,3 +211,11 @@ class ModernCustomSettingsController extends CustomSettingsController {
     );
   }
 }
+
+///Специально не делаю доп проверки внутри (на наличие цвета и градиенты), т.к. документация [BoxDecoration]
+/// явно гласит - наличие одновременно параметров color и gradient недопустимо - возникнет runtime error
+bool _isJustColor(BoxDecoration decoration) => decoration.color != null;
+
+bool _isLinearGradient(BoxDecoration decoration) => decoration.gradient is LinearGradient;
+
+bool _isRadialGradient(BoxDecoration decoration) => decoration.gradient is RadialGradient;
