@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/info_overlay_controller.dart';
 import 'package:shop_list/controllers/theme_controller.dart';
 import 'package:shop_list/models/models.dart';
+import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
-import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/custom_settings/material_custom_settings.dart';
 import 'package:shop_list/widgets/custom_settings/modern_custom_settings.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
@@ -580,14 +580,30 @@ class _SpecificThemeSettings extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
+                      // Вызов диалогового окна настройки параметров темы
                       child: ElevatedButton(
                         onPressed: () {
                           final controller = MaterialCustomSettingsController(proxyThemeWrapper: themeWrapper);
-                          _createCustomSettingDialog(
-                            body: MaterialCustomSettings(
-                              controller: controller,
+                          ThemeDepDialog(
+                            content: Material(
+                              color: Colors.transparent,
+                              child: MaterialCustomSettings(
+                                controller: controller,
+                              ),
                             ),
-                            controller: controller,
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                  controller.acceptChanges();
+                                },
+                                child: const Text('Сохранить'),
+                              ),
+                              TextButton(
+                                onPressed: Get.back,
+                                child: const Text('Отменить'),
+                              ),
+                            ],
                           );
                         },
                         child: const Text('Настройка теней'),
@@ -599,7 +615,6 @@ class _SpecificThemeSettings extends StatelessWidget {
             );
           },
           modern: (_, themeWrapper, __) {
-            // TODO 24.12.2021 изм. уникальных параметров стиля
             return ModernGlassMorph(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
@@ -610,18 +625,19 @@ class _SpecificThemeSettings extends StatelessWidget {
                       style: theme.textTheme.headline5,
                     ),
                     const SizedBox(height: 20),
-                    TextButton.icon(
-                      onPressed: () {
-                        final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
-                        _createCustomSettingDialog(
-                          body: ModernCustomSettings(
-                            controller: controller,
-                          ),
-                          controller: controller,
-                        );
-                      },
-                      icon: const ModernIcon(Icons.settings),
-                      label: const Text('Настройка фона'),
+                    TouchGetterProvider(
+                      child: TextButton.icon(
+                        onPressed: () {
+                          final controller = ModernCustomSettingsController(proxyThemeWrapper: themeWrapper);
+                          Get.to(
+                            ModernCustomSettings(
+                              controller: controller,
+                            ),
+                          );
+                        },
+                        icon: const ModernIcon(Icons.settings),
+                        label: const Text('Настройка фона'),
+                      ),
                     ),
                   ],
                 ),
@@ -630,32 +646,6 @@ class _SpecificThemeSettings extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-
-  /// Вызов диалогового окна настройки параметров темы
-  void _createCustomSettingDialog({
-    required Widget body,
-    required CustomSettingsController controller,
-  }) {
-    ThemeDepDialog(
-      content: Material(
-        color: Colors.transparent,
-        child: body,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Get.back();
-            controller.acceptChanges();
-          },
-          child: const Text('Сохранить'),
-        ),
-        TextButton(
-          onPressed: Get.back,
-          child: const Text('Отменить'),
-        ),
-      ],
     );
   }
 }

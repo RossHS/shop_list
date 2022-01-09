@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
+import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class ModernCustomSettings extends StatefulWidget {
   const ModernCustomSettings({
@@ -18,23 +20,41 @@ class ModernCustomSettings extends StatefulWidget {
 class _ModernCustomSettingsState extends State<ModernCustomSettings> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _ModernDecorationTypeSelector(widget.controller),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox.square(
-            dimension: 270,
-            child: Obx(() {
-              final themeWrapper = widget.controller.proxyDataWrapper.value;
-              return DecoratedBox(
-                decoration: themeWrapper.backgroundDecoration,
-              );
-            }),
+    // Вывел в локальную переменную, дабы не пересоздавать неизменяемые виджеты
+    final child = Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: ThemeDepAppBar(
+        title: const Text('Настройка фона'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: ModernGlassMorph(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: _ModernDecorationTypeSelector(widget.controller),
+                ),
+              ),
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ModernButton(
+              onPressed: () {
+                Get.back();
+                widget.controller.acceptChanges();
+              },
+              child: const Text('Сохранить'),
+            ),
+          ),
+        ],
+      ),
     );
+    return Obx(() => DecoratedBox(
+          decoration: widget.controller.proxyDataWrapper.value.backgroundDecoration,
+          child: child,
+        ));
   }
 }
 
@@ -92,7 +112,6 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: ToggleButtons(
-        constraints: const BoxConstraints.expand(width: 100),
         children: decorations.values
             .map((decoration) => Ink(
                   width: 100,
