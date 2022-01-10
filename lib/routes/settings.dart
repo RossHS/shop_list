@@ -628,11 +628,9 @@ class _SpecificThemeSettings extends StatelessWidget {
                     TouchGetterProvider(
                       child: TextButton.icon(
                         onPressed: () {
-                          Get.to(
-                            ModernCustomSettings(
-                              themeWrapper: themeWrapper,
-                            ),
-                          );
+                          Get.to(() => ModernCustomSettings(
+                                themeWrapper: themeWrapper,
+                              ));
                         },
                         icon: const ModernIcon(Icons.settings),
                         label: const Text('Настройка фона'),

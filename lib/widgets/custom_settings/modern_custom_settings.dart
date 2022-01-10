@@ -5,6 +5,7 @@ import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
+import 'package:shop_list/widgets/drag_and_set_offset.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
@@ -45,13 +46,14 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
                 child: ModernGlassMorph(
                   child: ListView(
                     padding: const EdgeInsets.all(24.0),
+                    addRepaintBoundaries: true,
                     shrinkWrap: true,
                     children: const [
-                      _ModernDecorationTypeSelector(),
+                      Center(child: _ModernDecorationTypeSelector()),
+                      SizedBox(height: 24),
                       AnimatedSize(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOutCubic,
-                        // alignment: Alignment.topCenter,
                         child: _ModernDecorationBody(),
                       ),
                     ],
@@ -97,37 +99,53 @@ class _ModernDecorationBody extends StatelessWidget {
       /// Набор потенциальных настроек
       if (_isJustColor(modernProxy.backgroundDecoration)) {
         child = ColorPicker(
+          labelTypes: const [],
           enableAlpha: false,
           displayThumbColor: false,
           colorPickerWidth: 300,
           paletteType: PaletteType.hueWheel,
           pickerColor: modernProxy.backgroundDecoration.color!,
-          onColorChanged: (color) {
-            // Проверка служит защитой от того, что пользователь в момент переключения
-            // анимации виджетов может залочить их в полу-позиции
-            if (_isJustColor(controller.proxyDataWrapper.value.backgroundDecoration)) {
-              controller.proxyDataWrapper.value = modernProxy.copyWith(
-                backgroundDecoration: BoxDecoration(color: color),
-              );
-            }
-          },
+          onColorChanged: (color) => controller._updateJustColor(color: color),
         );
       } else if (_isLinearGradient(modernProxy.backgroundDecoration)) {
-        // TODO 10.01.2022 написать реализацию
-        child = const SizedBox(width: 300, height: 10);
+        final linearGradient = modernProxy.backgroundDecoration.gradient as LinearGradient;
+        child = Column(
+          key: const ValueKey('linear'),
+          children: [
+            ListTile(
+              title: const Text('TileMode'),
+              trailing: ThemeDepDropdownButton(
+                value: linearGradient.tileMode,
+                items: TileMode.values
+                    .map<DropdownMenuItem<TileMode>>((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                    .toList(),
+                onChanged: (TileMode? tileMode) => controller._updateLinearGradient(tileMode: tileMode!),
+              ),
+            ),
+            const DragAndSetOffset(),
+          ],
+        );
+      } else if (_isRadialGradient(modernProxy.backgroundDecoration)) {
+        child = Column(
+          key: const ValueKey('radial'),
+          children: [
+            Container(width: 400, height: 244, color: Colors.green),
+            Container(width: 299, height: 244, color: Colors.red),
+            Container(width: 100, height: 244, color: Colors.black),
+          ],
+        );
       } else {
         child = const SizedBox(width: 300, height: 10);
       }
-      return SingleChildScrollView(
-        child: AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          switchInCurve: Curves.easeOutCirc,
-          switchOutCurve: Curves.easeInCirc,
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return ScaleTransition(child: child, scale: animation);
-          },
-          child: child,
-        ),
+
+      return AnimatedSwitcher(
+        duration: const Duration(seconds: 1),
+        switchInCurve: Curves.easeOutCirc,
+        switchOutCurve: Curves.easeInCirc,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return ScaleTransition(child: child, scale: animation);
+        },
+        child: child,
       );
     });
   }
@@ -229,6 +247,41 @@ class ModernCustomSettingsController extends CustomSettingsController {
     themeController.updateModernThemeData(
       backgroundDecoration: proxy.backgroundDecoration,
     );
+  }
+
+  /// Обновление цвета [BoxDecoration]
+  void _updateJustColor({Color? color}) {
+    // Проверка служит защитой от того, что пользователь в момент переключения
+    // анимации виджетов может залочить их в полу-позиции
+    if (_isJustColor(proxyDataWrapper.value.backgroundDecoration)) {
+      proxyDataWrapper.value = proxyDataWrapper.value.copyWith(
+        backgroundDecoration: BoxDecoration(color: color),
+      );
+    }
+  }
+
+  /// установка [LinearGradient] градиенты в [BoxDecoration]
+  void _updateLinearGradient({
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    List<Color>? colors,
+    List<double>? stops,
+    TileMode? tileMode,
+  }) {
+    if (_isLinearGradient(proxyDataWrapper.value.backgroundDecoration)) {
+      final gradient = proxyDataWrapper.value.backgroundDecoration.gradient as LinearGradient;
+      proxyDataWrapper.value = proxyDataWrapper.value.copyWith(
+        backgroundDecoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: begin ?? gradient.begin,
+            end: end ?? gradient.end,
+            colors: colors ?? gradient.colors,
+            stops: stops ?? gradient.stops,
+            tileMode: tileMode ?? gradient.tileMode,
+          ),
+        ),
+      );
+    }
   }
 }
 
