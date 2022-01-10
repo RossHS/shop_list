@@ -207,7 +207,7 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
       child: ToggleButtons(
         children: decorations.values
             .map((decoration) => Ink(
-                  width: 100,
+                  width: 70,
                   height: 50,
                   decoration: decoration,
                 ))
