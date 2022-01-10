@@ -20,15 +20,16 @@ class ModernCustomSettings extends StatefulWidget {
 }
 
 class _ModernCustomSettingsState extends State<ModernCustomSettings> {
+  late final ModernCustomSettingsController controller;
+
   @override
   void initState() {
     super.initState();
-    Get.put(ModernCustomSettingsController(proxyThemeWrapper: widget.themeWrapper));
+    controller = Get.put(ModernCustomSettingsController(proxyThemeWrapper: widget.themeWrapper));
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ModernCustomSettingsController>();
     // Вывел в локальную переменную, дабы не пересоздавать неизменяемые виджеты
     final child = Scaffold(
       backgroundColor: Colors.transparent,
@@ -42,19 +43,18 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
               padding: const EdgeInsets.all(24.0),
               child: Center(
                 child: ModernGlassMorph(
-                  child: Padding(
+                  child: ListView(
                     padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        _ModernDecorationTypeSelector(),
-                        AnimatedSize(
-                          duration: Duration(milliseconds: 300),
-                          alignment: Alignment.topCenter,
-                          child: _ModernDecorationBody(),
-                        ),
-                      ],
-                    ),
+                    shrinkWrap: true,
+                    children: const [
+                      _ModernDecorationTypeSelector(),
+                      AnimatedSize(
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.easeInOutCubic,
+                        // alignment: Alignment.topCenter,
+                        child: _ModernDecorationBody(),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -112,12 +112,22 @@ class _ModernDecorationBody extends StatelessWidget {
             }
           },
         );
+      } else if (_isLinearGradient(modernProxy.backgroundDecoration)) {
+        // TODO 10.01.2022 написать реализацию
+        child = const SizedBox(width: 300, height: 10);
       } else {
         child = const SizedBox(width: 300, height: 10);
       }
-      return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: child,
+      return SingleChildScrollView(
+        child: AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          switchInCurve: Curves.easeOutCirc,
+          switchOutCurve: Curves.easeInCirc,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(child: child, scale: animation);
+          },
+          child: child,
+        ),
       );
     });
   }
