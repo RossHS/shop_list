@@ -122,7 +122,22 @@ class _ModernDecorationBody extends StatelessWidget {
                 onChanged: (TileMode? tileMode) => controller._updateLinearGradient(tileMode: tileMode!),
               ),
             ),
-            const DragAndSetOffset(),
+            DragAndSetOffset(
+              children: [
+                DragOffsetChild.alignment(
+                  alignment: linearGradient.begin as Alignment,
+                  callback: (alignment) {
+                    controller._updateLinearGradient(begin: alignment);
+                  },
+                ),
+                DragOffsetChild.alignment(
+                  alignment: linearGradient.end as Alignment,
+                  callback: (alignment) {
+                    controller._updateLinearGradient(end: alignment);
+                  },
+                ),
+              ],
+            ),
           ],
         );
       } else if (_isRadialGradient(modernProxy.backgroundDecoration)) {
