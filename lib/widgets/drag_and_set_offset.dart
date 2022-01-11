@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_list/models/models.dart';
 import 'package:shop_list/widgets/widget_size.dart';
 
-// TODO 10.01.2022 ДОПИЛИТЬ!
+/// Виджет перемещение [DragOffsetChild] внутри [Stack]
 class DragAndSetOffset extends StatefulWidget {
   const DragAndSetOffset({
     Key? key,
@@ -17,6 +17,9 @@ class DragAndSetOffset extends StatefulWidget {
 class _DragAndSetOffsetState extends State<DragAndSetOffset> {
   Size? size;
   static const double _childRadius = 30;
+
+  /// Вспомогательное состояние для захвата координат начала перетаскивания по экрану
+  final _DragRecognizer _dragRecognizer = _DragRecognizer();
 
   @override
   Widget build(BuildContext context) {
@@ -44,29 +47,48 @@ class _DragAndSetOffsetState extends State<DragAndSetOffset> {
                 clipBehavior: Clip.none,
                 children: [
                   ...widget.children.map<Positioned>(
-                    (element) => Positioned(
-                      // В конце минус половина от радиуса ребенка, чтобы подогнать параметры left и top под центр
-                      left: _calcPosition(size?.width ?? 0, element.offset.dx, element.diapason) - _childRadius / 2,
-                      top: _calcPosition(size?.height ?? 0, element.offset.dy, element.diapason) - _childRadius / 2,
-                      child: Listener(
-                        behavior: HitTestBehavior.deferToChild,
-                        onPointerDown: (details) {
-                          _updateOffset(element, details.delta);
-                        },
-                        onPointerMove: (details) {
-                          _updateOffset(element, details.delta);
-                        },
-                        child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                width: 2,
-                                color: theme.canvasColor.calcTextColor,
+                    (element) {
+                      final left =
+                          _calcPosition(size?.width ?? 0, element.offset.dx, element.diapason) - _childRadius / 2;
+                      final top =
+                          _calcPosition(size?.height ?? 0, element.offset.dy, element.diapason) - _childRadius / 2;
+
+                      return Positioned(
+                        // В конце минус половина от радиуса ребенка, чтобы подогнать параметры left и top под центр
+                        left: left,
+                        top: top,
+                        child: Listener(
+                          behavior: HitTestBehavior.deferToChild,
+                          onPointerDown: (details) {
+                            _dragRecognizer.x = left;
+                            _dragRecognizer.y = top;
+                          },
+                          onPointerMove: (details) {
+                            element.callback(Offset(
+                              _lerpCoordinate(
+                                size!.width,
+                                _dragRecognizer.x + details.localPosition.dx,
+                                element.diapason,
                               ),
-                            ),
-                            child: const SizedBox.square(dimension: _childRadius)),
-                      ),
-                    ),
+                              _lerpCoordinate(
+                                size!.height,
+                                _dragRecognizer.y + details.localPosition.dy,
+                                element.diapason,
+                              ),
+                            ));
+                          },
+                          child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  width: 2,
+                                  color: theme.canvasColor.calcTextColor,
+                                ),
+                              ),
+                              child: const SizedBox.square(dimension: _childRadius)),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -75,16 +97,6 @@ class _DragAndSetOffsetState extends State<DragAndSetOffset> {
         ),
       ),
     );
-  }
-
-  void _updateOffset(DragOffsetChild element, Offset newOffset) {
-    // TODO 11.01.2022 - написать реализцаия, данный вариант зависит от скорости перемещения по экрану
-    final offset = Offset(_calcPosition(size!.width, element.offset.dx, element.diapason) + newOffset.dx,
-        _calcPosition(size!.height, element.offset.dy, element.diapason) + newOffset.dy);
-    element.callback(Offset(
-      _lerpCoordinate(size!.width, offset.dx, element.diapason),
-      _lerpCoordinate(size!.height, offset.dy, element.diapason),
-    ));
   }
 
   /// Масштабный коэффициент
@@ -110,6 +122,17 @@ class _DragAndSetOffsetState extends State<DragAndSetOffset> {
     }
     return (localCoordinate - (side / 2)) / _calcFactor(side, diapason);
   }
+}
+
+/// Вспомогательный класс для фиксации начальной точки перетаскивания по экрану.
+/// Изначально хотел просто использовать Details.delta для расчета перемещений,
+/// но данный способ оказался зависимым от частоты кадров,
+/// т.е. чем быстрее ведешь палец, тем больше точка будет от него отставать.
+/// Таким образом пришел к решению захватывать координату нажатия на экран в методе [Listener.onPointerDown] ,
+/// а после использовать ее при перемещениях в методе [Listener.onPointerMove].
+class _DragRecognizer {
+  double x = 0.0;
+  double y = 0.0;
 }
 
 /// Точка, которую мы будем перемещать по полю [DragAndSetOffset]
