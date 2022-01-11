@@ -54,6 +54,7 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return RepaintBoundary(
       child: Column(
         children: [
@@ -63,7 +64,16 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      _currentColorIndex = index;
+                      if (_currentColorIndex != index) {
+                        _currentColorIndex = index;
+                      } else if (_currentColorIndex == index && _colors.length > widget.min) {
+                        // TODO утром проверить
+                        _colors.removeAt(index);
+                        widget.onChange(_colors);
+                        setState(() {
+                          _currentColorIndex = _colors.length - 1;
+                        });
+                      }
                     });
                   },
                   child: Padding(
@@ -79,11 +89,39 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
                         color: color,
                         shape: BoxShape.circle,
                       ),
-                      child: const SizedBox.square(dimension: 40),
+                      child: SizedBox.square(
+                        dimension: 40,
+                        child: _currentColorIndex == index && _colors.length > widget.min
+                            ? const Icon(Icons.close, color: Colors.redAccent)
+                            : null,
+                      ),
                     ),
                   ),
                 );
-              })
+              }),
+              if (_colors.length < 6)
+                GestureDetector(
+                  onTap: () {
+                    _colors.add(Colors.white);
+                    widget.onChange(_colors);
+                    setState(() {
+                      _currentColorIndex = _colors.length - 1;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: theme.canvasColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox.square(
+                        dimension: 40,
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
           ColorPicker(
