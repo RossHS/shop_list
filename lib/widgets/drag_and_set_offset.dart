@@ -24,75 +24,74 @@ class _DragAndSetOffsetState extends State<DragAndSetOffset> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(_childRadius / 2),
-      child: GestureDetector(
-        onHorizontalDragStart: (_) {},
-        onVerticalDragStart: (_) {},
-        child: WidgetSize(
-          onSizeChange: (size) {
-            if (size != null) {
-              setState(() {
-                this.size = size;
-              });
-            }
-          },
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.canvasColor,
-              ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  ...widget.children.map<Positioned>(
-                    (element) {
-                      final left =
-                          _calcPosition(size?.width ?? 0, element.offset.dx, element.diapason) - _childRadius / 2;
-                      final top =
-                          _calcPosition(size?.height ?? 0, element.offset.dy, element.diapason) - _childRadius / 2;
-
-                      return Positioned(
-                        // В конце минус половина от радиуса ребенка, чтобы подогнать параметры left и top под центр
-                        left: left,
-                        top: top,
-                        child: Listener(
-                          behavior: HitTestBehavior.deferToChild,
-                          onPointerDown: (details) {
-                            _dragRecognizer.x = left;
-                            _dragRecognizer.y = top;
-                          },
-                          onPointerMove: (details) {
-                            element.callback(Offset(
-                              _lerpCoordinate(
-                                size!.width,
-                                _dragRecognizer.x + details.localPosition.dx,
-                                element.diapason,
-                              ),
-                              _lerpCoordinate(
-                                size!.height,
-                                _dragRecognizer.y + details.localPosition.dy,
-                                element.diapason,
-                              ),
-                            ));
-                          },
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 2,
-                                  color: theme.canvasColor.calcTextColor,
-                                ),
-                              ),
-                              child: const SizedBox.square(dimension: _childRadius)),
-                        ),
-                      );
-                    },
+    return WidgetSize(
+      onSizeChange: (size) {
+        if (size != null) {
+          setState(() {
+            this.size = Size(size.width - _childRadius, size.height - _childRadius);
+          });
+        }
+      },
+      child: RepaintBoundary(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.all(_childRadius / 2),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.canvasColor,
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
+              ...widget.children.map<Positioned>(
+                (element) {
+                  final left = _calcPosition(size?.width ?? 0, element.offset.dx, element.diapason);
+                  final top = _calcPosition(size?.height ?? 0, element.offset.dy, element.diapason);
+                  return Positioned(
+                    // В конце минус половина от радиуса ребенка, чтобы подогнать параметры left и top под центр
+                    left: left,
+                    top: top,
+                    child: Listener(
+                      behavior: HitTestBehavior.deferToChild,
+                      onPointerDown: (details) {
+                        _dragRecognizer.x = left;
+                        _dragRecognizer.y = top;
+                      },
+                      onPointerMove: (details) {
+                        element.callback(
+                          Offset(
+                            _lerpCoordinate(
+                              size!.width,
+                              _dragRecognizer.x + details.localPosition.dx - _childRadius / 2,
+                              element.diapason,
+                            ),
+                            _lerpCoordinate(
+                              size!.height,
+                              _dragRecognizer.y + details.localPosition.dy - _childRadius / 2,
+                              element.diapason,
+                            ),
+                          ),
+                        );
+                      },
+                      child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 2,
+                              color: theme.canvasColor.calcTextColor,
+                            ),
+                          ),
+                          child: const SizedBox.square(dimension: _childRadius)),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

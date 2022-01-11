@@ -122,21 +122,27 @@ class _ModernDecorationBody extends StatelessWidget {
                 onChanged: (TileMode? tileMode) => controller._updateLinearGradient(tileMode: tileMode!),
               ),
             ),
-            DragAndSetOffset(
-              children: [
-                DragOffsetChild.alignment(
-                  alignment: linearGradient.begin as Alignment,
-                  callback: (alignment) {
-                    controller._updateLinearGradient(begin: alignment);
-                  },
-                ),
-                DragOffsetChild.alignment(
-                  alignment: linearGradient.end as Alignment,
-                  callback: (alignment) {
-                    controller._updateLinearGradient(end: alignment);
-                  },
-                ),
-              ],
+            // Перехватка скролл событий, чтоб нельзя было прокрутить [ListView]
+            // случайно промахнувшись и схватившись за поле, а не за элемент
+            GestureDetector(
+              onHorizontalDragStart: (_) {},
+              onVerticalDragStart: (_) {},
+              child: DragAndSetOffset(
+                children: [
+                  DragOffsetChild.alignment(
+                    alignment: linearGradient.begin as Alignment,
+                    callback: (alignment) {
+                      controller._updateLinearGradient(begin: alignment);
+                    },
+                  ),
+                  DragOffsetChild.alignment(
+                    alignment: linearGradient.end as Alignment,
+                    callback: (alignment) {
+                      controller._updateLinearGradient(end: alignment);
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         );
