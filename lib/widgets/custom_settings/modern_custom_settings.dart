@@ -7,6 +7,7 @@ import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/drag_and_set_offset.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/palette_color/palette_color_advanced_picker.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class ModernCustomSettings extends StatefulWidget {
@@ -143,6 +144,12 @@ class _ModernDecorationBody extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            PaletteColorAdvancedPicker(
+              colors: linearGradient.colors,
+              onChange: (colors) {
+                controller._updateLinearGradient(colors: colors);
+              },
             ),
           ],
         );
