@@ -30,7 +30,7 @@ class PaletteColorAdvancedPicker extends StatefulWidget {
 
 class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker> {
   /// Позиция выбранного цвета
-  int _index = 0;
+  int _currentColorIndex = 0;
 
   /// Вывел в отдельную переменную коллекцию цветов (копия [widget.colors]), т.к. считаю не лучшей практикой менять
   /// передаваемый список в виджет в качестве аргумента напрямую, ведь это может потенциально
@@ -58,7 +58,33 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
       child: Column(
         children: [
           Row(
-            children: [],
+            children: [
+              ..._colors.mapIndexed<Widget>((index, color) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _currentColorIndex = index;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: _currentColorIndex == index
+                            ? Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              )
+                            : null,
+                        color: color,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const SizedBox.square(dimension: 40),
+                    ),
+                  ),
+                );
+              })
+            ],
           ),
           ColorPicker(
             labelTypes: const [],
@@ -66,9 +92,9 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
             displayThumbColor: false,
             colorPickerWidth: 300,
             paletteType: PaletteType.hueWheel,
-            pickerColor: _colors[_index],
+            pickerColor: _colors[_currentColorIndex],
             onColorChanged: (color) {
-              _colors[_index] = color;
+              _colors[_currentColorIndex] = color;
               widget.onChange(_colors);
             },
           ),
