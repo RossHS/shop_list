@@ -105,7 +105,6 @@ class ThemeWrapperUtils {
 
   /// Формирование json из [BoxDecoration], обратная операция представлена функцией [radialGradientFromJson]
   static Map<String, dynamic> radialGradientToJson(BoxDecoration decoration) {
-    // TODO 06.01.2022 дописать реализацию
     if (decoration.gradient is! RadialGradient) {
       throw ArgumentError('Not a RadialGradient - ${decoration.gradient.runtimeType}');
     }

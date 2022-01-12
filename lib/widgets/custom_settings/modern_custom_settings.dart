@@ -93,6 +93,7 @@ class _ModernDecorationBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ModernCustomSettingsController>();
+    final theme = Theme.of(context);
     return Obx(() {
       final modernProxy = controller.proxyDataWrapper.value;
       final Widget child;
@@ -129,6 +130,7 @@ class _ModernDecorationBody extends StatelessWidget {
               onHorizontalDragStart: (_) {},
               onVerticalDragStart: (_) {},
               child: DragAndSetOffset(
+                backgroundColor: theme.canvasColor.withOpacity(0.24),
                 children: [
                   DragOffsetChild.alignment(
                     alignment: linearGradient.begin as Alignment,

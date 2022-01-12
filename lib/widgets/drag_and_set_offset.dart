@@ -7,8 +7,12 @@ class DragAndSetOffset extends StatefulWidget {
   const DragAndSetOffset({
     Key? key,
     required this.children,
+    this.backgroundColor = Colors.blueGrey,
   }) : super(key: key);
   final List<DragOffsetChild> children;
+
+  /// Цвет заднего фона полотна
+  final Color backgroundColor;
 
   @override
   State<DragAndSetOffset> createState() => _DragAndSetOffsetState();
@@ -43,7 +47,7 @@ class _DragAndSetOffsetState extends State<DragAndSetOffset> {
                   padding: const EdgeInsets.all(_childRadius / 2),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: theme.canvasColor,
+                      color: widget.backgroundColor,
                     ),
                   ),
                 ),
