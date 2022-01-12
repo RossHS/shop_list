@@ -156,12 +156,43 @@ class _ModernDecorationBody extends StatelessWidget {
           ],
         );
       } else if (_isRadialGradient(modernProxy.backgroundDecoration)) {
+        final radialGradient = modernProxy.backgroundDecoration.gradient as RadialGradient;
         child = Column(
           key: const ValueKey('radial'),
           children: [
-            Container(width: 400, height: 244, color: Colors.green),
-            Container(width: 299, height: 244, color: Colors.red),
-            Container(width: 100, height: 244, color: Colors.black),
+            ListTile(
+              title: const Text('TileMode'),
+              trailing: ThemeDepDropdownButton(
+                value: radialGradient.tileMode,
+                items: TileMode.values
+                    .map<DropdownMenuItem<TileMode>>((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                    .toList(),
+                onChanged: (TileMode? tileMode) => controller._updateRadialGradient(tileMode: tileMode!),
+              ),
+            ),
+            // Перехватка скролл событий, чтоб нельзя было прокрутить [ListView]
+            // случайно промахнувшись и схватившись за поле, а не за элемент
+            GestureDetector(
+              onHorizontalDragStart: (_) {},
+              onVerticalDragStart: (_) {},
+              child: DragAndSetOffset(
+                backgroundColor: theme.canvasColor.withOpacity(0.24),
+                children: [
+                  DragOffsetChild.alignment(
+                    alignment: radialGradient.center as Alignment,
+                    callback: (alignment) {
+                      controller._updateRadialGradient(center: alignment);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            PaletteColorAdvancedPicker(
+              colors: radialGradient.colors,
+              onChange: (colors) {
+                controller._updateRadialGradient(colors: colors);
+              },
+            ),
           ],
         );
       } else {
@@ -290,7 +321,7 @@ class ModernCustomSettingsController extends CustomSettingsController {
     }
   }
 
-  /// установка [LinearGradient] градиенты в [BoxDecoration]
+  /// Установка [LinearGradient] градиенты в [BoxDecoration]
   void _updateLinearGradient({
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
@@ -307,6 +338,30 @@ class ModernCustomSettingsController extends CustomSettingsController {
             end: end ?? gradient.end,
             colors: colors ?? gradient.colors,
             stops: stops ?? gradient.stops,
+            tileMode: tileMode ?? gradient.tileMode,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Установка [RadialGradient] градиенты в [BoxDecoration]
+  void _updateRadialGradient({
+    Alignment? center,
+    double? focalRadius,
+    double? radius,
+    List<Color>? colors,
+    TileMode? tileMode,
+  }) {
+    if (_isRadialGradient(proxyDataWrapper.value.backgroundDecoration)) {
+      final gradient = proxyDataWrapper.value.backgroundDecoration.gradient as RadialGradient;
+      proxyDataWrapper.value = proxyDataWrapper.value.copyWith(
+        backgroundDecoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: center ?? gradient.center,
+            focalRadius: focalRadius ?? gradient.focalRadius,
+            radius: radius ?? gradient.radius,
+            colors: colors ?? gradient.colors,
             tileMode: tileMode ?? gradient.tileMode,
           ),
         ),
