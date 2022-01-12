@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:shop_list/controllers/controllers.dart';
 import 'package:shop_list/models/theme_model.dart';
+import 'package:shop_list/utils/optional.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/drag_and_set_offset.dart';
@@ -170,6 +171,15 @@ class _ModernDecorationBody extends StatelessWidget {
                 onChanged: (TileMode? tileMode) => controller._updateRadialGradient(tileMode: tileMode!),
               ),
             ),
+            CheckboxListTile(
+              title: const Text('Focal'),
+              value: radialGradient.focal != null,
+              onChanged: (value) {
+                controller._updateRadialGradient(
+                  focal: Optional(value == true ? Alignment.center : null),
+                );
+              },
+            ),
             // Перехватка скролл событий, чтоб нельзя было прокрутить [ListView]
             // случайно промахнувшись и схватившись за поле, а не за элемент
             GestureDetector(
@@ -184,6 +194,15 @@ class _ModernDecorationBody extends StatelessWidget {
                       controller._updateRadialGradient(center: alignment);
                     },
                   ),
+                  if (radialGradient.focal != null)
+                    DragOffsetChild.alignment(
+                      alignment: (radialGradient.focal as Alignment),
+                      callback: (alignment) {
+                        controller._updateRadialGradient(
+                          focal: Optional<Alignment>(alignment),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -346,8 +365,14 @@ class ModernCustomSettingsController extends CustomSettingsController {
   }
 
   /// Установка [RadialGradient] градиенты в [BoxDecoration]
+  ///
+  /// Использую [Optional], т.к. иногда требуется перезаписать значение на null,
+  /// но стандартная форма использования Alignment? не подходит, т.к. при наличии
+  /// null аргумента [focal] будет использоваться значение из клонируемого объекта,
+  /// что закрывает нам возможность обнуления поля
   void _updateRadialGradient({
     Alignment? center,
+    Optional<Alignment?>? focal,
     double? focalRadius,
     double? radius,
     List<Color>? colors,
@@ -359,6 +384,7 @@ class ModernCustomSettingsController extends CustomSettingsController {
         backgroundDecoration: BoxDecoration(
           gradient: RadialGradient(
             center: center ?? gradient.center,
+            focal: focal != null ? focal.value : gradient.focal,
             focalRadius: focalRadius ?? gradient.focalRadius,
             radius: radius ?? gradient.radius,
             colors: colors ?? gradient.colors,
