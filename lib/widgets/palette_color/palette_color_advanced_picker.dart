@@ -67,9 +67,8 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
                       if (_currentColorIndex != index) {
                         _currentColorIndex = index;
                       } else if (_currentColorIndex == index && _colors.length > widget.min) {
-                        // TODO утром проверить
                         _colors.removeAt(index);
-                        widget.onChange(_colors);
+                        _callBack();
                         setState(() {
                           _currentColorIndex = _colors.length - 1;
                         });
@@ -103,7 +102,7 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
                 GestureDetector(
                   onTap: () {
                     _colors.add(Colors.white);
-                    widget.onChange(_colors);
+                    _callBack();
                     setState(() {
                       _currentColorIndex = _colors.length - 1;
                     });
@@ -133,11 +132,16 @@ class _PaletteColorAdvancedPickerState extends State<PaletteColorAdvancedPicker>
             pickerColor: _colors[_currentColorIndex],
             onColorChanged: (color) {
               _colors[_currentColorIndex] = color;
-              widget.onChange(_colors);
+              _callBack();
             },
           ),
         ],
       ),
     );
+  }
+
+  void _callBack() {
+    // Передаю копию, чтобы не нарушать инкапсуляцию
+    widget.onChange([..._colors]);
   }
 }
