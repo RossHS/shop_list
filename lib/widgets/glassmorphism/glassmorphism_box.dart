@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 /// Оптимизировал дерево, заменив излишний Container на обычный DecoratedBox
 /// Задаю параметры радиуса для ClipRRect, дабы "подрезать" углы bloor эффекта
 /// Добавил различные параметры для кастомизации
-class ModernGlassMorph extends StatelessWidget {
-  const ModernGlassMorph({
+class GlassmorphismBox extends StatelessWidget {
+  const GlassmorphismBox({
     Key? key,
     this.borderRadius = 24,
     this.glassColor = Colors.white,

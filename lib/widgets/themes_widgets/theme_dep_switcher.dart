@@ -17,7 +17,7 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
     this.transitionBuilder = AnimatedSwitcher.defaultTransitionBuilder,
     this.animated90s = defaultBuilderFun,
     this.material = defaultBuilderFun,
-    this.modern = defaultBuilderFun,
+    this.glassmorphism = defaultBuilderFun,
     this.child,
   }) : super(key: key);
   final Duration duration;
@@ -26,7 +26,7 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
   final AnimatedSwitcherTransitionBuilder transitionBuilder;
   final Animated90sFun animated90s;
   final MaterialFun material;
-  final ModernFun modern;
+  final GlassmorphismFun glassmorphism;
   final Widget? child;
 
   @override
@@ -48,8 +48,8 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    return _animatedSwitcher(modern(
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
+    return _animatedSwitcher(glassmorphism(
       context,
       themeWrapper,
       child,

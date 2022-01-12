@@ -24,8 +24,8 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
       _cachedWidget = _CachedWidget<T>(animated90sWidgetImp(Get.context!, appTheme), appTheme);
     } else if (appTheme is MaterialThemeDataWrapper) {
       _cachedWidget = _CachedWidget(materialWidgetImp(Get.context!, appTheme), appTheme);
-    } else if (appTheme is ModernThemeDataWrapper) {
-      _cachedWidget = _CachedWidget(modernWidgetImp(Get.context!, appTheme), appTheme);
+    } else if (appTheme is GlassmorphismThemeDataWrapper) {
+      _cachedWidget = _CachedWidget(glassmorphismWidgetImp(Get.context!, appTheme), appTheme);
     }
   }
 
@@ -62,8 +62,8 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
   }
 
   @override
-  T modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    _updateCachedWidget(themeWrapper: themeWrapper, producer: () => modernWidgetImp(context, themeWrapper));
+  T glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
+    _updateCachedWidget(themeWrapper: themeWrapper, producer: () => glassmorphismWidgetImp(context, themeWrapper));
     return _cachedWidget.widget;
   }
 
@@ -71,7 +71,7 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
 
   T materialWidgetImp(BuildContext context, MaterialThemeDataWrapper themeWrapper);
 
-  T modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper);
+  T glassmorphismWidgetImp(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper);
 }
 
 /// Кэширование виджета [widget] в соответствии с установленной темой [_themeWrapper]

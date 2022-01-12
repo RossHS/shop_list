@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_button.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 /// Самая распространенная кнопка
@@ -34,8 +34,8 @@ class ThemeDepButton extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    return ModernButton(
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
+    return GlassmorphismButton(
       onPressed: onPressed,
       child: child,
     );

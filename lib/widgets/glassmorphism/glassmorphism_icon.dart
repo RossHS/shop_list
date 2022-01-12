@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Обычная Material [Icon], но с добавление glow эффекта
-class ModernIcon extends StatelessWidget {
-  const ModernIcon(
+class GlassmorphismIcon extends StatelessWidget {
+  const GlassmorphismIcon(
     this.icon, {
     Key? key,
   }) : super(key: key);

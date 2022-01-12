@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 
 /// Прозрачный AppBar написанный по аналогии с [AppBar], но с учетом особенности, прозрачный фон.
 /// Решил не использовать [AppBar] с backgroundColor: Colors.transparent, т.к. хочу иметь больший
 /// контроль над виджетом
-class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
-  ModernAppBar({
+class GlassmorphismAppBar extends StatelessWidget implements PreferredSizeWidget {
+  GlassmorphismAppBar({
     Key? key,
     this.leading,
     this.title,
@@ -41,7 +41,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: Get.back,
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          icon: const ModernIcon(Icons.arrow_back),
+          icon: const GlassmorphismIcon(Icons.arrow_back),
         );
 
     leading = ConstrainedBox(

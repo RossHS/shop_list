@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shop_list/widgets/modern/modern_raw_button.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism_raw_button.dart';
 
-class ModernButton extends StatelessWidget {
-  const ModernButton({
+class GlassmorphismButton extends StatelessWidget {
+  const GlassmorphismButton({
     Key? key,
     required this.onPressed,
     required this.child,
@@ -22,7 +22,7 @@ class ModernButton extends StatelessWidget {
       ),
     );
 
-    return ModernRawButton(
+    return GlassmorphismRawButton(
       onPressed: onPressed,
       child: content,
     );

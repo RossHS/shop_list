@@ -42,7 +42,7 @@ class ThemeDepTodoElementMsgInputBox extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(

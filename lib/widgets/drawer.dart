@@ -89,7 +89,7 @@ class AppDrawer extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  modern: (_, __, child) => Material(
+                                  glassmorphism: (_, __, child) => Material(
                                     elevation: 20,
                                     color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(300),

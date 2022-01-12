@@ -111,7 +111,7 @@ class _BodyState extends State<_Body> {
                               ),
                             ),
                           ),
-                          modern: (_, __, child) => Material(
+                          glassmorphism: (_, __, child) => Material(
                             elevation: 10,
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(300),

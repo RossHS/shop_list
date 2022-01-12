@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepInfoOverlay extends ThemeDepWidgetBase {
@@ -52,11 +52,11 @@ class ThemeDepInfoOverlay extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: ModernGlassMorph(
+        child: GlassmorphismBox(
           child: _OverlayContent(
             title: title,
             msg: msg,

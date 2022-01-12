@@ -19,7 +19,7 @@ class ThemeController extends GetxController {
   late final List<String> appThemeList = [
     Animated90sThemeDataWrapper.appThemeStorageValue,
     MaterialThemeDataWrapper.appThemeStorageValue,
-    ModernThemeDataWrapper.appThemeStorageValue,
+    GlassmorphismThemeDataWrapper.appThemeStorageValue,
   ];
 
   /// Тип темы приложения системная/светлая/темная
@@ -98,8 +98,8 @@ class ThemeController extends GetxController {
         return Animated90sThemeDataWrapper.fromGetStorage(storage);
       case MaterialThemeDataWrapper.appThemeStorageValue:
         return MaterialThemeDataWrapper.fromGetStorage(storage);
-      case ModernThemeDataWrapper.appThemeStorageValue:
-        return ModernThemeDataWrapper.fromGetStorage(storage);
+      case GlassmorphismThemeDataWrapper.appThemeStorageValue:
+        return GlassmorphismThemeDataWrapper.fromGetStorage(storage);
       default:
         return Animated90sThemeDataWrapper.fromGetStorage(storage);
     }
@@ -168,11 +168,11 @@ class ThemeController extends GetxController {
     );
   }
 
-  void updateModernThemeData({
+  void updateGlassmorphismThemeData({
     BoxDecoration? backgroundDecoration,
   }) {
-    if (appTheme.value is! ModernThemeDataWrapper) return;
-    final wrapper = appTheme.value as ModernThemeDataWrapper;
+    if (appTheme.value is! GlassmorphismThemeDataWrapper) return;
+    final wrapper = appTheme.value as GlassmorphismThemeDataWrapper;
     appTheme.value = wrapper.copyWith(
       backgroundDecoration: backgroundDecoration,
     );

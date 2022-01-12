@@ -15,9 +15,9 @@ typedef MaterialFun = Widget Function(
   Widget? child,
 );
 
-typedef ModernFun = Widget Function(
+typedef GlassmorphismFun = Widget Function(
   BuildContext context,
-  ModernThemeDataWrapper themeWrapper,
+  GlassmorphismThemeDataWrapper themeWrapper,
   Widget? child,
 );
 
@@ -76,8 +76,8 @@ abstract class ThemeDepWidgetBase extends StatelessWidget {
           return animated90sWidget(context, appTheme);
         } else if (appTheme is MaterialThemeDataWrapper) {
           return materialWidget(context, appTheme);
-        } else if (appTheme is ModernThemeDataWrapper) {
-          return modernWidget(context, appTheme);
+        } else if (appTheme is GlassmorphismThemeDataWrapper) {
+          return glassmorphismWidget(context, appTheme);
         }
         return throw UnsupportedError('Unsupported theme - ${appTheme.runtimeType}');
       },
@@ -91,7 +91,7 @@ abstract class ThemeDepWidgetBase extends StatelessWidget {
   Widget materialWidget(BuildContext context, MaterialThemeDataWrapper themeWrapper);
 
   @protected
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper);
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper);
 }
 
 /// Т.к. нам не всегда необходим именно виджет, как пример - вызов диалогового окна [ThemeDepDialog].
@@ -107,8 +107,8 @@ abstract class ThemeBaseClass {
       animated90s(appTheme);
     } else if (appTheme is MaterialThemeDataWrapper) {
       material(appTheme);
-    } else if (appTheme is ModernThemeDataWrapper) {
-      modern(appTheme);
+    } else if (appTheme is GlassmorphismThemeDataWrapper) {
+      glassmorphism(appTheme);
     } else {
       throw UnsupportedError('Unsupported theme - ${appTheme.runtimeType}');
     }
@@ -118,5 +118,5 @@ abstract class ThemeBaseClass {
 
   void material(MaterialThemeDataWrapper themeWrapper);
 
-  void modern(ModernThemeDataWrapper themeWrapper);
+  void glassmorphism(GlassmorphismThemeDataWrapper themeWrapper);
 }

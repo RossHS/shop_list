@@ -6,9 +6,9 @@ import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s_painter_square.dart';
 import 'package:shop_list/widgets/animated_decorated_box.dart';
+import 'package:shop_list/widgets/custom_settings/glassmorphism_custom_settings.dart';
 import 'package:shop_list/widgets/custom_settings/material_custom_settings.dart';
-import 'package:shop_list/widgets/custom_settings/modern_custom_settings.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_customizer_picker.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_selector.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
@@ -317,7 +317,7 @@ class _ColorPaletteBox extends StatelessWidget {
     // но не стал ради одного участка кода совершать Overkill
     ColorChangeController colorController;
     ColorScheme Function() generateColorScheme;
-    if (appTheme is ModernThemeDataWrapper) {
+    if (appTheme is GlassmorphismThemeDataWrapper) {
       colorController = ColorChangeController(
         colors: {
           'Основной': colorScheme.primary,
@@ -614,8 +614,8 @@ class _SpecificThemeSettings extends StatelessWidget {
               ),
             );
           },
-          modern: (_, themeWrapper, __) {
-            return ModernGlassMorph(
+          glassmorphism: (_, themeWrapper, __) {
+            return GlassmorphismBox(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: Column(
@@ -628,11 +628,11 @@ class _SpecificThemeSettings extends StatelessWidget {
                     TouchGetterProvider(
                       child: TextButton.icon(
                         onPressed: () {
-                          Get.to(() => ModernCustomSettings(
+                          Get.to(() => GlassmorphismCustomSettings(
                                 themeWrapper: themeWrapper,
                               ));
                         },
-                        icon: const ModernIcon(Icons.settings),
+                        icon: const GlassmorphismIcon(Icons.settings),
                         label: const Text('Настройка фона'),
                       ),
                     ),

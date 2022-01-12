@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shop_list/widgets/modern/modern_raw_button.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism_raw_button.dart';
 
-class ModernFloatingActionButton extends StatelessWidget {
-  const ModernFloatingActionButton({
+class GlassmorphismFloatingActionButton extends StatelessWidget {
+  const GlassmorphismFloatingActionButton({
     Key? key,
     required this.onPressed,
     required this.child,
@@ -20,7 +20,7 @@ class ModernFloatingActionButton extends StatelessWidget {
 
     return ConstrainedBox(
       constraints: const BoxConstraints.tightFor(height: 56.0, width: 56.0),
-      child: ModernRawButton(
+      child: GlassmorphismRawButton(
         onPressed: onPressed,
         child: IconTheme.merge(
           data: IconThemeData(color: foregroundColor),

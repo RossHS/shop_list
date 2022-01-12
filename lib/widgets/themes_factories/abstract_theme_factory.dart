@@ -16,7 +16,7 @@ abstract class ThemeFactory {
       return Animated90sFactory(themeDataWrapper);
     } else if (themeDataWrapper is MaterialThemeDataWrapper) {
       return MaterialThemeFactory(themeDataWrapper);
-    } else if (themeDataWrapper is ModernThemeDataWrapper) {
+    } else if (themeDataWrapper is GlassmorphismThemeDataWrapper) {
       return MaterialThemeFactory(const MaterialThemeDataWrapper(
         textTheme: TextTheme(),
         lightColorScheme: ColorScheme.light(),

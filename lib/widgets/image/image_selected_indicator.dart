@@ -78,7 +78,7 @@ class _AnimatedIconWrapper extends StatelessWidget {
           child: child!,
         ),
       ),
-      modern: (_, __, child) => Container(
+      glassmorphism: (_, __, child) => Container(
         height: height,
         width: width,
         decoration: BoxDecoration(

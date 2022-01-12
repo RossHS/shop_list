@@ -3,12 +3,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:logging/logging.dart';
 import 'package:shop_list/models/theme_model.dart';
 
-final _log = Logger('ModernThemeDataWrapper');
+final _log = Logger('GlassmorphismThemeDataWrapper');
 
-class ModernThemeDataWrapper extends ThemeDataWrapper {
-  static const appThemeStorageValue = 'Modern';
+class GlassmorphismThemeDataWrapper extends ThemeDataWrapper {
+  static const appThemeStorageValue = 'Glassmorphism';
 
-  const ModernThemeDataWrapper({
+  const GlassmorphismThemeDataWrapper({
     required TextTheme textTheme,
     required ColorScheme lightColorScheme,
     required ColorScheme darkColorScheme,
@@ -19,12 +19,12 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
           darkColorScheme: darkColorScheme,
         );
 
-  factory ModernThemeDataWrapper.fromGetStorage(GetStorage storage) {
+  factory GlassmorphismThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));
     final lightThemeKey = storage.read<String>('$appThemeStorageValue-light') ?? 'default light 1';
     final darkThemeKey = storage.read<String>('$appThemeStorageValue-dark') ?? 'default dark 1';
     final boxDecoration = _parseDecorationBox(storage);
-    return ModernThemeDataWrapper(
+    return GlassmorphismThemeDataWrapper(
       textTheme: textTheme,
       lightColorScheme: _getLightColorSchemesMap[lightThemeKey]!,
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
@@ -73,7 +73,7 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   Map<String, ColorScheme> get darkColorSchemesMap => _getDarkColorSchemesMap;
 
   @override
-  String get themePrefix => ModernThemeDataWrapper.appThemeStorageValue;
+  String get themePrefix => GlassmorphismThemeDataWrapper.appThemeStorageValue;
 
   /// Задний фон
   final BoxDecoration backgroundDecoration;
@@ -85,13 +85,13 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   }
 
   @override
-  ModernThemeDataWrapper copyWith({
+  GlassmorphismThemeDataWrapper copyWith({
     TextTheme? textTheme,
     ColorScheme? lightColorScheme,
     ColorScheme? darkColorScheme,
     BoxDecoration? backgroundDecoration,
   }) {
-    return ModernThemeDataWrapper(
+    return GlassmorphismThemeDataWrapper(
       textTheme: textTheme ?? this.textTheme,
       lightColorScheme: lightColorScheme ?? this.lightColorScheme,
       darkColorScheme: darkColorScheme ?? this.darkColorScheme,
@@ -103,7 +103,7 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   bool operator ==(Object other) =>
       identical(this, other) ||
       super == other &&
-          other is ModernThemeDataWrapper &&
+          other is GlassmorphismThemeDataWrapper &&
           runtimeType == other.runtimeType &&
           backgroundDecoration == other.backgroundDecoration;
 
@@ -111,8 +111,8 @@ class ModernThemeDataWrapper extends ThemeDataWrapper {
   int get hashCode => super.hashCode ^ backgroundDecoration.hashCode;
 }
 
-const _decorationTypeKey = '${ModernThemeDataWrapper.appThemeStorageValue}-decoration-type';
-const _decorationMapKey = '${ModernThemeDataWrapper.appThemeStorageValue}-decoration-map';
+const _decorationTypeKey = '${GlassmorphismThemeDataWrapper.appThemeStorageValue}-decoration-type';
+const _decorationMapKey = '${GlassmorphismThemeDataWrapper.appThemeStorageValue}-decoration-map';
 
 void _writeToGetStorageDecoration(GetStorage storage, BoxDecoration decoration) {
   if (decoration.color != null) {

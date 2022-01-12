@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
-/// Обоснованием для появления данного виджета служит задача установить градиентный задний фон темы [ModernThemeDataWrapper].
+/// Обоснованием для появления данного виджета служит задача установить градиентный задний фон темы [GlassmorphismThemeDataWrapper].
 /// Конечно есть "простой" вариант: просто проверять текущую тему в каждом маршруте и после устанавливать градиентный фон
 /// в зависимости от темы, но данный подход чреват ошибками из-за постоянного дублирования.
 /// Поэтому я выбрал текущее решение, которое чуть менее производительное/ для других тем рудиментарное,
@@ -20,7 +20,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
   final Widget? body;
   final Widget? floatingActionButton;
 
-  /// Т.к. в методе [modernWidget] добавляется новый виджет в дереве, что приводит к пересозданию всего поддерева
+  /// Т.к. в методе [glassmorphismWidget] добавляется новый виджет в дереве, что приводит к пересозданию всего поддерева
   /// (новые element subtree, renderObjects, state и т.д.), то для сохранения поддерева при смене родителя я использую
   /// GlobalKey [scaffoldGlobalKey].
   ///
@@ -49,7 +49,7 @@ class ThemeDepScaffold extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
     return DecoratedBox(
       decoration: themeWrapper.backgroundDecoration,
       child: Scaffold(

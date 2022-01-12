@@ -9,13 +9,13 @@ class ThemeDepBuilder extends ThemeDepWidgetBase {
     Key? key,
     this.animated90s = defaultBuilderFun,
     this.material = defaultBuilderFun,
-    this.modern = defaultBuilderFun,
+    this.glassmorphism = defaultBuilderFun,
     this.child,
   }) : super(key: key);
 
   final Animated90sFun animated90s;
   final MaterialFun material;
-  final ModernFun modern;
+  final GlassmorphismFun glassmorphism;
   final Widget? child;
 
   @override
@@ -37,8 +37,8 @@ class ThemeDepBuilder extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
-    return modern(
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
+    return glassmorphism(
       context,
       themeWrapper,
       child,

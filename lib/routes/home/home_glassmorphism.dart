@@ -7,26 +7,26 @@ import 'package:shop_list/models/models.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/avatar.dart';
 import 'package:shop_list/widgets/carousel.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 final _formatterDate = DateFormat('dd MM yyyy');
 final _formatterTime = DateFormat('HH:mm:ss');
 
-/// Основное рабочее окно в теме [ModernThemeDataWrapper]
-class HomeModern extends StatelessWidget {
-  const HomeModern({Key? key}) : super(key: key);
+/// Основное рабочее окно в теме [GlassmorphismThemeDataWrapper]
+class HomeGlassmorphism extends StatelessWidget {
+  const HomeGlassmorphism({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ThemeDepScaffold(
       body: const _Body(),
-      // Т.к. данный маршрут уникальный для темы Modern, то и буду стараться использовать ее виджеты,
+      // Т.к. данный маршрут уникальный для темы Glassmorphism, то и буду стараться использовать ее виджеты,
       // а не универсальные, ради повышения производительности
       floatingActionButton: TouchGetterProvider(
-        child: ModernFloatingActionButton(
+        child: GlassmorphismFloatingActionButton(
           onPressed: _openCreateTodo,
-          child: const ModernIcon(Icons.create),
+          child: const GlassmorphismIcon(Icons.create),
         ),
       ),
     );

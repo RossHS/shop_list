@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/models/models.dart';
 
-/// Тесты функций сериализации [BoxDecoration] используемых классом [ModernThemeDataWrapper]
+/// Тесты функций сериализации [BoxDecoration] используемых классом [GlassmorphismThemeDataWrapper]
 void main() {
   final storage = GetStorage();
   // Не использую просто Colors.blue, т.к. это Material обертка над обычным Color,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shop_list/models/models.dart';
 
-/// Основание для создания кнопок стиля Modern
-class ModernRawButton extends StatelessWidget {
-  const ModernRawButton({
+/// Основание для создания кнопок стиля [GlassmorphismThemeDataWrapper]
+class GlassmorphismRawButton extends StatelessWidget {
+  const GlassmorphismRawButton({
     Key? key,
     required this.onPressed,
     required this.child,

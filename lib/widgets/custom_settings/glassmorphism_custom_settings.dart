@@ -7,29 +7,29 @@ import 'package:shop_list/utils/optional.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/drag_and_set_offset.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_advanced_picker.dart';
 import 'package:shop_list/widgets/slider_with_label.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
-class ModernCustomSettings extends StatefulWidget {
-  const ModernCustomSettings({
+class GlassmorphismCustomSettings extends StatefulWidget {
+  const GlassmorphismCustomSettings({
     Key? key,
     required this.themeWrapper,
   }) : super(key: key);
-  final ModernThemeDataWrapper themeWrapper;
+  final GlassmorphismThemeDataWrapper themeWrapper;
 
   @override
-  State<ModernCustomSettings> createState() => _ModernCustomSettingsState();
+  State<GlassmorphismCustomSettings> createState() => _GlassmorphismCustomSettingsState();
 }
 
-class _ModernCustomSettingsState extends State<ModernCustomSettings> {
-  late final ModernCustomSettingsController controller;
+class _GlassmorphismCustomSettingsState extends State<GlassmorphismCustomSettings> {
+  late final GlassmorphismCustomSettingsController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = Get.put(ModernCustomSettingsController(proxyThemeWrapper: widget.themeWrapper));
+    controller = Get.put(GlassmorphismCustomSettingsController(proxyThemeWrapper: widget.themeWrapper));
   }
 
   @override
@@ -46,18 +46,18 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Center(
-                child: ModernGlassMorph(
+                child: GlassmorphismBox(
                   child: ListView(
                     padding: const EdgeInsets.all(24.0),
                     addRepaintBoundaries: true,
                     shrinkWrap: true,
                     children: const [
-                      Center(child: _ModernDecorationTypeSelector()),
+                      Center(child: _GlassmorphismDecorationTypeSelector()),
                       SizedBox(height: 24),
                       AnimatedSize(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOutCubic,
-                        child: _ModernDecorationBody(),
+                        child: _GlassmorphismDecorationBody(),
                       ),
                     ],
                   ),
@@ -68,7 +68,7 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TouchGetterProvider(
-              child: ModernButton(
+              child: GlassmorphismButton(
                 onPressed: () {
                   Get.back();
                   controller.acceptChanges();
@@ -87,32 +87,32 @@ class _ModernCustomSettingsState extends State<ModernCustomSettings> {
   }
 }
 
-class _ModernDecorationBody extends StatelessWidget {
-  const _ModernDecorationBody({
+class _GlassmorphismDecorationBody extends StatelessWidget {
+  const _GlassmorphismDecorationBody({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ModernCustomSettingsController>();
+    final controller = Get.find<GlassmorphismCustomSettingsController>();
     final theme = Theme.of(context);
     return Obx(() {
-      final modernProxy = controller.proxyDataWrapper.value;
+      final glassmorphismProxy = controller.proxyDataWrapper.value;
       final Widget child;
 
       /// Набор потенциальных настроек
-      if (_isJustColor(modernProxy.backgroundDecoration)) {
+      if (_isJustColor(glassmorphismProxy.backgroundDecoration)) {
         child = ColorPicker(
           labelTypes: const [],
           enableAlpha: false,
           displayThumbColor: false,
           colorPickerWidth: 300,
           paletteType: PaletteType.hueWheel,
-          pickerColor: modernProxy.backgroundDecoration.color!,
+          pickerColor: glassmorphismProxy.backgroundDecoration.color!,
           onColorChanged: (color) => controller._updateJustColor(color: color),
         );
-      } else if (_isLinearGradient(modernProxy.backgroundDecoration)) {
-        final linearGradient = modernProxy.backgroundDecoration.gradient as LinearGradient;
+      } else if (_isLinearGradient(glassmorphismProxy.backgroundDecoration)) {
+        final linearGradient = glassmorphismProxy.backgroundDecoration.gradient as LinearGradient;
         child = Column(
           key: const ValueKey('linear'),
           children: [
@@ -157,8 +157,8 @@ class _ModernDecorationBody extends StatelessWidget {
             ),
           ],
         );
-      } else if (_isRadialGradient(modernProxy.backgroundDecoration)) {
-        final radialGradient = modernProxy.backgroundDecoration.gradient as RadialGradient;
+      } else if (_isRadialGradient(glassmorphismProxy.backgroundDecoration)) {
+        final radialGradient = glassmorphismProxy.backgroundDecoration.gradient as RadialGradient;
         child = Column(
           key: const ValueKey('radial'),
           children: [
@@ -252,27 +252,27 @@ class _ModernDecorationBody extends StatelessWidget {
 }
 
 /// Выбор типа декорации
-class _ModernDecorationTypeSelector extends StatefulWidget {
-  const _ModernDecorationTypeSelector({
+class _GlassmorphismDecorationTypeSelector extends StatefulWidget {
+  const _GlassmorphismDecorationTypeSelector({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<_ModernDecorationTypeSelector> createState() => _ModernDecorationTypeSelectorState();
+  State<_GlassmorphismDecorationTypeSelector> createState() => _GlassmorphismDecorationTypeSelectorState();
 }
 
 /// Все допустимые варианты стиля DecorationBox
 enum _DecorationType { color, linearGradient, radialGradient }
 
-class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSelector> {
+class _GlassmorphismDecorationTypeSelectorState extends State<_GlassmorphismDecorationTypeSelector> {
   late final Map<_DecorationType, BoxDecoration> decorations;
   late _DecorationType selectedType;
-  late final ModernCustomSettingsController controller;
+  late final GlassmorphismCustomSettingsController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = Get.find<ModernCustomSettingsController>();
+    controller = Get.find<GlassmorphismCustomSettingsController>();
     decorations = const <_DecorationType, BoxDecoration>{
       _DecorationType.color: BoxDecoration(
         color: Colors.red,
@@ -331,20 +331,20 @@ class _ModernDecorationTypeSelectorState extends State<_ModernDecorationTypeSele
   }
 }
 
-/// Контроллер тонкой настройки темы [ModernThemeDataWrapper], содержащий в себе временные изменения темы.
+/// Контроллер тонкой настройки темы [GlassmorphismThemeDataWrapper], содержащий в себе временные изменения темы.
 /// Для принятия изменений следует вызывать метод [acceptChanges]
-class ModernCustomSettingsController extends CustomSettingsController {
-  ModernCustomSettingsController({
-    required ModernThemeDataWrapper proxyThemeWrapper,
+class GlassmorphismCustomSettingsController extends CustomSettingsController {
+  GlassmorphismCustomSettingsController({
+    required GlassmorphismThemeDataWrapper proxyThemeWrapper,
   }) : proxyDataWrapper = proxyThemeWrapper.obs;
 
-  final Rx<ModernThemeDataWrapper> proxyDataWrapper;
+  final Rx<GlassmorphismThemeDataWrapper> proxyDataWrapper;
 
   @override
   void acceptChanges() {
     final themeController = Get.find<ThemeController>();
     final proxy = proxyDataWrapper.value;
-    themeController.updateModernThemeData(
+    themeController.updateGlassmorphismThemeData(
       backgroundDecoration: proxy.backgroundDecoration,
     );
   }

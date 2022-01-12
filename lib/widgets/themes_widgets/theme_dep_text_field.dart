@@ -52,7 +52,7 @@ class ThemeDepTextField extends ThemeDepWidgetBase {
   }
 
   @override
-  Widget modernWidget(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+  Widget glassmorphismWidget(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
     return MaterialCustomTextField(
       controller: controller,
       inputValidator: inputValidator,

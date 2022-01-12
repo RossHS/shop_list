@@ -27,7 +27,7 @@ class ThemeDepDialog extends ThemeBaseClass {
   }
 
   @override
-  void modern(ModernThemeDataWrapper themeWrapper) {
+  void glassmorphism(GlassmorphismThemeDataWrapper themeWrapper) {
     _showDialog();
   }
 

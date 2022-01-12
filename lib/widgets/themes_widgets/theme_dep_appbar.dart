@@ -4,7 +4,7 @@ import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/utils/routes_transition.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
-import 'package:shop_list/widgets/modern/modern.dart';
+import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep_cached.dart';
 
 class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements PreferredSizeWidget {
@@ -65,18 +65,18 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
   }
 
   @override
-  PreferredSizeWidget modernWidgetImp(BuildContext context, ModernThemeDataWrapper themeWrapper) {
+  PreferredSizeWidget glassmorphismWidgetImp(BuildContext context, GlassmorphismThemeDataWrapper themeWrapper) {
     final leading = this.leading ??
         // Обеспечение начальной точки обратной анимации круга [CustomCircleTransition]
         TouchGetterProvider(
           child: IconButton(
             onPressed: Get.back,
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-            icon: const ModernIcon(Icons.arrow_back),
+            icon: const GlassmorphismIcon(Icons.arrow_back),
           ),
         );
 
-    return ModernAppBar(
+    return GlassmorphismAppBar(
       leading: leading,
       title: title,
       actions: actions,
