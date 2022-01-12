@@ -25,11 +25,6 @@ class SliderWithLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    DefaultTextStyle(
-      style: theme.textTheme.subtitle1!,
-      child: label!,
-    );
-
     Widget valueBlock = FittedBox(
       child: Text(
         value.toStringAsFixed(2),
@@ -42,7 +37,9 @@ class SliderWithLabel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           valueBlock,
-          FittedBox(fit: BoxFit.fitWidth, child: label!),
+          Expanded(
+            child: FittedBox(fit: BoxFit.fitWidth, child: label!),
+          ),
         ],
       );
     }
@@ -63,8 +60,8 @@ class SliderWithLabel extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: SizedBox(
-            width: 70,
-            height: 45,
+            width: 80,
+            height: 50,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: valueBlock,

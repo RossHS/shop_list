@@ -216,6 +216,7 @@ class _ModernDecorationBody extends StatelessWidget {
                 controller._updateRadialGradient(radius: radius);
               },
             ),
+            const SizedBox(height: 5),
             SliderWithLabel(
               label: const Text('Фоксн. радиус'),
               value: radialGradient.focalRadius,
