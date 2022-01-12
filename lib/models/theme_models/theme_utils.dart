@@ -94,6 +94,7 @@ class ThemeWrapperUtils {
     return BoxDecoration(
       gradient: RadialGradient(
         center: Alignment(json['center_x'] as double, json['center_y'] as double),
+        focal: _createAlignment(json['focal_x'] as double?, json['focal_y'] as double?),
         focalRadius: json['focalRadius'] as double,
         radius: json['radius'] as double,
         stops: (json['stops'] as List<dynamic>?)?.map((e) => e as double).toList(),
@@ -112,6 +113,8 @@ class ThemeWrapperUtils {
     return <String, dynamic>{
       'center_x': (gradient.center as Alignment).x,
       'center_y': (gradient.center as Alignment).y,
+      'focal_x': (gradient.focal as Alignment?)?.x,
+      'focal_y': (gradient.focal as Alignment?)?.y,
       'focalRadius': gradient.focalRadius,
       'radius': gradient.radius,
       'stops': gradient.stops,
@@ -119,4 +122,7 @@ class ThemeWrapperUtils {
       'tileMode': gradient.tileMode.name,
     };
   }
+
+  /// Вспомогательный метод возвращающий nullable Alignment, необходим, чтобы не засорять методы парсинга JSON
+  static Alignment? _createAlignment(double? x, double? y) => x != null && y != null ? Alignment(x, y) : null;
 }

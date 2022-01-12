@@ -43,8 +43,25 @@ void main() {
         focalRadius: 0.32,
         radius: 0.2,
         stops: const [0, 0.2, 1],
+        focal: const Alignment(0.2, 0.33),
         colors: [Colors.white, Colors.black, Colors.green.shade50],
         tileMode: TileMode.clamp,
+      ),
+    ),
+    toJson: ThemeWrapperUtils.radialGradientToJson,
+    fromJson: ThemeWrapperUtils.radialGradientFromJson,
+    storage: storage,
+  );
+
+  _test(
+    msg: 'RadialGradient BoxDecoration test with null focal and stops',
+    decoration: BoxDecoration(
+      gradient: RadialGradient(
+        center: Alignment.topLeft,
+        focalRadius: 0.12,
+        radius: 0.55,
+        colors: [Colors.white, Colors.black, Colors.green.shade50],
+        tileMode: TileMode.mirror,
       ),
     ),
     toJson: ThemeWrapperUtils.radialGradientToJson,
