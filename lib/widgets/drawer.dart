@@ -126,11 +126,6 @@ class AppDrawer extends StatelessWidget {
                           title: const Text('Settings'),
                         ),
                       ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: authController.signOut,
-                        child: const Text('Sign out'),
-                      ),
                     ],
                   ),
                 ),

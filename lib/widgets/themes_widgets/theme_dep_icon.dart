@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:shop_list/custom_icons.dart';
 import 'package:shop_list/models/theme_model.dart';
@@ -37,8 +39,8 @@ class ThemeDepIcon extends ThemeDepWidgetBase {
     return modern(themeWrapper);
   }
 
-  /// Просто вспомогательный метод для упрощения вызова
-  static AnimatedIcon90s _createIcon(List<IconData> iconsData, Animated90sThemeDataWrapper themeWrapper) {
+  /// Просто вспомогательный метод для упрощения создания [AnimatedIcon90s]
+  static AnimatedIcon90s _createAnimatedIcon(List<IconData> iconsData, Animated90sThemeDataWrapper themeWrapper) {
     return AnimatedIcon90s(
       iconsList: iconsData,
       duration: themeWrapper.animationDuration,
@@ -47,56 +49,61 @@ class ThemeDepIcon extends ThemeDepWidgetBase {
 
   static Widget get create => ThemeDepIcon._(
         material: (_) => const Icon(Icons.create),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.create, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.create, themeWrapper),
         modern: (_) => const ModernIcon(Icons.create),
       );
 
   static Widget get user => ThemeDepIcon._(
         material: (_) => const Icon(Icons.account_circle),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.user, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.user, themeWrapper),
         modern: (_) => const ModernIcon(Icons.account_circle),
       );
 
   static Widget get lock => ThemeDepIcon._(
         material: (_) => const Icon(Icons.lock),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.lock, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.lock, themeWrapper),
         modern: (_) => const ModernIcon(Icons.lock),
       );
 
   static Widget get sort => ThemeDepIcon._(
         material: (_) => const Icon(Icons.sort),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.sort, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.sort, themeWrapper),
         modern: (_) => const ModernIcon(Icons.sort),
       );
 
   static Widget get close => ThemeDepIcon._(
         material: (_) => const Icon(Icons.close),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.close, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.close, themeWrapper),
         modern: (_) => const ModernIcon(Icons.close),
       );
 
   static Widget get dehaze => ThemeDepIcon._(
         material: (_) => const Icon(Icons.dehaze),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.dehaze, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.dehaze, themeWrapper),
         modern: (_) => const ModernIcon(Icons.dehaze),
       );
 
   static Widget get settings => ThemeDepIcon._(
         material: (_) => const Icon(Icons.settings),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.settings, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.settings, themeWrapper),
         modern: (_) => const ModernIcon(Icons.settings),
       );
 
-  // ignore: non_constant_identifier_names
   static Widget get file_upload => ThemeDepIcon._(
         material: (_) => const Icon(Icons.file_upload),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.file_upload, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.file_upload, themeWrapper),
         modern: (_) => const ModernIcon(Icons.file_upload),
       );
 
   static Widget get send => ThemeDepIcon._(
         material: (_) => const Icon(Icons.send),
-        animated90s: (themeWrapper) => _createIcon(CustomIcons.send, themeWrapper),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.send, themeWrapper),
         modern: (_) => const ModernIcon(Icons.send),
+      );
+
+  static Widget get exit_to_app => ThemeDepIcon._(
+        material: (_) => const Icon(Icons.exit_to_app),
+        animated90s: (themeWrapper) => _createAnimatedIcon(CustomIcons.exit_to_app, themeWrapper),
+        modern: (_) => const ModernIcon(Icons.exit_to_app),
       );
 }

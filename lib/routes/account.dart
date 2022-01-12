@@ -19,6 +19,26 @@ class Account extends StatelessWidget {
     return ThemeDepScaffold(
       appBar: ThemeDepAppBar(
         title: const Text('Аккаунт'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ThemeDepDialog(
+                text: 'Выйти из аккаунта?',
+                actions: [
+                  TextButton(
+                    onPressed: authController.signOut,
+                    child: const Text('Да'),
+                  ),
+                  TextButton(
+                    onPressed: Get.back,
+                    child: const Text('Нет'),
+                  ),
+                ],
+              );
+            },
+            icon: ThemeDepIcon.exit_to_app,
+          ),
+        ],
       ),
       body: Center(
         child: Obx(() {

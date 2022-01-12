@@ -122,4 +122,14 @@ class CustomIcons {
   static const IconData send_7 = IconData(0xe84d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData send_8 = IconData(0xe84e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const List<IconData> send = [send_1, send_2, send_3, send_4, send_5, send_6, send_7, send_8];
+
+  static const IconData exit_to_app_1 = IconData(0xe850, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_2 = IconData(0xe851, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_3 = IconData(0xe852, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_4 = IconData(0xe853, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_5 = IconData(0xe854, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_6 = IconData(0xe855, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_7 = IconData(0xe856, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData exit_to_app_8 = IconData(0xe857, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const List<IconData> exit_to_app = [exit_to_app_1, exit_to_app_2, exit_to_app_3, exit_to_app_4, exit_to_app_5, exit_to_app_6, exit_to_app_7, exit_to_app_8];
 }
