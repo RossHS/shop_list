@@ -9,6 +9,7 @@ import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 import 'package:shop_list/widgets/drag_and_set_offset.dart';
 import 'package:shop_list/widgets/modern/modern.dart';
 import 'package:shop_list/widgets/palette_color/palette_color_advanced_picker.dart';
+import 'package:shop_list/widgets/slider_with_label.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class ModernCustomSettings extends StatefulWidget {
@@ -172,7 +173,7 @@ class _ModernDecorationBody extends StatelessWidget {
               ),
             ),
             CheckboxListTile(
-              title: const Text('Focal'),
+              title: const Text('Фокус'),
               value: radialGradient.focal != null,
               onChanged: (value) {
                 controller._updateRadialGradient(
@@ -205,6 +206,24 @@ class _ModernDecorationBody extends StatelessWidget {
                     ),
                 ],
               ),
+            ),
+            SliderWithLabel(
+              label: const Text('Радиус'),
+              value: radialGradient.radius,
+              min: 0,
+              max: 1,
+              onChange: (radius) {
+                controller._updateRadialGradient(radius: radius);
+              },
+            ),
+            SliderWithLabel(
+              label: const Text('Фоксн. радиус'),
+              value: radialGradient.focalRadius,
+              min: 0,
+              max: 5,
+              onChange: (focalRadius) {
+                controller._updateRadialGradient(focalRadius: focalRadius);
+              },
             ),
             PaletteColorAdvancedPicker(
               colors: radialGradient.colors,
