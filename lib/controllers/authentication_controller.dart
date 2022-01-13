@@ -62,7 +62,9 @@ class AuthenticationController extends GetxController {
 
     // Удаление токена пользователя из БД
     if (firebaseUser.value?.uid != null) {
-      await _deleteDeviceToken(firebaseUser.value!.uid);
+      _deleteDeviceToken(firebaseUser.value!.uid).catchError((e) {
+        _log.shout('error while deleting device token, error - $e');
+      });
     }
 
     try {
