@@ -1,16 +1,27 @@
-# shop_list
+<div align="center">
 
-A new Flutter project.
+# Todo List App
 
-## Getting Started
+Flutter приложение для формирования групповых списков с широкой кастомизацией пользовательского интерфейса.
 
-This project is a starting point for a Flutter application.
+[Основные особенности](#-основные-особенности) •
+[Используемый стек](#-используемый-стек) •
+[Демо](#%EF%B8%8F-демо)
 
-A few resources to get you started if this is your first Flutter project:
+</div>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 📋 Основные особенности
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📦 Используемый стек
+
+- Архитектура - MVC/BLoC
+- Менеджер состояний/зависимостей - [Get](https://pub.dev/packages/get)
+- Shared Preferences - [Get Storage](https://pub.dev/packages/get_storage) 
+- Бэкенд - [Firebase](https://firebase.google.com/)
+  - БД - [Firestore](https://firebase.google.com/docs/firestore) и [Storage](https://firebase.google.com/docs/storage)
+  - Аутентификация пользователей - [Authentication Firebase](https://firebase.google.com/docs/auth)
+  - Сервис рассылки оповещений - [Firebase Messaging](https://firebase.google.com/docs/cloud-messaging)
+  - Небольшой собственный сервер на java с использованием [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup), который нужен для формирования и отправки оповещений (используя [API FMC](https://firebase.google.com/docs/cloud-messaging)) о новой задаче другим пользователям
+- Тестирование [NoSQL Firestore](https://firebase.google.com/docs/firestore) - Mock библиотека [Fake Cloud Firestore](https://pub.dev/packages/fake_cloud_firestore) 
+
+## 🎞️ Демо
