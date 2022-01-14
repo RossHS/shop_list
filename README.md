@@ -17,11 +17,18 @@ Flutter приложение для формирования групповых 
 - Фильтрация и сортировка задач
 - Система рассылки уведомлений
 - Широкая кастомизация графики на основе 3 тем
-  -  Material
+  - Material
   - Animated90s
   - Glassmorphism
-
+  
+### Material
 ![material](github_assets/material.png)
+
+### Animated90s
+![Animated90s](github_assets/animated90s.gif)
+
+### Glassmophism
+![glassmorphism](github_assets/glassmorphism.png)
 
 ## 📦 Используемый стек
 
