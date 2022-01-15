@@ -43,3 +43,12 @@ Flutter приложение для формирования групповых 
 - Тестирование [NoSQL Firestore](https://firebase.google.com/docs/firestore) - Mock библиотека [Fake Cloud Firestore](https://pub.dev/packages/fake_cloud_firestore) 
 
 ## 🎞️ Демо
+
+### Пример одновременного использования с 2 аккаунтов и разных устройств - web chrome и necrophone Samsung A20 (ЦП Samsung Exynos) 💩
+https://user-images.githubusercontent.com/30704653/149622544-3231bcba-c1f5-4d76-b86b-0a6e349baf22.mp4
+
+### Кастомизация тем на Samsung S9 (ссылка на youtube, жалко сжимать до 10мб, чтобы залить напрямую на страницу😭)
+[![Theme Customization](github_assets/Theme_customization.jpg)](https://www.youtube.com/watch?v=topItmnXg20 "Theme customization")
+
+### Изменение профиля
+https://user-images.githubusercontent.com/30704653/149626910-05941e5e-cd8e-428b-87f3-a8fcf0676b94.mp4
