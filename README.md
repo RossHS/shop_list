@@ -21,13 +21,13 @@ Flutter приложение для формирования групповых 
   - Animated90s
   - Glassmorphism
   
-### Material
-![material](github_assets/material.png)
+### Превью
+![material](github_assets/todo_list_preview.png)
 
-### Animated90s
+### Animated90s тема
 ![Animated90s](github_assets/animated90s.gif)
 
-### Glassmophism
+### Glassmophism тема
 ![glassmorphism](github_assets/glassmorphism.png)
 
 ## 📦 Используемый стек
