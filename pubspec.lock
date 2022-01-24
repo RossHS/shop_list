@@ -329,7 +329,7 @@ packages:
     source: hosted
     version: "1.0.3"
   flutter_lints:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: flutter_lints
       url: "https://pub.dartlang.org"
@@ -653,6 +653,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1+1"
+  ross_lints:
+    dependency: "direct dev"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "5e085b4aae522bd915054032cbec681775ffe914"
+      url: "git://github.com/RossHS/ross_lint_ruleset"
+    source: git
+    version: "1.0.1"
   rxdart:
     dependency: transitive
     description:
