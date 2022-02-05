@@ -327,9 +327,9 @@ class _ColorPaletteBox extends StatelessWidget {
         final mainColor = colorController.colors['Основной']!.color;
         return colorScheme.copyWith(
           primary: mainColor,
-          primaryVariant: mainColor,
+          primaryContainer: mainColor,
           secondary: mainColor,
-          secondaryVariant: mainColor,
+          secondaryContainer: mainColor,
           background: mainColor,
           surface: mainColor,
           error: Colors.redAccent,
@@ -347,9 +347,9 @@ class _ColorPaletteBox extends StatelessWidget {
         final backgroundColor = colorController.colors['Фон']!.color;
         return colorScheme.copyWith(
           primary: mainColor,
-          primaryVariant: mainColor,
+          primaryContainer: mainColor,
           secondary: mainColor,
-          secondaryVariant: mainColor,
+          secondaryContainer: mainColor,
           background: backgroundColor,
           surface: mainColor,
           error: Colors.redAccent,

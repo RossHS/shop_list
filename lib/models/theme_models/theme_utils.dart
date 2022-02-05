@@ -23,9 +23,9 @@ class ThemeWrapperUtils {
   static ColorScheme createLightColorScheme(Color mainColor, Color backgroundColor) {
     return ColorScheme.light(
       primary: mainColor,
-      primaryVariant: mainColor,
+      primaryContainer: mainColor,
       secondary: mainColor,
-      secondaryVariant: mainColor,
+      secondaryContainer: mainColor,
       background: backgroundColor,
       surface: mainColor,
       error: Colors.redAccent,
@@ -35,9 +35,9 @@ class ThemeWrapperUtils {
   static ColorScheme createDarkColorScheme(Color mainColor, Color backgroundColor) {
     return ColorScheme.dark(
       primary: mainColor,
-      primaryVariant: mainColor,
+      primaryContainer: mainColor,
       secondary: mainColor,
-      secondaryVariant: mainColor,
+      secondaryContainer: mainColor,
       background: backgroundColor,
       surface: mainColor,
       error: Colors.redAccent,
