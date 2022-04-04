@@ -33,7 +33,7 @@ class UserInfoUpdateController extends GetxController {
       final userPhotoFile = await ImagePicker().pickImage(source: source);
       // Если платформа не вэб, то запускаем плагин обрезки фотографии https://pub.dev/packages/image_cropper
       if (!kIsWeb) {
-        var croppedFile = await ImageCropper.cropImage(sourcePath: userPhotoFile!.path, aspectRatioPresets: [
+        var croppedFile = await ImageCropper().cropImage(sourcePath: userPhotoFile!.path, aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ]);
         userPhotoBytes.value = await croppedFile?.readAsBytes();
