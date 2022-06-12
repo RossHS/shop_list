@@ -48,7 +48,7 @@ class AdvancedDrawer extends StatefulWidget {
   final bool disabledGestures;
 
   @override
-  _AdvancedDrawerState createState() => _AdvancedDrawerState();
+  State<AdvancedDrawer> createState() => _AdvancedDrawerState();
 }
 
 class _AdvancedDrawerState extends State<AdvancedDrawer> with SingleTickerProviderStateMixin {

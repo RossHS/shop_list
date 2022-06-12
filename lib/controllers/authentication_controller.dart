@@ -35,7 +35,6 @@ class AuthenticationController extends GetxController {
 
   /// Сообщение об ошибке аутентификации
   final authErrorMessage = Rxn<String>();
-  final _isAdmin = false.obs;
 
   @override
   void onReady() {
@@ -140,8 +139,8 @@ class AuthenticationController extends GetxController {
       text_validation.email(emailController.text.trim()) && text_validation.password(passwordController.text.trim());
 
   /// Создание пользователя в firestore коллекции пользователей users
-  void _createUserFirestore(UserModel user, User _firebaseUser) {
-    _db.doc('/users/${_firebaseUser.uid}').set(user.toJson());
+  void _createUserFirestore(UserModel user, User firebaseUser) {
+    _db.doc('/users/${firebaseUser.uid}').set(user.toJson());
     update();
   }
 
@@ -177,9 +176,9 @@ class AuthenticationController extends GetxController {
   }
 
   /// Обновление пользователя в firestore коллекции пользователей users
-  void _updateUserFirestore(UserModel user, User _firebaseUser) async {
+  void _updateUserFirestore(UserModel user, User firebaseUser) async {
     const snackBarTitle = 'Данные пользователя';
-    await _db.doc('/users/${_firebaseUser.uid}').update(user.toJson());
+    await _db.doc('/users/${firebaseUser.uid}').update(user.toJson());
     CustomInfoOverlay.show(title: snackBarTitle, msg: 'Обновлено!');
     update();
   }

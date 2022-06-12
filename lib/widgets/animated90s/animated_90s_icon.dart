@@ -24,7 +24,7 @@ class AnimatedIcon90s extends StatefulWidget {
   final Color? color;
 
   @override
-  _AnimatedIcon90sState createState() => _AnimatedIcon90sState();
+  State<AnimatedIcon90s> createState() => _AnimatedIcon90sState();
 }
 
 class _AnimatedIcon90sState extends State<AnimatedIcon90s> with SingleTickerProviderStateMixin {

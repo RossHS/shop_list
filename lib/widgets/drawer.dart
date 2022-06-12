@@ -46,7 +46,6 @@ class AppDrawer extends StatelessWidget {
       childDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(32)),
       ),
-      child: child,
       drawer: SafeArea(
         child: ListTileTheme(
           textColor: onBackgroundColor,
@@ -134,6 +133,7 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
       ),
+      child: child,
     );
   }
 }

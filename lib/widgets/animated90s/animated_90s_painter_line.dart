@@ -21,7 +21,7 @@ class AnimatedPainterLine90s extends AnimatedPainter90s {
   final PaintSide paintSide;
 
   @override
-  _AnimatedPainterLine90sState createState() => _AnimatedPainterLine90sState();
+  AnimatedPainter90sState<AnimatedPainterLine90s> createState() => _AnimatedPainterLine90sState();
 }
 
 class _AnimatedPainterLine90sState extends AnimatedPainter90sState<AnimatedPainterLine90s> {

@@ -243,7 +243,7 @@ class _GlassmorphismDecorationBody extends StatelessWidget {
         switchInCurve: Curves.easeOutCirc,
         switchOutCurve: Curves.easeInCirc,
         transitionBuilder: (Widget child, Animation<double> animation) {
-          return ScaleTransition(child: child, scale: animation);
+          return ScaleTransition(scale: animation, child: child);
         },
         child: child,
       );
@@ -305,13 +305,6 @@ class _GlassmorphismDecorationTypeSelectorState extends State<_GlassmorphismDeco
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: ToggleButtons(
-        children: decorations.values
-            .map((decoration) => Ink(
-                  width: 70,
-                  height: 50,
-                  decoration: decoration,
-                ))
-            .toList(),
         borderRadius: BorderRadius.circular(20),
         borderWidth: 3,
         selectedBorderColor: Theme.of(context).canvasColor,
@@ -326,6 +319,13 @@ class _GlassmorphismDecorationTypeSelectorState extends State<_GlassmorphismDeco
             });
           }
         },
+        children: decorations.values
+            .map((decoration) => Ink(
+                  width: 70,
+                  height: 50,
+                  decoration: decoration,
+                ))
+            .toList(),
       ),
     );
   }

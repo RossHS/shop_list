@@ -183,6 +183,8 @@ class _TileItem extends StatelessWidget {
       curve: Curves.easeInOut,
       animation: animation,
       child: Slidable(
+        startActionPane: actions,
+        endActionPane: actions,
         child: ListTile(
           title: Text(item.name),
           trailing: const Handle(
@@ -190,8 +192,6 @@ class _TileItem extends StatelessWidget {
             child: Icon(Icons.list),
           ),
         ),
-        startActionPane: actions,
-        endActionPane: actions,
       ),
     );
   }

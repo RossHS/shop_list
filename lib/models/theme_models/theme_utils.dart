@@ -66,7 +66,7 @@ class ThemeWrapperUtils {
         begin: Alignment(json['begin_x'] as double, json['begin_y'] as double),
         end: Alignment(json['end_x'] as double, json['end_y'] as double),
         stops: (json['stops'] as List<dynamic>?)?.map((e) => e as double).toList(),
-        colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+        colors: (json['colors'] as List<dynamic>).map((e) => e as int).map(Color.new).toList(),
         tileMode: TileMode.values.byName(json['tileMode'] as String),
       ),
     );
@@ -98,7 +98,7 @@ class ThemeWrapperUtils {
         focalRadius: json['focalRadius'] as double,
         radius: json['radius'] as double,
         stops: (json['stops'] as List<dynamic>?)?.map((e) => e as double).toList(),
-        colors: (json['colors'] as List<dynamic>).map((e) => Color(e)).toList(),
+        colors: (json['colors'] as List<dynamic>).map((e) => e as int).map(Color.new).toList(),
         tileMode: TileMode.values.byName(json['tileMode'] as String),
       ),
     );

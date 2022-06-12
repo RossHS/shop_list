@@ -32,7 +32,7 @@ abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
   @protected
   late final _CachedWidget<T> _cachedWidget;
 
-  _CachedWidget<T> get cachedWidget => _cachedWidget;
+  T get widget => _cachedWidget.widget;
 
   /// Метод для обновления кэшируемого виджета.
   ///

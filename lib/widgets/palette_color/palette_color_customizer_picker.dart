@@ -75,6 +75,7 @@ class ColorChangeController {
   /// Все цвета под настройку
   /// Обертка над цветом, зачем нужна? - в комментариях к классу [_ColorMutableWrapper]
   /// Где ключ, имя расположения цвета (основной, фоновый и т.п.), а значение - сам цвет
+  // ignore: library_private_types_in_public_api
   final Map<String, _ColorMutableWrapper> colors;
 }
 

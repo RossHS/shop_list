@@ -66,7 +66,7 @@ class AnimatedPainterCircle90s extends AnimatedPainter90s {
         );
 
   @override
-  _AnimatedPainterCircle90sState createState() => _AnimatedPainterCircle90sState();
+  AnimatedPainter90sState<AnimatedPainterCircle90s> createState() => _AnimatedPainterCircle90sState();
 }
 
 class _AnimatedPainterCircle90sState extends AnimatedPainter90sState<AnimatedPainterCircle90s> {

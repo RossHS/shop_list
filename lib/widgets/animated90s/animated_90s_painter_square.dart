@@ -21,7 +21,7 @@ class AnimatedPainterSquare90s extends AnimatedPainter90s {
   final BorderPaint borderPaint;
 
   @override
-  _AnimatedPainterSquare90sState createState() => _AnimatedPainterSquare90sState();
+  AnimatedPainter90sState<AnimatedPainterSquare90s> createState() => _AnimatedPainterSquare90sState();
 }
 
 class _AnimatedPainterSquare90sState extends AnimatedPainter90sState<AnimatedPainterSquare90s> {

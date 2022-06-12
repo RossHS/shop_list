@@ -492,7 +492,7 @@ class _SpecificThemeSettings extends StatelessWidget {
           switchInCurve: Curves.bounceOut,
           switchOutCurve: Curves.easeOutQuint,
           transitionBuilder: (Widget child, Animation<double> animation) {
-            return ScaleTransition(child: child, scale: animation);
+            return ScaleTransition(scale: animation, child: child);
           },
           animated90s: (_, themeWrapper, __) {
             // Как бы не хотелось использоваться виджет [ThemeDepCommonItemBox], но не выйдет,

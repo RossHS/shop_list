@@ -4,6 +4,8 @@
 //
 // 26.12.2021 - Ross Khapilov. Flutter source code changes
 
+// ignore_for_file: unused_element
+
 import 'dart:math' as math;
 import 'dart:ui' show window;
 
@@ -258,7 +260,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
                   child: PrimaryScrollController(
                     controller: widget.route.scrollController!,
                     child: Scrollbar(
-                      isAlwaysShown: true,
+                      thumbVisibility: true,
                       child: _CustomThemeWrapper(
                         child: ListView(
                           padding: kMaterialListPadding,
@@ -994,16 +996,16 @@ class _ThemeDepDropdownButtonState<T> extends State<ThemeDepDropdownButton<T>> w
       ),
     };
     focusNode!.addListener(_handleFocusChanged);
-    final FocusManager focusManager = WidgetsBinding.instance!.focusManager;
+    final FocusManager focusManager = WidgetsBinding.instance.focusManager;
     _focusHighlightMode = focusManager.highlightMode;
     focusManager.addHighlightModeListener(_handleFocusHighlightModeChange);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _removeDropdownRoute();
-    WidgetsBinding.instance!.focusManager.removeHighlightModeListener(_handleFocusHighlightModeChange);
+    WidgetsBinding.instance.focusManager.removeHighlightModeListener(_handleFocusHighlightModeChange);
     focusNode!.removeListener(_handleFocusChanged);
     _internalNode?.dispose();
     super.dispose();

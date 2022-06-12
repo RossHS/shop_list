@@ -85,5 +85,5 @@ class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements Pref
   }
 
   @override
-  Size get preferredSize => cachedWidget.widget.preferredSize;
+  Size get preferredSize => widget.preferredSize;
 }

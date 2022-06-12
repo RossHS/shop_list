@@ -19,7 +19,7 @@ class AnimatedText90s extends StatefulWidget {
   final List<String> fontFamilies;
 
   @override
-  _AnimatedText90sState createState() => _AnimatedText90sState();
+  State<AnimatedText90s> createState() => _AnimatedText90sState();
 }
 
 class _AnimatedText90sState extends State<AnimatedText90s> with SingleTickerProviderStateMixin {
