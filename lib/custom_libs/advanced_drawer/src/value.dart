@@ -6,9 +6,6 @@ class AdvancedDrawerValue {
     this.visible = false,
   });
 
-  /// Indicates whether drawer visible or not.
-  final bool visible;
-
   /// Create a value with hidden state.
   factory AdvancedDrawerValue.hidden() {
     return const AdvancedDrawerValue();
@@ -20,4 +17,7 @@ class AdvancedDrawerValue {
       visible: true,
     );
   }
+
+  /// Indicates whether drawer visible or not.
+  final bool visible;
 }

@@ -4,14 +4,14 @@ import 'package:shop_list/models/theme_model.dart';
 
 @immutable
 abstract class ThemeDataWrapper {
-  /// Ключи для записи/чтения тем из хранилища
-  static const appThemeStorageKey = 'app_theme_storage_key';
-
   const ThemeDataWrapper({
     required this.textTheme,
     required this.lightColorScheme,
     required this.darkColorScheme,
   });
+
+  /// Ключи для записи/чтения тем из хранилища
+  static const appThemeStorageKey = 'app_theme_storage_key';
 
   final TextTheme textTheme;
 

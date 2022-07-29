@@ -3,8 +3,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:shop_list/models/theme_model.dart';
 
 class MaterialThemeDataWrapper extends ThemeDataWrapper {
-  static const appThemeStorageValue = 'Material';
-
   const MaterialThemeDataWrapper({
     required TextTheme textTheme,
     double? rounded,
@@ -51,6 +49,8 @@ class MaterialThemeDataWrapper extends ThemeDataWrapper {
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
   }
+
+  static const appThemeStorageValue = 'Material';
 
   /// Скругление основных виджетов material
   final double rounded;

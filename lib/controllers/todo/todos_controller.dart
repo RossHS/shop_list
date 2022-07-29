@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logging/logging.dart';
@@ -186,22 +187,13 @@ class TodosController extends GetxController {
 }
 
 /// Валидатор, то, по каким параметрам фильтруются списки дел для отображения пользователю
+@immutable
 class Validator {
   Validator({
     CompletedValidation? completedValidation,
     AuthorValidation? authorValidation,
   })  : completedValidation = completedValidation ?? CompletedValidation.all,
         authorValidation = authorValidation ?? AuthorValidation.all;
-
-  static const validatorCompletedKey = 'validator_completed_key';
-  static const validatorAuthorKey = 'validator_author_key';
-
-  final CompletedValidation completedValidation;
-  final AuthorValidation authorValidation;
-
-  bool validate(TodoModel todoModel, UserModel currentUser) {
-    return completedValidation.valid(todoModel) && authorValidation.valid(todoModel, currentUser);
-  }
 
   /// Создание объекта валидатора на основе записи в устройстве
   factory Validator.fromGetStorage(GetStorage storage) {
@@ -230,6 +222,16 @@ class Validator {
       completedValidation: parsedCompletedValidation,
       authorValidation: parsedAuthorValidation,
     );
+  }
+
+  static const validatorCompletedKey = 'validator_completed_key';
+  static const validatorAuthorKey = 'validator_author_key';
+
+  final CompletedValidation completedValidation;
+  final AuthorValidation authorValidation;
+
+  bool validate(TodoModel todoModel, UserModel currentUser) {
+    return completedValidation.valid(todoModel) && authorValidation.valid(todoModel, currentUser);
   }
 
   void writeToGetStorage(GetStorage storage) {
@@ -261,11 +263,11 @@ class Validator {
 
 /// Валидация списков из коллекции [allTodosList] по критерию открыта/закрыта задача
 class CompletedValidation {
+  CompletedValidation._(this._debugName, this.valid);
+
   static final CompletedValidation all = CompletedValidation._('all', (_) => true);
   static final CompletedValidation opened = CompletedValidation._('opened', (todoModel) => !todoModel.completed);
   static final CompletedValidation closed = CompletedValidation._('closed', (todoModel) => todoModel.completed);
-
-  CompletedValidation._(this._debugName, this.valid);
 
   final bool Function(TodoModel todoModel) valid;
   final String _debugName;
@@ -273,6 +275,8 @@ class CompletedValidation {
 
 /// Валидация по авторству списков дел, все авторы/только мои списки/только чужие
 class AuthorValidation {
+  AuthorValidation._(this._debugName, this.valid);
+
   static final all = AuthorValidation._(
     'all',
     (_, __) => true,
@@ -290,28 +294,13 @@ class AuthorValidation {
     },
   );
 
-  AuthorValidation._(this._debugName, this.valid);
-
   final bool Function(TodoModel todoModel, UserModel currentUser) valid;
   final String _debugName;
 }
 
 /// Способы сортировки списков дел
 class SortFilteredList {
-  static final dateDown = SortFilteredList._(
-    'dateDown',
-    (a, b) => b.todoModel.createdTimestamp - a.todoModel.createdTimestamp,
-  );
-  static final dateUp = SortFilteredList._(
-    'dateUp',
-    (a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp,
-  );
-  static const sortFilteredListKey = 'sortFiltered_key';
-
   SortFilteredList._(this._debugName, this._comparator);
-
-  final int Function(FirestoreRefTodoModel a, FirestoreRefTodoModel b) _comparator;
-  final String _debugName;
 
   factory SortFilteredList.fromGetStorage(GetStorage storage) {
     final sortAlg = storage.read<String>(sortFilteredListKey);
@@ -322,6 +311,19 @@ class SortFilteredList {
     }
     throw Exception('Error while parsing SortFilteredList.fromGetStorage - key $sortFilteredListKey - $sortAlg');
   }
+
+  static final dateDown = SortFilteredList._(
+    'dateDown',
+    (a, b) => b.todoModel.createdTimestamp - a.todoModel.createdTimestamp,
+  );
+  static final dateUp = SortFilteredList._(
+    'dateUp',
+    (a, b) => a.todoModel.createdTimestamp - b.todoModel.createdTimestamp,
+  );
+  static const sortFilteredListKey = 'sortFiltered_key';
+
+  final int Function(FirestoreRefTodoModel a, FirestoreRefTodoModel b) _comparator;
+  final String _debugName;
 
   void writeToGetStorage(GetStorage storage) {
     storage.write(sortFilteredListKey, _debugName);

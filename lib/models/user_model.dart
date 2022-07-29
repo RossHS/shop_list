@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
@@ -11,6 +12,7 @@ part 'user_model.g.dart';
 /// flutter pub run build_runner watch
 /// и после каждого изменения класса будет автоматически вызван build
 @JsonSerializable()
+@immutable
 class UserModel {
   const UserModel({
     required this.name,
@@ -19,12 +21,12 @@ class UserModel {
     required this.uid,
   });
 
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+
   final String name;
   final String email;
   final String photoUrl;
   final String uid;
-
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
