@@ -4,8 +4,6 @@ import 'package:shop_list/models/theme_model.dart';
 import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 
 class Animated90sThemeDataWrapper extends ThemeDataWrapper {
-  static const appThemeStorageValue = 'Animated90s';
-
   const Animated90sThemeDataWrapper({
     required TextTheme textTheme,
     required this.paint90sConfig,
@@ -36,6 +34,8 @@ class Animated90sThemeDataWrapper extends ThemeDataWrapper {
       darkColorScheme: _getDarkColorSchemesMap[darkThemeKey]!,
     );
   }
+
+  static const appThemeStorageValue = 'Animated90s';
 
   /// Так как классы тем неизменяемые и нам следует динамически
   /// загружать/менять цветовую схему на основании данных из коллекций.

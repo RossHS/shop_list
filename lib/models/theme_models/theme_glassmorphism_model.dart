@@ -6,8 +6,6 @@ import 'package:shop_list/models/theme_model.dart';
 final _log = Logger('GlassmorphismThemeDataWrapper');
 
 class GlassmorphismThemeDataWrapper extends ThemeDataWrapper {
-  static const appThemeStorageValue = 'Glassmorphism';
-
   const GlassmorphismThemeDataWrapper({
     required TextTheme textTheme,
     required ColorScheme lightColorScheme,
@@ -31,6 +29,8 @@ class GlassmorphismThemeDataWrapper extends ThemeDataWrapper {
       backgroundDecoration: boxDecoration,
     );
   }
+
+  static const appThemeStorageValue = 'Glassmorphism';
 
   /// Почему так, объяснение в комментариях [Animated90sThemeDataWrapper._lightColorSchemesMap]
   static Map<String, ColorScheme>? _lightColorSchemesMap;

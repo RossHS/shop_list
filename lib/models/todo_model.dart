@@ -7,6 +7,7 @@ part 'todo_model.g.dart';
 
 /// Модель данных TodoModel из коллекции firestore todos
 @JsonSerializable(explicitToJson: true)
+@immutable
 class TodoModel {
   TodoModel({
     required this.authorId,
@@ -21,6 +22,8 @@ class TodoModel {
         createdTimestamp = createdTimestamp ?? DateTime.now().millisecondsSinceEpoch,
         elements = elements ?? <TodoElement>[];
 
+  factory TodoModel.fromJson(Map<String, dynamic> json) => _$TodoModelFromJson(json);
+
   final String authorId;
   final String title;
   final bool isPublic;
@@ -29,8 +32,6 @@ class TodoModel {
   final String completedAuthorId;
   final int completedTimestamp;
   final List<TodoElement> elements;
-
-  factory TodoModel.fromJson(Map<String, dynamic> json) => _$TodoModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TodoModelToJson(this);
 
@@ -76,6 +77,7 @@ class TodoModel {
 
 /// Элемент в списке дел
 @JsonSerializable()
+@immutable
 class TodoElement {
   TodoElement({
     required this.name,
@@ -83,13 +85,13 @@ class TodoElement {
     String? uid,
   }) : uid = uid ?? const Uuid().v4();
 
+  factory TodoElement.fromJson(Map<String, dynamic> json) => _$TodoElementFromJson(json);
+
   final String name;
   final bool completed;
 
   /// UID для работы с одинаковыми элементами в рамках одного списка дел
   final String uid;
-
-  factory TodoElement.fromJson(Map<String, dynamic> json) => _$TodoElementFromJson(json);
 
   Map<String, dynamic> toJson() => _$TodoElementToJson(this);
 
@@ -121,6 +123,7 @@ class TodoElement {
 /// Класс обертка над обычным [TodoModel], но содержащий ссылку на документ firestore,
 /// по которой находится TodoModel. Необходим чтобы совершать операции обновления,
 /// удаления существующих записей
+@immutable
 class FirestoreRefTodoModel {
   const FirestoreRefTodoModel({
     required this.idRef,

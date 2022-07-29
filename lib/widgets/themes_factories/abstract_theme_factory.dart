@@ -11,6 +11,12 @@ import 'package:shop_list/widgets/themes_factories/modern_theme_factory.dart';
   'Следует пользоваться виджетами из семейства ThemeDep',
 )
 abstract class ThemeFactory {
+  @Deprecated(
+    'с 16.12.2021 не рекомендуется к применению - по причинам описанным в комментариях к [ThemeWidgetBase]'
+        'Следует пользоваться виджетами из семейства ThemeDep',
+  )
+  ThemeFactory(ThemeDataWrapper themeDataWrapper);
+
   static ThemeFactory instance(ThemeDataWrapper themeDataWrapper) {
     if (themeDataWrapper is Animated90sThemeDataWrapper) {
       return Animated90sFactory(themeDataWrapper);
@@ -25,8 +31,6 @@ abstract class ThemeFactory {
     }
     throw Exception('Unsupported type of ThemeDataWrapper - $themeDataWrapper');
   }
-
-  ThemeFactory(ThemeDataWrapper themeDataWrapper);
 
   /// Обертка над темой приложения, которая добавляет новые поля в уже существующую тему
   ThemeDataWrapper get themeWrapper;
@@ -118,6 +122,8 @@ abstract class ThemeFactory {
 @Deprecated('с 18.12.2021 не рекомендуется к применению - по причинам описанным в комментариях к [ThemeWidgetBase]'
     'Следует пользоваться виджетами [ThemeDepIcon]')
 abstract class IconsFactory {
+  @Deprecated('с 18.12.2021 не рекомендуется к применению - по причинам описанным в комментариях к [ThemeWidgetBase]'
+      'Следует пользоваться виджетами [ThemeDepIcon]')
   const IconsFactory();
 
   Widget get create;
