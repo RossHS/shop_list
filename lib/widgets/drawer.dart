@@ -11,11 +11,11 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 /// Drawer в отдельном файле для лучшей читаемости и гибкости кода
 class AppDrawer extends StatelessWidget {
   AppDrawer({
+    super.key,
     required this.advancedDrawerController,
     required this.child,
     this.backgroundColor = Colors.blueGrey,
-    Key? key,
-  }) : super(key: key);
+  });
 
   /// Контроллер состояния Drawer, открыт он или закрыт
   final AdvancedDrawerController advancedDrawerController;

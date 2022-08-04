@@ -8,7 +8,7 @@ import 'package:shop_list/widgets/todo_route_base.dart';
 
 /// Маршрут изменения списка дел
 class EditTodo extends StatelessWidget {
-  const EditTodo({Key? key}) : super(key: key);
+  const EditTodo({super.key});
 
   @override
   Widget build(BuildContext context) {

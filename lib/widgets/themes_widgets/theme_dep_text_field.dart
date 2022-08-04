@@ -5,7 +5,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepTextField extends ThemeDepWidgetBase {
   const ThemeDepTextField({
-    Key? key,
+    super.key,
     required this.controller,
     this.inputValidator,
     this.hint,
@@ -13,7 +13,7 @@ class ThemeDepTextField extends ThemeDepWidgetBase {
     this.minLines,
     this.prefixIcon,
     this.obscureText = false,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final bool Function(String)? inputValidator;

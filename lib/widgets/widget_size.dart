@@ -4,10 +4,10 @@ import 'package:flutter/scheduler.dart';
 /// Виджет для определения размеров RenderObject в рантайме
 class WidgetSize extends StatefulWidget {
   const WidgetSize({
-    Key? key,
+    super.key,
     required this.onSizeChange,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final void Function(Size? size) onSizeChange;

@@ -6,9 +6,10 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
   const ThemeDepCommonItemBox({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
+
   final Widget child;
 
   @override
@@ -48,7 +49,7 @@ class ThemeDepCommonItemBox extends ThemeDepWidgetBase {
 /// т.е. для корректного использования [ThemeDepCommonItemBox] все равно приходилось переопределять стандартный стиль или
 /// задавать стиль напрямую в виджет [Text]
 class _CustomThemeWrapper extends StatelessWidget {
-  const _CustomThemeWrapper({Key? key, required this.child}) : super(key: key);
+  const _CustomThemeWrapper({required this.child});
   final Widget child;
 
   @override

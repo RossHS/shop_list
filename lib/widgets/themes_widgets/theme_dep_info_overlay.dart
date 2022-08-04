@@ -6,11 +6,12 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepInfoOverlay extends ThemeDepWidgetBase {
   const ThemeDepInfoOverlay({
-    Key? key,
+    super.key,
     this.title,
     required this.msg,
     this.child,
-  }) : super(key: key);
+  });
+
   final String? title;
   final String msg;
   final Widget? child;
@@ -71,12 +72,12 @@ class ThemeDepInfoOverlay extends ThemeDepWidgetBase {
 /// Вспомогательный класс компоновки оверлея, дабы не повторяться в методах каждой темы
 class _OverlayContent extends StatelessWidget {
   const _OverlayContent({
-    Key? key,
     this.title,
     required this.msg,
     this.decoration,
     this.child,
-  }) : super(key: key);
+  });
+
   final String? title;
   final String msg;
   final Decoration? decoration;

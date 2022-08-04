@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class GlassmorphismIcon extends StatelessWidget {
   const GlassmorphismIcon(
     this.icon, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final IconData icon;
 

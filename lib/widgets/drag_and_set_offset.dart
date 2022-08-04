@@ -5,10 +5,11 @@ import 'package:shop_list/widgets/widget_size.dart';
 /// Виджет перемещение [DragOffsetChild] внутри [Stack]
 class DragAndSetOffset extends StatefulWidget {
   const DragAndSetOffset({
-    Key? key,
+    super.key,
     required this.children,
     this.backgroundColor = Colors.blueGrey,
-  }) : super(key: key);
+  });
+
   final List<DragOffsetChild> children;
 
   /// Цвет заднего фона полотна

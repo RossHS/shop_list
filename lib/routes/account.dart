@@ -9,7 +9,7 @@ import 'package:shop_list/widgets/image/image_selected_indicator.dart';
 import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class Account extends StatelessWidget {
-  const Account({Key? key}) : super(key: key);
+  const Account({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +53,7 @@ class Account extends StatelessWidget {
 class _Body extends StatefulWidget {
   const _Body({
     required this.userModel,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final UserModel userModel;
 

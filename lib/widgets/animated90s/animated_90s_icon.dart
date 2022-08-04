@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 /// с заданной задержкой [_duration]
 class AnimatedIcon90s extends StatefulWidget {
   const AnimatedIcon90s({
+    super.key,
     required List<IconData> iconsList,
     Duration? duration,
     this.color,
-    Key? key,
   })  : _iconsList = iconsList,
-        _duration = duration ?? const Duration(milliseconds: 80),
-        super(key: key);
+        _duration = duration ?? const Duration(milliseconds: 80);
 
   /// Список допустимых иконок
   final List<IconData> _iconsList;

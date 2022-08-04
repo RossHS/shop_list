@@ -15,7 +15,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Маршрут настройки тем приложения
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -51,7 +51,7 @@ class _SettingsState extends State<Settings> {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
+  const _Body();
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class _Body extends StatelessWidget {
 
 /// Ряд с кнопками для вызова различных контекстных виджетов (оповещение/snackbar/dialog)
 class _ButtonsRow extends StatelessWidget {
-  const _ButtonsRow({Key? key}) : super(key: key);
+  const _ButtonsRow();
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +170,8 @@ class _ButtonsRow extends StatelessWidget {
 
 /// Виджет содержащий в себе все варианты цветовых схем для каждой из тем [ThemeDataWrapper]
 class _ColorPaletteBox extends StatelessWidget {
-  const _ColorPaletteBox({Key? key}) : super(key: key);
+  const _ColorPaletteBox();
+
   final paletteDiameter = 44.0;
 
   @override
@@ -386,13 +387,13 @@ class _ColorPaletteBox extends StatelessWidget {
 /// Виджет выбора цвета
 class _ColorPaletteItem extends StatelessWidget {
   const _ColorPaletteItem({
-    Key? key,
+    super.key,
     required this.colorScheme,
     required this.paletteDiameter,
     required this.onPressed,
     required this.isSelected,
     this.child,
-  }) : super(key: key);
+  });
 
   final ColorScheme colorScheme;
   final double paletteDiameter;
@@ -443,11 +444,11 @@ class _ColorPaletteItem extends StatelessWidget {
 
 class _CircleContainer extends StatelessWidget {
   const _CircleContainer({
-    Key? key,
     this.child,
     this.backgroundColor,
     this.diameter,
-  }) : super(key: key);
+  });
+
   final Color? backgroundColor;
   final Widget? child;
   final double? diameter;
@@ -471,7 +472,7 @@ class _CircleContainer extends StatelessWidget {
 /// Панель с настройками для специфичных параметров тем, т.е. с каждой выбранной темой [ThemeDataWrapper],
 /// будет отображаться свой уникальный набор настроек
 class _SpecificThemeSettings extends StatelessWidget {
-  const _SpecificThemeSettings({Key? key}) : super(key: key);
+  const _SpecificThemeSettings();
 
   @override
   Widget build(BuildContext context) {

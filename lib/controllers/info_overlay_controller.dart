@@ -77,13 +77,11 @@ class CustomInfoOverlay {
 /// После чего будет вызван слушатель в [CustomInfoOverlay], который очистит OverlayEntry.
 class _CustomOverlay extends StatefulWidget {
   const _CustomOverlay({
+    super.key,
     required this.child,
     required this.overlayToRemoveNotifier,
     this.animationDuration = const Duration(seconds: 5),
-    Key? key,
-  }) : super(
-          key: key,
-        );
+  });
 
   /// Виджет того как он будет выглядеть оверлей
   final Widget child;

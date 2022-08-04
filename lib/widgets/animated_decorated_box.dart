@@ -55,16 +55,12 @@ import 'package:flutter/material.dart';
 /// Одинаковые по своему применению виджеты, но второй вариант короче и понятней
 class AnimatedDecoration extends ImplicitlyAnimatedWidget {
   const AnimatedDecoration({
-    Key? key,
+    super.key,
     required this.decoration,
     this.child,
-    required Duration duration,
-    Curve curve = Curves.linear,
-  }) : super(
-          key: key,
-          duration: duration,
-          curve: curve,
-        );
+    required super.duration,
+    super.curve,
+  });
 
   final Decoration decoration;
   final Widget? child;

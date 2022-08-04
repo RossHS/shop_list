@@ -5,9 +5,9 @@ import 'package:shop_list/models/theme_model.dart';
 /// Виджет настройки цветов [ColorScheme] кастомной темы в [ThemeDataWrapper]
 class PaletteColorCustomizerPicker extends StatefulWidget {
   const PaletteColorCustomizerPicker({
-    Key? key,
+    super.key,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final ColorChangeController controller;
 

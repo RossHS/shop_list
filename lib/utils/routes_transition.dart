@@ -88,9 +88,9 @@ class CircleClipper extends CustomClipper<Path> {
 /// TODO 15.12.2021 подумать о замене глобальной переменной на InheritedWidget
 class TouchGetterProvider extends StatefulWidget {
   const TouchGetterProvider({
+    super.key,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

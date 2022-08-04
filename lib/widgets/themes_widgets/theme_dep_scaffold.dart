@@ -9,13 +9,12 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 /// но упрощает/очищает вызывающий код, а также лучше вписывается в концепцию ThemeDepWidgets
 class ThemeDepScaffold extends ThemeDepWidgetBase {
   const ThemeDepScaffold({
-    Key? key,
+    super.key,
     this.scaffoldGlobalKey,
     this.appBar,
     this.body,
     this.floatingActionButton,
-  })  : assert(key == null || key != scaffoldGlobalKey),
-        super(key: key);
+  })  : assert(key == null || key != scaffoldGlobalKey);
   final PreferredSizeWidget? appBar;
   final Widget? body;
   final Widget? floatingActionButton;

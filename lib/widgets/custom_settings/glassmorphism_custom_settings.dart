@@ -14,9 +14,10 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 class GlassmorphismCustomSettings extends StatefulWidget {
   const GlassmorphismCustomSettings({
-    Key? key,
+    super.key,
     required this.themeWrapper,
-  }) : super(key: key);
+  });
+
   final GlassmorphismThemeDataWrapper themeWrapper;
 
   @override
@@ -88,9 +89,7 @@ class _GlassmorphismCustomSettingsState extends State<GlassmorphismCustomSetting
 }
 
 class _GlassmorphismDecorationBody extends StatelessWidget {
-  const _GlassmorphismDecorationBody({
-    Key? key,
-  }) : super(key: key);
+  const _GlassmorphismDecorationBody();
 
   @override
   Widget build(BuildContext context) {
@@ -253,9 +252,7 @@ class _GlassmorphismDecorationBody extends StatelessWidget {
 
 /// Выбор типа декорации
 class _GlassmorphismDecorationTypeSelector extends StatefulWidget {
-  const _GlassmorphismDecorationTypeSelector({
-    Key? key,
-  }) : super(key: key);
+  const _GlassmorphismDecorationTypeSelector();
 
   @override
   State<_GlassmorphismDecorationTypeSelector> createState() => _GlassmorphismDecorationTypeSelectorState();

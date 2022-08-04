@@ -10,9 +10,9 @@ import 'package:shop_list/widgets/custom_settings/base_custom_settings.dart';
 /// Виджет настройки кастомных элементов (радиус тени, цвет, расположение) в теме [MaterialThemeDataWrapper]
 class MaterialCustomSettings extends StatelessWidget {
   const MaterialCustomSettings({
-    Key? key,
+    super.key,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final MaterialCustomSettingsController controller;
 
@@ -65,13 +65,13 @@ class MaterialCustomSettings extends StatelessWidget {
 /// Виджет настройки позиции тени
 class _OffsetSelector extends StatefulWidget {
   const _OffsetSelector({
-    Key? key,
     required this.themeWrapper,
     required this.onPositionChange,
     this.offset = 15,
     this.width = 200,
     this.height = 200,
-  }) : super(key: key);
+  });
+
   final MaterialThemeDataWrapper themeWrapper;
 
   /// Минимальное и максимальное значение отступа тени
@@ -160,7 +160,8 @@ class _OffsetSelectorState extends State<_OffsetSelector> {
 
 /// Индикатор смещения тени
 class _OffsetIndicator extends StatelessWidget {
-  const _OffsetIndicator({Key? key, this.indicatorColor = Colors.black}) : super(key: key);
+  const _OffsetIndicator({super.key, this.indicatorColor = Colors.black});
+
   final Color indicatorColor;
 
   @override

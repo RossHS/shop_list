@@ -10,11 +10,10 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 /// TODO 18.12.2021 - подумать об оптимизации
 class ThemeDepIcon extends ThemeDepWidgetBase {
   const ThemeDepIcon._({
-    Key? key,
     this.animated90s = _defIcon,
     this.material = _defIcon,
     this.glassmorphism = _defIcon,
-  }) : super(key: key);
+  });
 
   final Widget Function(Animated90sThemeDataWrapper themeWrapper) animated90s;
   final Widget Function(MaterialThemeDataWrapper themeWrapper) material;

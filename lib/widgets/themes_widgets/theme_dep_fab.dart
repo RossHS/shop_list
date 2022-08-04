@@ -6,10 +6,11 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepFloatingActionButton extends ThemeDepWidgetBase {
   const ThemeDepFloatingActionButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
+
   final void Function() onPressed;
   final Widget child;
 

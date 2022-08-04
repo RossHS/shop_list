@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 /// Добавил различные параметры для кастомизации
 class GlassmorphismBox extends StatelessWidget {
   const GlassmorphismBox({
-    Key? key,
+    super.key,
     this.borderRadius = 24,
     this.glassColor = Colors.white,
     this.opacityStart = 0.7,
     this.opacityEnd = 0.4,
     this.child,
-  }) : super(key: key);
+  });
 
   /// Радиус скругления краев "стекла"
   final double borderRadius;

@@ -4,11 +4,10 @@ import 'package:shop_list/models/models.dart';
 /// Аватар пользователя
 class Avatar extends StatelessWidget {
   const Avatar({
+    super.key,
     required this.user,
     this.diameter = 160.0,
-    Key? key,
-  })  : assert(diameter > 0, 'incorrect diameter $diameter'),
-        super(key: key);
+  }) : assert(diameter > 0, 'incorrect diameter $diameter');
 
   final UserModel? user;
 
@@ -55,8 +54,7 @@ class _PlaceHolder extends StatelessWidget {
   const _PlaceHolder({
     required this.user,
     required this.diameter,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final UserModel user;
 

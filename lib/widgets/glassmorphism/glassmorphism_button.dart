@@ -3,10 +3,11 @@ import 'package:shop_list/widgets/glassmorphism/glassmorphism_raw_button.dart';
 
 class GlassmorphismButton extends StatelessWidget {
   const GlassmorphismButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
+
   final void Function() onPressed;
   final Widget child;
 

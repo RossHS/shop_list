@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 /// Виджет прокручивающейся "карусели"
 class Carousel extends StatefulWidget {
   Carousel({
-    Key? key,
+    super.key,
     required this.items,
     this.onPageChanged,
     CarouselController? controller,
-  })  : _controller = controller ?? CarouselController(),
-        super(key: key);
+  })  : _controller = controller ?? CarouselController();
 
   final List<Widget> items;
 

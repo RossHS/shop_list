@@ -3,7 +3,7 @@ part of '../flutter_advanced_drawer.dart';
 /// AdvancedDrawer widget.
 class AdvancedDrawer extends StatefulWidget {
   const AdvancedDrawer({
-    Key? key,
+    super.key,
     required this.child,
     required this.drawer,
     this.controller,
@@ -14,7 +14,7 @@ class AdvancedDrawer extends StatefulWidget {
     this.animateChildDecoration = true,
     this.rtlOpening = false,
     this.disabledGestures = false,
-  }) : super(key: key);
+  });
 
   /// Child widget. (Usually widget that represent a screen)
   final Widget child;

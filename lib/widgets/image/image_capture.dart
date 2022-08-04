@@ -9,8 +9,8 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 class ImageCapture extends StatelessWidget {
   const ImageCapture({
     required this.userInfoUpdateController,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final UserInfoUpdateController userInfoUpdateController;
 
   @override

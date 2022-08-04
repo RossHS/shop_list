@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 class AnimatedText90s extends StatefulWidget {
   const AnimatedText90s(
     this.text, {
+    super.key,
     this.duration = const Duration(milliseconds: 250),
     this.fontFamilies = const [
       'pepega font',
       'A Childish Wonders',
     ],
-    Key? key,
-  }) : super(key: key);
+  });
 
   final String text;
   final Duration duration;

@@ -6,7 +6,7 @@ import 'package:shop_list/routes/home/home_glassmorphism.dart';
 import 'package:shop_list/routes/home/home_material.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {

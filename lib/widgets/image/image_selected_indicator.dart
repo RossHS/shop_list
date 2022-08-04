@@ -9,8 +9,8 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 class ImageSelectedIndicator extends StatelessWidget {
   const ImageSelectedIndicator({
     required this.userInfoUpdateController,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final UserInfoUpdateController userInfoUpdateController;
 
   @override
@@ -32,10 +32,8 @@ class ImageSelectedIndicator extends StatelessWidget {
 
 /// Оболочка для иконок, чтобы не дублировать код
 class _AnimatedIconWrapper extends StatelessWidget {
-  const _AnimatedIconWrapper(
-    this.icon, {
-    Key? key,
-  }) : super(key: key);
+  const _AnimatedIconWrapper(this.icon);
+
   final Widget icon;
 
   @override

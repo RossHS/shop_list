@@ -5,7 +5,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 import 'package:shop_list/widgets/todo_route_base.dart';
 
 class CreateTodo extends StatelessWidget {
-  const CreateTodo({Key? key}) : super(key: key);
+  const CreateTodo({super.key});
 
   @override
   Widget build(BuildContext context) {

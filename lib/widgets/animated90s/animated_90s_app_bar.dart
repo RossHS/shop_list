@@ -6,15 +6,14 @@ import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 /// Реализация аналога AppBar с наличием анимации 90х
 class AnimatedAppBar90s extends StatelessWidget implements PreferredSizeWidget {
   AnimatedAppBar90s({
+    super.key,
     this.leading,
     this.title,
     this.actions,
     this.bottom,
     this.config,
     this.duration,
-    Key? key,
-  })  : preferredSize = _calcPrefSize(bottom),
-        super(key: key);
+  }) : preferredSize = _calcPrefSize(bottom);
 
   /// Виджет предшествующий заголовку
   final Widget? leading;

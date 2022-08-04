@@ -4,24 +4,19 @@ import 'package:shop_list/models/theme_model.dart';
 
 class MaterialThemeDataWrapper extends ThemeDataWrapper {
   const MaterialThemeDataWrapper({
-    required TextTheme textTheme,
+    required super.textTheme,
     double? rounded,
     double? shadowBlurRadius,
     Color? shadowColor,
     Offset? shadowOffset,
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
+    required super.lightColorScheme,
+    required super.darkColorScheme,
   })  : assert(rounded == null || (rounded >= 0 && rounded <= 30)),
         assert(shadowBlurRadius == null || (shadowBlurRadius >= 0 && shadowBlurRadius <= 20)),
         rounded = rounded ?? 10,
         shadowBlurRadius = shadowBlurRadius ?? 6,
         shadowColor = shadowColor ?? Colors.grey,
-        shadowOffset = shadowOffset ?? const Offset(0, 1),
-        super(
-          textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
-        );
+        shadowOffset = shadowOffset ?? const Offset(0, 1);
 
   factory MaterialThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));

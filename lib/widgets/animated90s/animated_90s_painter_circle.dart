@@ -7,12 +7,12 @@ import 'animated_90s_painter.dart';
 /// кнопка внутри анимированного круга
 class AnimatedCircleButton90s extends StatelessWidget {
   const AnimatedCircleButton90s({
+    super.key,
     required this.child,
     required this.onPressed,
     this.config,
     this.duration,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final void Function() onPressed;
@@ -54,15 +54,13 @@ class AnimatedCircleButton90s extends StatelessWidget {
 /// Анимированный круг
 class AnimatedPainterCircle90s extends AnimatedPainter90s {
   const AnimatedPainterCircle90s({
-    required Widget child,
+    super.key,
+    required super.child,
     Duration? duration,
     Paint90sConfig? config,
-    Key? key,
   }) : super(
-          child: child,
           duration: duration ?? const Duration(milliseconds: 80),
           config: config ?? const Paint90sConfig(),
-          key: key,
         );
 
   @override
@@ -129,16 +127,14 @@ class _CirclePainter extends CustomPainter {
 /// НЕ РЕКОМЕНДУЕТСЯ К ПРИМЕНЕНИЮ! Т.к. это решение для узкой задачи
 class AnimatedPainterCircleWithBorder90s extends AnimatedPainter90s {
   const AnimatedPainterCircleWithBorder90s({
-    required Widget child,
+    super.key,
+    required super.child,
     Duration? duration,
     Paint90sConfig? config,
     this.boxColor,
-    Key? key,
   }) : super(
-          child: child,
           duration: duration ?? const Duration(milliseconds: 80),
           config: config ?? const Paint90sConfig(),
-          key: key,
         );
 
   final Color? boxColor;

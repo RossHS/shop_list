@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 
 abstract class AnimatedPainter90s extends StatefulWidget {
   const AnimatedPainter90s({
+    super.key,
     required this.child,
     this.duration = const Duration(milliseconds: 120),
     this.config = const Paint90sConfig(),
-    Key? key,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final Duration duration;

@@ -7,7 +7,7 @@ import 'animated90s/animated_90s_painter_line.dart';
 /// https://stackoverflow.com/questions/61819226/how-to-create-custom-textfield-class
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
-    Key? key,
+    super.key,
     this.hint,
     required this.controller,
     this.onChanged,
@@ -23,7 +23,7 @@ class CustomTextField extends StatefulWidget {
     this.decoration,
     this.duration,
     this.config,
-  }) : super(key: key);
+  });
 
   final String? hint;
   final TextEditingController controller;
@@ -110,7 +110,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 /// Поле ввода созданное для абстрактной фабрики [MaterialThemeFactory]
 class MaterialCustomTextField extends StatefulWidget {
   const MaterialCustomTextField({
-    Key? key,
+    super.key,
     required this.controller,
     this.inputValidator,
     this.hint,
@@ -118,7 +118,7 @@ class MaterialCustomTextField extends StatefulWidget {
     this.minLines,
     this.prefixIcon,
     this.obscureText = false,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final bool Function(String p1)? inputValidator;

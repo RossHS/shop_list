@@ -14,8 +14,9 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 class TodoRouteBase extends StatelessWidget {
   const TodoRouteBase({
     required this.widgetButton,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
   final Widget widgetButton;
 
   @override
@@ -68,8 +69,8 @@ class TodoRouteBase extends StatelessWidget {
 class _Body extends StatelessWidget {
   const _Body({
     required this.buttonWidget,
-    Key? key,
-  }) : super(key: key);
+  });
+
   static const _width = 400.0;
   final Widget buttonWidget;
 
@@ -113,7 +114,7 @@ class _Body extends StatelessWidget {
 
 /// Анимированный список элементов
 class _AnimatedElementsList extends StatelessWidget {
-  const _AnimatedElementsList({Key? key}) : super(key: key);
+  const _AnimatedElementsList();
 
   @override
   Widget build(BuildContext context) {
@@ -154,8 +155,7 @@ class _TileItem extends StatelessWidget {
     required this.item,
     required this.animation,
     required this.dragAnimation,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final TodoEditCreateController controller;
   final TodoElement item;
@@ -199,7 +199,7 @@ class _TileItem extends StatelessWidget {
 
 /// Поле ввода текста элемента списка и его добавление
 class _TodoElementsMsgInput extends StatelessWidget {
-  const _TodoElementsMsgInput({Key? key}) : super(key: key);
+  const _TodoElementsMsgInput();
 
   @override
   Widget build(BuildContext context) {

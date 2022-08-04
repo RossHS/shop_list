@@ -64,7 +64,7 @@ Widget defaultBuilderFun(
 ///   Теперь же (условно) каждый старый метод фабрики - это отдельный класс, все находится максимально
 ///   близко друг к другу и запутаться/что-то забыть гораздо сложнее
 abstract class ThemeDepWidgetBase extends StatelessWidget {
-  const ThemeDepWidgetBase({Key? key}) : super(key: key);
+  const ThemeDepWidgetBase({super.key});
 
   @mustCallSuper
   @override

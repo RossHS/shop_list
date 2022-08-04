@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Загрузочный экран
 class Splash extends StatelessWidget {
-  const Splash({Key? key}) : super(key: key);
+  const Splash({super.key});
 
   @override
   Widget build(BuildContext context) {

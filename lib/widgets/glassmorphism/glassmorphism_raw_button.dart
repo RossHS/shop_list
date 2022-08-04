@@ -4,10 +4,11 @@ import 'package:shop_list/models/models.dart';
 /// Основание для создания кнопок стиля [GlassmorphismThemeDataWrapper]
 class GlassmorphismRawButton extends StatelessWidget {
   const GlassmorphismRawButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
+
   final void Function() onPressed;
   final Widget child;
 

@@ -5,7 +5,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Отображение списков дел по различным параметрам
 class TodosOrder extends StatelessWidget {
-  const TodosOrder({Key? key}) : super(key: key);
+  const TodosOrder({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,8 @@ class _Body extends StatelessWidget {
 
 /// Блок с настройками
 class _BoxItemWidget extends StatelessWidget {
-  const _BoxItemWidget({required this.children, Key? key}) : super(key: key);
+  const _BoxItemWidget({required this.children});
+
   final List<Widget> children;
 
   @override
@@ -131,7 +132,7 @@ class _BoxItemWidget extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({Key? key}) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +148,8 @@ class _Divider extends StatelessWidget {
 
 /// Заголовок "блока" настроек
 class _Title extends StatelessWidget {
-  const _Title(this.title, {Key? key}) : super(key: key);
+  const _Title(this.title);
+
   final String title;
 
   @override

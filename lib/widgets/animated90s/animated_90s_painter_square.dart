@@ -6,16 +6,14 @@ import 'animated_90s_painter.dart';
 
 class AnimatedPainterSquare90s extends AnimatedPainter90s {
   const AnimatedPainterSquare90s({
-    required Widget child,
+    super.key,
+    required super.child,
     Duration? duration,
     Paint90sConfig? config,
     this.borderPaint = const BorderPaint.all(),
-    Key? key,
   }) : super(
-          child: child,
           duration: duration ?? const Duration(milliseconds: 80),
           config: config ?? const Paint90sConfig(),
-          key: key,
         );
 
   final BorderPaint borderPaint;

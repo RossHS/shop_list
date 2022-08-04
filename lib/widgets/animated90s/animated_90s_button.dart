@@ -5,13 +5,13 @@ import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 /// Написал по аналогии с AnimatedCircleButton90s
 class AnimatedButton90s extends StatelessWidget {
   const AnimatedButton90s({
+    super.key,
     required this.child,
     required this.onPressed,
     this.config,
     this.duration,
     this.innerPadding = const EdgeInsets.all(8),
-    Key? key,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final void Function() onPressed;

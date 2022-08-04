@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 /// Кнопка выбора цветой схемы [ColorScheme] приложения
 class PaletteColorSelector extends StatefulWidget {
   const PaletteColorSelector({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.paletteDiameter = 44,
     this.mainColor = Colors.black,
     this.additionColor = Colors.white,
     this.child,
-  }) : super(key: key);
+  });
 
   /// Событие при нажатии на кнопку
   final void Function() onPressed;

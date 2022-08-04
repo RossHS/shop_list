@@ -13,7 +13,7 @@ final dateTimeFormatter = DateFormat('dd MM yyyy HH:mm:ss');
 
 /// Окно текущей задачи, которую выбрал пользователь
 class CurrentTodo extends StatelessWidget {
-  const CurrentTodo({Key? key}) : super(key: key);
+  const CurrentTodo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class CurrentTodo extends StatelessWidget {
 
 /// Основное тело виджета при успешной загрузки модели списка дел
 class _LoadedWidget extends StatefulWidget {
-  const _LoadedWidget({Key? key}) : super(key: key);
+  const _LoadedWidget();
 
   @override
   State<_LoadedWidget> createState() => _LoadedWidgetState();
@@ -328,7 +328,8 @@ class _CustomPainterCrossLine extends CustomPainter {
 }
 
 class _CompletedInformation extends StatelessWidget {
-  _CompletedInformation({Key? key}) : super(key: key);
+  _CompletedInformation();
+
   final formatterDate = DateFormat('dd MM yyyy');
   final formatterTime = DateFormat('HH:mm:ss');
 

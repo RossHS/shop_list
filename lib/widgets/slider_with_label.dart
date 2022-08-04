@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 /// Обычный [Slider] совмещенный с заголовком и отображающий текущее значение
 class SliderWithLabel extends StatelessWidget {
   const SliderWithLabel({
-    Key? key,
+    super.key,
     required this.value,
     this.label,
     required this.onChange,
     this.min = 0,
     this.max = 1,
-  })  : assert(value >= min && value <= max, 'incorrect value - $value'),
-        super(key: key);
+  })  : assert(value >= min && value <= max, 'incorrect value - $value');
 
   final double value;
   final void Function(double value) onChange;

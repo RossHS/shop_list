@@ -7,10 +7,10 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 /// Самая распространенная кнопка
 class ThemeDepButton extends ThemeDepWidgetBase {
   const ThemeDepButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
 
   final void Function() onPressed;
   final Widget child;

@@ -15,7 +15,7 @@ final _formatterTime = DateFormat('HH:mm:ss');
 
 /// Основное рабочее окно в теме [GlassmorphismThemeDataWrapper]
 class HomeGlassmorphism extends StatelessWidget {
-  const HomeGlassmorphism({Key? key}) : super(key: key);
+  const HomeGlassmorphism({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class HomeGlassmorphism extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
+  const _Body();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class _Body extends StatelessWidget {
 
 /// Панель с шорт-катами к маршрутам (Пользователя/Настройки/Сортировка)
 class _ControlPanel extends StatelessWidget {
-  const _ControlPanel({Key? key}) : super(key: key);
+  const _ControlPanel();
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +125,9 @@ class _ControlPanel extends StatelessWidget {
 /// Главное окно с каруселью списков задач и индикацией текущего/показываемого списка в виде точек точек
 class _CarouselWithIndicator extends StatefulWidget {
   const _CarouselWithIndicator({
-    Key? key,
     required this.todoList,
-  }) : super(key: key);
+  });
+
   final List<FirestoreRefTodoModel> todoList;
 
   @override
@@ -212,9 +212,9 @@ class _CarouselWithIndicatorState extends State<_CarouselWithIndicator> {
 /// Виджет элемента записи списка дел
 class _TodoItem extends StatelessWidget {
   const _TodoItem({
-    Key? key,
+    super.key,
     required this.refModel,
-  }) : super(key: key);
+  });
 
   final FirestoreRefTodoModel refModel;
 
@@ -271,10 +271,8 @@ class _TodoItem extends StatelessWidget {
 /// Список - если задача открыта
 /// Таблица с информацией о закрытии, если задача закрыта
 class _TodoItemBody extends StatelessWidget {
-  const _TodoItemBody(
-    this.refModel, {
-    Key? key,
-  }) : super(key: key);
+  const _TodoItemBody(this.refModel);
+
   final FirestoreRefTodoModel refModel;
 
   @override
@@ -350,10 +348,8 @@ class _TodoItemBody extends StatelessWidget {
 
 /// Панель-заголовок, в которой отображается информация о создателе списка/времени создания
 class _TodoItemHeader extends StatelessWidget {
-  const _TodoItemHeader(
-    this.todoModel, {
-    Key? key,
-  }) : super(key: key);
+  const _TodoItemHeader(this.todoModel);
+
   final TodoModel todoModel;
 
   @override
@@ -386,7 +382,8 @@ class _TodoItemHeader extends StatelessWidget {
 
 /// Самая нижняя панель списка дел с кнопками шорткатами (закрытия задачи, ее изменения и удаления)
 class _TodoItemFooter extends StatelessWidget {
-  const _TodoItemFooter(this.refModel, {Key? key}) : super(key: key);
+  const _TodoItemFooter(this.refModel);
+
   final FirestoreRefTodoModel refModel;
 
   @override

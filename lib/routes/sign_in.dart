@@ -6,7 +6,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Экран с формой логина в аккаунт
 class SignIn extends StatelessWidget {
-  const SignIn({Key? key}) : super(key: key);
+  const SignIn({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class SignIn extends StatelessWidget {
 }
 
 class _CustomForm extends StatefulWidget {
-  const _CustomForm({Key? key}) : super(key: key);
+  const _CustomForm();
 
   @override
   State<_CustomForm> createState() => _CustomFormState();

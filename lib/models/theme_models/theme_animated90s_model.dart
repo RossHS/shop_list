@@ -5,16 +5,12 @@ import 'package:shop_list/widgets/animated90s/animated_90s.dart';
 
 class Animated90sThemeDataWrapper extends ThemeDataWrapper {
   const Animated90sThemeDataWrapper({
-    required TextTheme textTheme,
+    required super.textTheme,
     required this.paint90sConfig,
     this.animationDuration = const Duration(milliseconds: 80),
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
-  }) : super(
-          textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
-        );
+    required super.lightColorScheme,
+    required super.darkColorScheme,
+  });
 
   factory Animated90sThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));

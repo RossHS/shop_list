@@ -10,7 +10,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 /// т.к. [ThemeDepAnimatedSwitcher] делает именно это "под капотом"
 class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
   const ThemeDepAnimatedSwitcher({
-    Key? key,
+    super.key,
     required this.duration,
     this.switchInCurve = Curves.linear,
     this.switchOutCurve = Curves.linear,
@@ -19,7 +19,8 @@ class ThemeDepAnimatedSwitcher extends ThemeDepWidgetBase {
     this.material = defaultBuilderFun,
     this.glassmorphism = defaultBuilderFun,
     this.child,
-  }) : super(key: key);
+  });
+
   final Duration duration;
   final Curve switchInCurve;
   final Curve switchOutCurve;

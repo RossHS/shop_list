@@ -7,15 +7,11 @@ final _log = Logger('GlassmorphismThemeDataWrapper');
 
 class GlassmorphismThemeDataWrapper extends ThemeDataWrapper {
   const GlassmorphismThemeDataWrapper({
-    required TextTheme textTheme,
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
+    required super.textTheme,
+    required super.lightColorScheme,
+    required super.darkColorScheme,
     required this.backgroundDecoration,
-  }) : super(
-          textTheme: textTheme,
-          lightColorScheme: lightColorScheme,
-          darkColorScheme: darkColorScheme,
-        );
+  });
 
   factory GlassmorphismThemeDataWrapper.fromGetStorage(GetStorage storage) {
     final textTheme = TextThemeCollection.fromString(storage.read<String>('textTheme'));

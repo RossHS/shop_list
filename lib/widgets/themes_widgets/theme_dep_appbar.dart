@@ -9,12 +9,12 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep_cached.dart';
 
 class ThemeDepAppBar extends ThemeDepCached<PreferredSizeWidget> implements PreferredSizeWidget {
   ThemeDepAppBar({
-    Key? key,
+    super.key,
     this.leading,
     this.title,
     this.actions,
     this.bottom,
-  }) : super(key: key);
+  });
 
   final Widget? leading;
   final Widget? title;

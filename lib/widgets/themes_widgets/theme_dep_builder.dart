@@ -6,12 +6,12 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 /// Полезен, когда необходимо создавать действительно уникальные виджеты в одном конкретном месте,
 class ThemeDepBuilder extends ThemeDepWidgetBase {
   const ThemeDepBuilder({
-    Key? key,
+    super.key,
     this.animated90s = defaultBuilderFun,
     this.material = defaultBuilderFun,
     this.glassmorphism = defaultBuilderFun,
     this.child,
-  }) : super(key: key);
+  });
 
   final Animated90sFun animated90s;
   final MaterialFun material;

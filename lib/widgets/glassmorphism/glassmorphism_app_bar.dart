@@ -7,13 +7,12 @@ import 'package:shop_list/widgets/glassmorphism/glassmorphism.dart';
 /// контроль над виджетом
 class GlassmorphismAppBar extends StatelessWidget implements PreferredSizeWidget {
   GlassmorphismAppBar({
-    Key? key,
+    super.key,
     this.leading,
     this.title,
     this.actions,
     this.bottom,
-  })  : preferredSize = _calcPrefSize(bottom),
-        super(key: key);
+  }) : preferredSize = _calcPrefSize(bottom);
   static const toolBarHeight = 56.0;
 
   final Widget? leading;

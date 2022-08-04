@@ -11,7 +11,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_dep.dart';
 
 /// Главный экран пользователя, где отображаются все актуальные списки покупок
 class HomeMaterial extends StatefulWidget {
-  const HomeMaterial({Key? key}) : super(key: key);
+  const HomeMaterial({super.key});
 
   @override
   State<HomeMaterial> createState() => _HomeMaterialState();
@@ -71,7 +71,7 @@ class _HomeMaterialState extends State<HomeMaterial> {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
+  const _Body();
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +106,9 @@ class _Body extends StatelessWidget {
 class _ItemGrid extends StatelessWidget {
   const _ItemGrid({
     required this.rowCount,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
   final int rowCount;
 
   @override
@@ -133,9 +134,10 @@ class _ItemGrid extends StatelessWidget {
 /// Виджет элемента записи списка дел
 class _TodoItem extends StatefulWidget {
   const _TodoItem({
+    super.key,
     required this.refModel,
-    Key? key,
-  }) : super(key: key);
+  });
+
   final FirestoreRefTodoModel refModel;
 
   @override
@@ -344,14 +346,12 @@ class _TodoItemState extends State<_TodoItem> with TickerProviderStateMixin {
 /// Панель вызывается по длинному нажатию на предмете
 class _ItemControlPanel extends StatelessWidget {
   const _ItemControlPanel({
-    Key? key,
     required FirestoreRefTodoModel refModel,
     required AnimationController opacityController,
     required TodoModel todoModel,
   })  : _refModel = refModel,
         _opacityController = opacityController,
-        _todoModel = todoModel,
-        super(key: key);
+        _todoModel = todoModel;
 
   final FirestoreRefTodoModel _refModel;
   final AnimationController _opacityController;

@@ -4,13 +4,12 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class PaletteColorAdvancedPicker extends StatefulWidget {
   const PaletteColorAdvancedPicker({
-    Key? key,
+    super.key,
     required this.colors,
     required this.onChange,
     this.min = 2,
     this.max = 6,
-  })  : assert(colors.length >= min && colors.length <= max, 'incorrect length - ${colors.length}'),
-        super(key: key);
+  })  : assert(colors.length >= min && colors.length <= max, 'incorrect length - ${colors.length}');
 
   /// Обратный вызов при изменении цветов
   final void Function(List<Color> colors) onChange;

@@ -18,7 +18,7 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 ///
 /// Но были и другие варианты решения, которые в разы хуже, так что текущая реализация - наименьшее зло, что мне пришло на ум
 abstract class ThemeDepCached<T extends Widget> extends ThemeDepWidgetBase {
-  ThemeDepCached({Key? key}) : super(key: key) {
+  ThemeDepCached({super.key}) {
     final appTheme = ThemeController.to.appTheme.value;
     if (appTheme is Animated90sThemeDataWrapper) {
       _cachedWidget = _CachedWidget<T>(animated90sWidgetImp(Get.context!, appTheme), appTheme);

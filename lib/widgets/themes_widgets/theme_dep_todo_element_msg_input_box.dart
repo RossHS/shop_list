@@ -5,9 +5,9 @@ import 'package:shop_list/widgets/themes_widgets/theme_base_widget.dart';
 
 class ThemeDepTodoElementMsgInputBox extends ThemeDepWidgetBase {
   const ThemeDepTodoElementMsgInputBox({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
   final Widget child;
 
   @override
