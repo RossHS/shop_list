@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logging/logging.dart';
 import 'package:shop_list/controllers/controllers.dart';
+import 'package:shop_list/firebase_options.dart';
 import 'package:shop_list/routes/get_routes.dart';
 import 'package:shop_list/utils/firebase_messaging_service.dart';
 import 'package:shop_list/utils/routes_transition.dart';
@@ -12,7 +13,9 @@ import 'package:shop_list/utils/routes_transition.dart';
 void main() async {
   _setUpLogging();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await GetStorage.init();
   Get.put(AuthenticationController());
   Get.put(ThemeController());

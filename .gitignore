@@ -48,3 +48,5 @@ app.*.map.json
 # Private Firebase/Google Cloud Platform API keys
 /android/app/google-services.json
 /web/firebase.config.init.js
+/lib/firebase_options.dart
+/ios/firebase_app_id_file.json
