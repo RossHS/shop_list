@@ -71,8 +71,15 @@ class TodoModel {
           const ListEquality().equals(elements, other.elements);
 
   @override
-  int get hashCode =>
-      Object.hashAll([authorId, title, isPublic, createdTimestamp, completed, completedTimestamp, hashList(elements)]);
+  int get hashCode => Object.hashAll([
+        authorId,
+        title,
+        isPublic,
+        createdTimestamp,
+        completed,
+        completedTimestamp,
+        Object.hashAll(elements),
+      ]);
 }
 
 /// Элемент в списке дел
