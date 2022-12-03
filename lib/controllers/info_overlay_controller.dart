@@ -22,9 +22,6 @@ class CustomInfoOverlay {
   /// Дополнительный виджет для отображения в оверлее
   Widget? child;
 
-  /// Следует ли удалять оверлей
-  final overlayToRemove = ValueNotifier<bool>(false);
-
   OverlayEntry? overlayEntry;
 
   /// Отображает оверлей на подобии SnackBar с заданным заголовком и сообщением
@@ -43,14 +40,12 @@ class CustomInfoOverlay {
 
   /// Запуск оверлея
   void _init() {
-    // Подписываемся на событие поднятия флага к удалению оверлея
-    overlayToRemove.addListener(_checkForDelete);
     final navigationState = Navigator.of(Get.overlayContext!, rootNavigator: false);
     final overlayState = navigationState.overlay!;
     overlayEntry = OverlayEntry(
       builder: (context) {
         return _CustomOverlay(
-          overlayToRemoveNotifier: overlayToRemove,
+          overlayToRemoveCallback: () => overlayEntry!.remove(),
           child: ThemeDepInfoOverlay(
             title: title,
             msg: msg,
@@ -61,15 +56,6 @@ class CustomInfoOverlay {
     );
     overlayState.insert(overlayEntry!);
   }
-
-  /// Проверка, следует ли удалять оверлей с экрана
-  void _checkForDelete() {
-    if (overlayToRemove.value == true) {
-      overlayEntry!.remove();
-      overlayToRemove.removeListener(_checkForDelete);
-      overlayToRemove.dispose();
-    }
-  }
 }
 
 /// Виджет, который будет отображаться в оверлее. По прошествии времени [animationDuration]
@@ -79,7 +65,7 @@ class _CustomOverlay extends StatefulWidget {
   const _CustomOverlay({
     super.key,
     required this.child,
-    required this.overlayToRemoveNotifier,
+    required this.overlayToRemoveCallback,
     this.animationDuration = const Duration(seconds: 5),
   });
 
@@ -89,8 +75,8 @@ class _CustomOverlay extends StatefulWidget {
   /// Продолжительность входа и выхода оверлея
   final Duration animationDuration;
 
-  /// Флаг со значением, следует ли удалять оверлей
-  final ValueNotifier<bool> overlayToRemoveNotifier;
+  /// Обратный вызов, что следует удалять оверлей
+  final void Function() overlayToRemoveCallback;
 
   @override
   State<StatefulWidget> createState() => _CustomOverlayState();
@@ -124,6 +110,7 @@ class _CustomOverlayState extends State<_CustomOverlay> with SingleTickerProvide
     _controller.forward();
 
     _timer = RestartableTimer(widget.animationDuration, () async {
+      if (!mounted) return;
       await _controller.reverse();
       _dismiss();
     });
@@ -132,6 +119,7 @@ class _CustomOverlayState extends State<_CustomOverlay> with SingleTickerProvide
   @override
   void dispose() {
     _controller.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -152,7 +140,7 @@ class _CustomOverlayState extends State<_CustomOverlay> with SingleTickerProvide
 
   /// Обратный вызов с информацией о том, что оверлей готов к удалению
   void _dismiss() {
-    widget.overlayToRemoveNotifier.value = true;
+    widget.overlayToRemoveCallback();
     _timer.cancel();
   }
 }
